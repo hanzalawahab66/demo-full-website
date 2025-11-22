@@ -1,0 +1,377 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Super Admin Panel — Manage All Listings</title>
+  <style>
+    :root {
+      --bg: #f6f7fb;
+      --text: #0f172a;
+      --muted: #64748b;
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --topbar-bg: #ffffff;
+      --topbar-border: #e5e7eb;
+      --sidebar-bg: #0b1220;
+      --sidebar-border: #1f2937;
+      --sidebar-text: #cbd5e1;
+      --sidebar-hover-bg: #111827;
+      --sidebar-active-bg: #1f2937;
+      --card-bg: #ffffff;
+      --card-border: #e5e7eb;
+      --danger: #dc2626;
+      --success: #16a34a;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body { margin: 0; background: var(--bg); color: var(--text); font-family: Inter, Segoe UI, Roboto, Helvetica, Arial, system-ui, -apple-system, sans-serif; }
+
+    .admin-layout { display: grid; grid-template-columns: 260px 1fr; grid-template-rows: 64px auto; grid-template-areas: "topbar topbar" "sidebar content"; height: 100vh; width: 100%; }
+    .topbar { grid-area: topbar; display: flex; align-items: center; justify-content: space-between; padding: 0 16px; background: var(--topbar-bg); border-bottom: 1px solid var(--topbar-border); position: sticky; top: 0; z-index: 10; }
+    .brand { display: flex; align-items: center; gap: 12px; font-weight: 600; }
+    .brand-logo { width: 28px; height: 28px; border-radius: 8px; background: linear-gradient(135deg, var(--primary), #9333ea); }
+    .top-actions { display: flex; align-items: center; gap: 8px; }
+    .btn { border: 1px solid var(--card-border); background: #fff; color: var(--text); padding: 8px 12px; border-radius: 8px; cursor: pointer; font-weight: 600; }
+    .btn:hover { background: #f9fafb; }
+    .btn-primary { background: var(--primary); color: #fff; border-color: var(--primary); }
+    .btn-primary:hover { background: var(--primary-hover); }
+    .admin-name { color: var(--muted); font-weight: 500; }
+
+    /* Master Sidebar styles — must match other admin pages */
+    .sidebar { grid-area: sidebar; background: var(--sidebar-bg); border-right: 1px solid var(--sidebar-border); color: #fff; padding: 16px 12px; overflow-y: auto; }
+    .sidebar-header { font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--sidebar-text); margin-bottom: 12px; opacity: 0.9; }
+    .menu { display: flex; flex-direction: column; gap: 6px; }
+    .menu a { display: flex; align-items: center; gap: 10px; padding: 10px 12px; text-decoration: none; color: var(--sidebar-text); border-radius: 10px; transition: background 160ms ease, color 160ms ease; font-weight: 500; }
+    .menu a:hover { background: var(--sidebar-hover-bg); color: #fff; }
+    .menu a.active { background: var(--sidebar-active-bg); color: #fff; }
+    .menu .icon { width: 18px; height: 18px; border-radius: 4px; background: #334155; flex-shrink: 0; }
+
+    .content { grid-area: content; padding: 20px; overflow-y: auto; }
+    .content h1 { margin: 0 0 12px; font-size: 24px; }
+    .muted { color: var(--muted); }
+    .footer { margin-top: 24px; padding-top: 12px; border-top: 1px solid var(--card-border); color: var(--muted); font-size: 12px; }
+
+    /* Search Bar */
+    .search-bar { display: flex; gap: 8px; margin: 8px 0 16px; }
+    .search-input { flex: 1; padding: 10px 12px; border: 1px solid var(--card-border); border-radius: 10px; background: #fff; }
+    .clear-btn { padding: 10px 12px; border-radius: 10px; border: 1px solid var(--card-border); background: #fff; }
+
+    /* Tabs */
+    .tabs { display: flex; gap: 8px; margin: 6px 0 14px; }
+    .tab-btn { padding: 8px 12px; border: 1px solid var(--card-border); background: #fff; color: var(--text); border-radius: 8px; cursor: pointer; font-weight: 600; }
+    .tab-btn.active { background: var(--primary); border-color: var(--primary); color: #fff; }
+
+    /* Tables */
+    .table-wrap { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; overflow: hidden; }
+    .table-responsive { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; }
+    thead th { text-align: left; padding: 12px 14px; font-size: 12px; color: var(--muted); background: #f9fafb; border-bottom: 1px solid var(--card-border); white-space: nowrap; }
+    tbody td { padding: 12px 14px; border-bottom: 1px solid var(--card-border); font-size: 14px; }
+    tbody tr:last-child td { border-bottom: none; }
+    .actions { display: flex; gap: 8px; }
+    .status-pill { display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 999px; font-size: 12px; }
+    .pill-approved { background: #dcfce7; color: var(--success); }
+    .pill-pending { background: #fee2e2; color: var(--danger); }
+  </style>
+</head>
+<body>
+  <div class="admin-layout">
+    <header class="topbar" role="banner">
+      <div class="brand" aria-label="Admin brand">
+        <div class="brand-logo" aria-hidden="true"></div>
+        <span>Super Admin Panel</span>
+      </div>
+      <div class="top-actions">
+        <button class="btn" onclick="location.href='home.html'">Back to Site</button>
+        <span class="admin-name">Signed in as <strong>Super Admin</strong></span>
+        <button class="btn-primary" onclick="location.href='signin.html'">Logout</button>
+      </div>
+    </header>
+
+    <!-- Master Sidebar (kept identical to other admin pages) -->
+    <aside class="sidebar" role="navigation" aria-label="Admin sidebar">
+      <div class="sidebar-header">Main Menu</div>
+      <nav class="menu">
+        <a href="admin.html" title="Dashboard"><span class="icon"></span> Dashboard</a>
+        <a href="user-management.html" title="User Management"><span class="icon"></span> User Management</a>
+        <a href="listing-approval.html" title="Listing Approvals"><span class="icon"></span> Listing Approvals</a>
+        <a href="create-listing.html" title="Create New Listing"><span class="icon"></span> Create New Listing</a>
+        <a href="manage-all-listings.html" title="Manage All Listings" class="active"><span class="icon"></span> Manage All Listings</a>
+        <a href="category-management.html" title="Category Management"><span class="icon"></span> Category Management</a>
+        <a href="tag-management.html" title="Tag Management"><span class="icon"></span> Tag Management</a>
+        <a href="blog-management.html" title="Blog Management"><span class="icon"></span> Blog Management</a>
+        <a href="role-management.html" title="Role Management"><span class="icon"></span> Role Management</a>
+        <a href="setting.html" title="Setting"><span class="icon"></span> Setting</a>
+      </nav>
+    </aside>
+
+    <main class="content" role="main">
+      <h1>Manage All Listings</h1>
+      <p class="muted">Search and manage all car listings across Admin and Approved Seller entries.</p>
+
+      <!-- Search Bar -->
+      <div class="search-bar" role="search">
+        <input id="searchInput" class="search-input" type="search" placeholder="Search by ID, title, product ID number, or seller name" aria-label="Search listings" />
+        <button id="clearSearch" class="clear-btn" type="button" aria-label="Clear search">Clear</button>
+      </div>
+
+      <!-- Tabs -->
+      <div class="tabs" role="tablist" aria-label="Listing tabs">
+        <button id="tabAdmin" class="tab-btn active" role="tab" aria-selected="true" aria-controls="panelAdmin">Admin Listings</button>
+        <button id="tabApproved" class="tab-btn" role="tab" aria-selected="false" aria-controls="panelApproved">Approved Seller Listings</button>
+      </div>
+
+      <!-- Admin Listings Panel -->
+      <section id="panelAdmin" class="table-wrap" role="tabpanel" aria-labelledby="tabAdmin">
+        <div class="table-responsive">
+          <table aria-label="Admin Listings">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Title</th>
+                <th>Product ID</th>
+                <th>Chassis No.</th>
+                <th>Price</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-admin"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Approved Seller Listings Panel -->
+      <section id="panelApproved" class="table-wrap" role="tabpanel" aria-labelledby="tabApproved" hidden>
+        <div class="table-responsive">
+          <table aria-label="Approved Seller Listings">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Title</th>
+                <th>Product ID</th>
+                <th>Chassis No.</th>
+                <th>Price</th>
+                <th>Seller</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-sellers"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <footer class="footer">© 2024 NSM Autos Admin</footer>
+    </main>
+  </div>
+
+  <script>
+document.addEventListener('DOMContentLoaded', async function () {
+  const adminBody = document.getElementById('tbody-admin');
+  const sellerBody = document.getElementById('tbody-sellers');
+
+  if (!adminBody || !sellerBody) {
+    console.warn('Required table bodies not found: #tbody-admin and #tbody-sellers');
+    return;
+  }
+
+  // Clear any dummy data
+  adminBody.innerHTML = '';
+  sellerBody.innerHTML = '';
+
+  // Get admin token
+  const token =
+    localStorage.getItem('token') ||
+    localStorage.getItem('authToken') ||
+    sessionStorage.getItem('token') ||
+    '';
+
+  const headers = { Accept: 'application/json' };
+  if (token) headers['Authorization'] = 'Bearer ' + token;
+
+  // Fetch data from backend route
+  let data = [];
+  try {
+    const API_BASE = 'http://localhost:3000';
+    const res = await fetch(API_BASE + '/admin/all-listings', { headers });
+
+    async function loadFallback() {
+      try {
+        const [listingsRes, usersRes] = await Promise.all([
+          fetch('backend/listings.json', { cache: 'no-store' }),
+          fetch('backend/users.json', { cache: 'no-store' })
+        ]);
+        const listings = listingsRes.ok ? await listingsRes.json() : [];
+        const users = usersRes.ok ? await usersRes.json() : [];
+        const byId = new Map((Array.isArray(users) ? users : []).map(u => [Number(u.id || u.ID || 0), u]));
+        return (Array.isArray(listings) ? listings : []).map(l => {
+          const seller = l.seller_id != null ? byId.get(Number(l.seller_id)) : null;
+          const seller_name = seller ? (seller.profile?.name || seller.email || '') : '';
+          return normalize({ ...l, seller_name });
+        });
+      } catch (err) {
+        console.error('Fallback load failed:', err);
+        return [];
+      }
+    }
+
+    if (!res.ok) {
+      if (res.status === 401 || res.status === 403) {
+        console.warn('Auth required, using JSON fallback for preview.');
+        data = await loadFallback();
+      } else {
+        throw new Error('HTTP ' + res.status);
+      }
+    } else {
+      const raw = await res.json();
+      data = Array.isArray(raw) ? raw.map(normalize) : [];
+    }
+  } catch (e) {
+    console.error('Failed to fetch /admin/all-listings:', e);
+    if (!Array.isArray(data) || data.length === 0) {
+      // Final attempt: fallback
+      try {
+        const fallback = await (async () => {
+          const [listingsRes, usersRes] = await Promise.all([
+            fetch('backend/listings.json', { cache: 'no-store' }),
+            fetch('backend/users.json', { cache: 'no-store' })
+          ]);
+          const listings = listingsRes.ok ? await listingsRes.json() : [];
+          const users = usersRes.ok ? await usersRes.json() : [];
+          const byId = new Map((Array.isArray(users) ? users : []).map(u => [Number(u.id || u.ID || 0), u]));
+          return (Array.isArray(listings) ? listings : []).map(l => {
+            const seller = l.seller_id != null ? byId.get(Number(l.seller_id)) : null;
+            const seller_name = seller ? (seller.profile?.name || seller.email || '') : '';
+            return normalize({ ...l, seller_name });
+          });
+        })();
+        data = fallback;
+      } catch (ferr) {
+        console.error('Fallback fetch failed:', ferr);
+        data = [];
+      }
+    }
+  }
+
+  const fmtPrice = (v) => {
+    const n = Number(v);
+    if (!isFinite(n)) return '';
+    return new Intl.NumberFormat(undefined, { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(n);
+  };
+
+  function normalize(l) {
+    const sidRaw = (l.seller_id !== undefined ? l.seller_id : (l.sellerId !== undefined ? l.sellerId : (l.userId !== undefined ? l.userId : null)));
+    let seller_id = (sidRaw === undefined || sidRaw === null || sidRaw === 'null') ? null : Number(sidRaw);
+    if (seller_id != null && (!Number.isFinite(seller_id) || seller_id <= 0)) seller_id = null; // treat invalid/zero as admin-origin
+    const status = String(l.status || '').toLowerCase();
+    return {
+      id: Number(l.id),
+      title: String(l.title || ''),
+      product_id_number: l.product_id_number == null ? '' : String(l.product_id_number),
+      chassis_number: (function(){
+        try {
+          const v = (l.vehicle && (l.vehicle.chassisNumber || l.vehicle.chassis_number))
+            || l.chassisNumber || l.chassis_number || '';
+          return v == null ? '' : String(v);
+        } catch(_) { return ''; }
+      })(),
+      price: l.price,
+      status,
+      seller_id,
+      seller_name: l.seller_name || l.seller || l.sellerName || '',
+    };
+  }
+
+  const makeRow = (item, includeSellerCol) => {
+    const tr = document.createElement('tr');
+
+    const tdId = document.createElement('td');
+    tdId.textContent = item.id;
+    tr.appendChild(tdId);
+
+    const tdTitle = document.createElement('td');
+    tdTitle.textContent = item.title;
+    tr.appendChild(tdTitle);
+
+    const tdPid = document.createElement('td');
+    tdPid.textContent = item.product_id_number || '';
+    tr.appendChild(tdPid);
+
+    const tdChassis = document.createElement('td');
+    tdChassis.textContent = item.chassis_number || '';
+    tr.appendChild(tdChassis);
+
+    const tdPrice = document.createElement('td');
+    tdPrice.textContent = fmtPrice(item.price);
+    tr.appendChild(tdPrice);
+
+    if (includeSellerCol) {
+      const tdSeller = document.createElement('td');
+      tdSeller.textContent = item.seller_name || '';
+      tr.appendChild(tdSeller);
+    }
+
+    const tdStatus = document.createElement('td');
+    tdStatus.textContent = item.status;
+    tr.appendChild(tdStatus);
+
+    const tdActions = document.createElement('td');
+    tdActions.className = 'actions';
+
+    const aView = document.createElement('a');
+    aView.className = 'btn';
+    aView.href = 'product-detail.html?id=' + encodeURIComponent(item.id);
+    aView.textContent = 'View';
+
+    const aEdit = document.createElement('a');
+    aEdit.className = 'btn';
+    aEdit.href = 'admin-edit-listing.html?id=' + encodeURIComponent(item.id); // align with existing edit page
+    aEdit.textContent = 'Edit';
+
+    tdActions.appendChild(aView);
+    tdActions.appendChild(aEdit);
+    tr.appendChild(tdActions);
+
+    return tr;
+  };
+
+  // Classify and append rows
+  for (const entry of (Array.isArray(data) ? data : [])) {
+    const l = normalize(entry);
+    const sellerOrigin = Number.isFinite(l.seller_id) && l.seller_id > 0; // created via "Sell My Car"
+    const adminOrigin = !sellerOrigin; // created via "Create New Listing"
+    const isApprovedSeller = sellerOrigin && l.status === 'approved';
+
+    if (adminOrigin) {
+      adminBody.appendChild(makeRow(l, false));
+    }
+    if (isApprovedSeller) {
+      sellerBody.appendChild(makeRow(l, true));
+    }
+  }
+
+  // Tabs switching logic
+  const tabAdmin = document.getElementById('tabAdmin');
+  const tabApproved = document.getElementById('tabApproved');
+  const panelAdmin = document.getElementById('panelAdmin');
+  const panelApproved = document.getElementById('panelApproved');
+
+  function activateTab(which) {
+    const adminActive = which === 'admin';
+    tabAdmin.classList.toggle('active', adminActive);
+    tabAdmin.setAttribute('aria-selected', adminActive ? 'true' : 'false');
+    tabApproved.classList.toggle('active', !adminActive);
+    tabApproved.setAttribute('aria-selected', adminActive ? 'false' : 'true');
+    panelAdmin.hidden = !adminActive;
+    panelApproved.hidden = adminActive;
+  }
+
+  tabAdmin.addEventListener('click', () => activateTab('admin'));
+  tabApproved.addEventListener('click', () => activateTab('approved'));
+});
+  </script>
+</body>
+</html>

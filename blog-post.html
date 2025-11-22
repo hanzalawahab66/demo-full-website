@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MangoCar — Blog Post</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: { mango: '#FF8C42', navy: '#1B2951', charcoal: '#2D3748' },
+          fontFamily: { heading: ['Inter', 'sans-serif'], body: ['Inter', 'sans-serif'] },
+        },
+      },
+    };
+  </script>
+  <script>window.FontAwesomeConfig = {autoReplaceSvg: 'nest'};</script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <style>
+    * { font-family: 'Inter', sans-serif; }
+    ::-webkit-scrollbar { display: none; }
+    /* Blog content typography and overflow handling */
+    #content { overflow-wrap: break-word; word-break: break-word; hyphens: auto; }
+    .content-typography { font-size: 1.125rem; line-height: 1.8; color: #1f2937; }
+    .content-typography p { margin-bottom: 1rem; }
+    .content-typography h2 { font-size: 1.5rem; margin-top: 1.5rem; margin-bottom: 0.75rem; font-weight: 700; color: #0f172a; }
+    .content-typography h3 { font-size: 1.25rem; margin-top: 1.25rem; margin-bottom: 0.5rem; font-weight: 700; color: #0f172a; }
+    .content-typography img { max-width: 100%; height: auto; border-radius: 0.75rem; }
+    .content-typography ul, .content-typography ol { padding-left: 1.25rem; margin-bottom: 1rem; }
+    .content-typography a { color: #f97316; text-decoration: underline; }
+    .content-typography blockquote { border-left: 4px solid #f97316; padding-left: 1rem; color: #4b5563; font-style: italic; margin: 1rem 0; }
+    .content-typography table { width: 100%; border-collapse: collapse; margin: 1rem 0; }
+    .content-typography th, .content-typography td { border: 1px solid #e5e7eb; padding: 0.5rem; }
+    /* Prevent code blocks from overflowing into the sidebar */
+    .content-typography pre { white-space: pre-wrap; word-break: break-word; overflow-x: auto; max-width: 100%; padding: 0.75rem; border-radius: 0.5rem; background: #f8fafc; border: 1px solid #e5e7eb; }
+    .content-typography code { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace; font-size: 0.95rem; }
+    .content-typography pre code { white-space: pre-wrap; word-break: break-word; }
+    /* Constrain wide embeds */
+    .content-typography iframe, .content-typography video { max-width: 100%; height: auto; }
+  </style>
+</head>
+<body class="bg-gray-50">
+
+  <!-- COMPONENT: Language Selector & Header (copied from Home) -->
+  <div class="bg-gray-100 shadow-sm font-body">
+    <div class="container mx-auto px-6 py-2">
+      <div class="flex justify-end items-center space-x-4">
+        <div class="relative">
+          <button id="languageToggle" class="flex items-center space-x-2 text-gray-700 hover:text-orange-500 font-medium transition-colors">
+            <i class="fa-solid fa-globe text-base"></i>
+            <span class="text-sm md:text-base">English</span>
+            <i class="fa-solid fa-chevron-down text-xs"></i>
+          </button>
+          <div id="languageDropdown" class="absolute right-0 top-full mt-1 bg-white rounded-lg shadow-xl border border-gray-200 py-2 min-w-[160px] hidden z-50">
+            <button class="w-full px-4 py-2 text-left text-sm md:text-base text-gray-700 hover:bg-gray-50 hover:text-orange-500 transition-colors flex items-center space-x-2 font-medium" data-lang="en">
+              <img src="https://flagcdn.com/w20/us.png" alt="English" class="w-4 h-3">
+              <span>English</span>
+            </button>
+            <button class="w-full px-4 py-2 text-left text-sm md:text-base text-gray-700 hover:bg-gray-50 hover:text-orange-500 transition-colors flex items-center space-x-2 font-medium" data-lang="ko">
+              <img src="https://flagcdn.com/w20/kr.png" alt="한국어" class="w-4 h-3">
+              <span>한국어</span>
+            </button>
+            <button class="w-full px-4 py-2 text-left text-sm md:text-base text-gray-700 hover:bg-gray-50 hover:text-orange-500 transition-colors flex items-center space-x-2 font-medium" data-lang="ar">
+              <img src="https://flagcdn.com/w20/sa.png" alt="العربية" class="w-4 h-3">
+              <span>العربية</span>
+            </button>
+            <button class="w-full px-4 py-2 text-left text-sm md:text-base text-gray-700 hover:bg-gray-50 hover:text-orange-500 transition-colors flex items-center space-x-2 font-medium" data-lang="fr">
+              <img src="https://flagcdn.com/w20/fr.png" alt="Français" class="w-4 h-3">
+              <span>Français</span>
+            </button>
+          </div>
+        </div>
+        <div class="text-gray-300">|</div>
+        <div class="flex items-center space-x-4">
+          <button class="bg-transparent border border-gray-300 text-gray-700 hover:border-orange-500 hover:text-orange-500 px-6 py-2 rounded-lg font-medium transition-all" data-text="sign-in" onclick="window.location.href='signin.html'">Sign In</button>
+          <button class="bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-lg font-semibold transition-all transform hover:scale-105" data-text="sign-up" onclick="window.location.href='signup.html'">Sign Up</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <header id="header" class="bg-white shadow-sm">
+    <div class="container mx-auto px-6 py-4">
+      <div class="flex items-center justify-between">
+        <a href="home.html" class="flex items-center space-x-2">
+          <span class="text-3xl font-heading font-extrabold text-navy tracking-wide">NSM</span>
+          <span class="text-3xl font-heading font-extrabold text-mango">Autos</span>
+        </a>
+        <div class="hidden md:flex flex-1 mx-8 max-w-xl">
+          <div class="flex items-center bg-gray-50 rounded-full border-2 border-gray-200 focus-within:border-orange-500 transition-colors w-full">
+            <input type="text" data-text="search-placeholder" placeholder="Identification Number / Product Number" class="flex-1 px-6 py-3 bg-transparent text-gray-700 placeholder-gray-500 focus:outline-none rounded-l-full" />
+            <button class="bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-full font-bold flex items-center space-x-2 transition-all">
+              <i class="fa-solid fa-search"></i>
+              <span>Search</span>
+            </button>
+          </div>
+        </div>
+        <div class="hidden md:flex items-center space-x-6">
+          <a id="favorite-action" href="dashboard-saved.html" class="text-gray-700 hover:text-orange-500 font-medium transition-colors cursor-pointer flex items-center space-x-2">
+            <i class="fa-regular fa-heart text-xl"></i>
+            <span>Favourite</span>
+          </a>
+          <a id="compare-action" href="dashboard-compare.html" class="text-gray-700 hover:text-orange-500 font-medium transition-colors cursor-pointer flex items-center space-x-2">
+            <i class="fa-solid fa-code-compare text-xl"></i>
+            <span>Add to Compare</span>
+          </a>
+        </div>
+      </div>
+      <nav class="flex items-center justify-center space-x-10 mt-4 pt-4 border-t border-gray-100">
+        <a href="home.html" class="text-gray-700 hover:text-orange-500 font-medium transition-colors">Home</a>
+        <a href="inventory.html" class="text-gray-700 hover:text-orange-500 font-medium transition-colors">Inventory</a>
+        <a href="blog.html" class="text-gray-700 hover:text-orange-500 font-medium transition-colors">Blog</a>
+        <a href="about-us.html" class="text-gray-700 hover:text-orange-500 font-medium transition-colors">About Us</a>
+        <a href="contact-us.html" class="text-gray-700 hover:text-orange-500 font-medium transition-colors">Contact Us</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Content: Two-column layout with sticky sidebar -->
+  <main class="container mx-auto px-6 py-10">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-10 items-start">
+      <!-- Left: Blog Content -->
+      <article class="lg:col-span-2 min-w-0">
+        <div id="hero" class="w-full h-64 bg-gray-200 rounded-xl overflow-hidden mb-6"></div>
+        <h1 id="title" class="text-3xl md:text-4xl font-extrabold text-navy mb-3">Loading…</h1>
+        <p id="date" class="text-gray-500 mb-6"></p>
+        <article id="content" class="prose prose-lg max-w-none text-gray-800 leading-relaxed break-words content-typography"></article>
+        <div id="error" class="text-red-600 mt-4"></div>
+      </article>
+
+      <!-- Right: Sticky Sidebar Widgets -->
+      <aside class="lg:col-span-1">
+        <div class="space-y-8 lg:sticky lg:top-24">
+          <!-- About Author -->
+          <section class="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
+            <div class="flex items-center space-x-4">
+              <img id="authorImage" src="/uploads/istockphoto-498580443-612x612.jpg" alt="Author" class="w-16 h-16 rounded-full object-cover">
+              <div>
+                <h3 id="authorName" class="text-lg font-bold text-gray-900">NSM Autos Team</h3>
+                <p id="authorBio" class="text-sm text-gray-600">We share insights on cars, market trends, and buyer tips.</p>
+              </div>
+            </div>
+          </section>
+
+          <!-- Social Icons -->
+          <section class="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
+            <h3 class="text-lg font-bold text-gray-900 mb-4">Follow</h3>
+            <div class="flex items-center space-x-4">
+              <a href="https://facebook.com" target="_blank" rel="noopener" class="text-gray-500 hover:text-orange-500 transition-colors">
+                <i class="fa-brands fa-facebook text-2xl"></i>
+              </a>
+              <a href="https://twitter.com" target="_blank" rel="noopener" class="text-gray-500 hover:text-orange-500 transition-colors">
+                <i class="fa-brands fa-twitter text-2xl"></i>
+              </a>
+              <a href="https://instagram.com" target="_blank" rel="noopener" class="text-gray-500 hover:text-orange-500 transition-colors">
+                <i class="fa-brands fa-instagram text-2xl"></i>
+              </a>
+            </div>
+          </section>
+
+          <!-- Recent Posts -->
+          <section class="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
+            <h3 class="text-lg font-bold text-gray-900 mb-4">Recent Posts</h3>
+            <div id="recentPosts" class="space-y-4">
+              <!-- Filled by script -->
+            </div>
+          </section>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <!-- Footer copied from Home -->
+  <footer id="footer" class="bg-gray-900 text-white py-16">
+    <div class="container mx-auto px-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 mb-12">
+        <div class="lg:col-span-2">
+          <div class="flex items-center mb-6">
+            <div class="w-12 h-12 bg-gradient-to-br from-orange-400 to-orange-600 rounded-xl flex items-center justify-center">
+              <i class="fa-solid fa-car text-white text-xl"></i>
+            </div>
+            <span class="ml-3 text-2xl font-bold">MangoCar</span>
+          </div>
+          <p class="text-gray-300 mb-6 max-w-md">
+            Your trusted partner in finding the perfect pre-owned vehicle. Quality, transparency, and exceptional service are our commitments to you.
+          </p>
+          <div class="flex items-center space-x-4">
+            <i class="fa-solid fa-phone text-orange-500"></i>
+            <span class="font-semibold">(555) 123-CARS</span>
+          </div>
+          <div class="flex items-center space-x-4 mt-2">
+            <i class="fa-solid fa-envelope text-orange-500"></i>
+            <span>info@mangocar.com</span>
+          </div>
+          <div class="flex items-center space-x-4 mt-2">
+            <i class="fa-solid fa-location-dot text-orange-500"></i>
+            <span>123 Auto Plaza, Car City, CC 12345</span>
+          </div>
+        </div>
+        <div>
+          <h3 class="text-lg font-bold mb-4">Inventory</h3>
+          <ul class="space-y-2 text-gray-300">
+            <li><span class="hover:text-orange-500 transition-colors cursor-pointer">All Vehicles</span></li>
+            <li><span class="hover:text-orange-500 transition-colors cursor-pointer">SUVs</span></li>
+            <li><span class="hover:text-orange-500 transition-colors cursor-pointer">Sedans</span></li>
+            <li><span class="hover:text-orange-500 transition-colors cursor-pointer">Trucks</span></li>
+            <li><span class="hover:text-orange-500 transition-colors cursor-pointer">Luxury Cars</span></li>
+            <li><span class="hover:text-orange-500 transition-colors cursor-pointer">Under $15K</span></li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="text-lg font-bold mb-4">Services</h3>
+          <ul class="space-y-2 text-gray-300">
+            <li><span class="hover:text-orange-500 transition-colors cursor-pointer">Financing</span></li>
+            <li><span class="hover:text-orange-500 transition-colors cursor-pointer">Trade-In</span></li>
+            <li><span class="hover:text-orange-500 transition-colors cursor-pointer">Extended Warranty</span></li>
+            <li><span class="hover:text-orange-500 transition-colors cursor-pointer">Vehicle History</span></li>
+            <li><span class="hover:text-orange-500 transition-colors cursor-pointer">Inspection</span></li>
+            <li><span class="hover:text-orange-500 transition-colors cursor-pointer">Delivery</span></li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="text-lg font-bold mb-4">Company</h3>
+          <ul class="space-y-2 text-gray-300">
+            <li><span class="hover:text-orange-500 transition-colors cursor-pointer">About Us</span></li>
+            <li><span class="hover:text-orange-500 transition-colors cursor-pointer">Our Team</span></li>
+            <li><span class="hover:text-orange-500 transition-colors cursor-pointer">Careers</span></li>
+            <li><span class="hover:text-orange-500 transition-colors cursor-pointer">Reviews</span></li>
+            <li><span class="hover:text-orange-500 transition-colors cursor-pointer">Contact</span></li>
+            <li><span class="hover:text-orange-500 transition-colors cursor-pointer">Blog</span></li>
+          </ul>
+        </div>
+      </div>
+      <div class="border-t border-gray-800 pt-8">
+        <div class="flex flex-col md:flex-row justify-between items-center">
+          <div class="text-gray-400 mb-4 md:mb-0">© 2024 MangoCar. All rights reserved.</div>
+          <div class="flex items-center space-x-6">
+            <span class="text-gray-400 hover:text-orange-500 transition-colors cursor-pointer">Privacy Policy</span>
+            <span class="text-gray-400 hover:text-orange-500 transition-colors cursor-pointer">Terms of Service</span>
+            <div class="flex items-center space-x-4 ml-8">
+              <span class="text-gray-400 hover:text-orange-500 transition-colors cursor-pointer"><i class="fa-brands fa-facebook text-xl"></i></span>
+              <span class="text-gray-400 hover:text-orange-500 transition-colors cursor-pointer"><i class="fa-brands fa-twitter text-xl"></i></span>
+              <span class="text-gray-400 hover:text-orange-500 transition-colors cursor-pointer"><i class="fa-brands fa-instagram text-xl"></i></span>
+              <span class="text-gray-400 hover:text-orange-500 transition-colors cursor-pointer"><i class="fa-brands fa-youtube text-xl"></i></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts: Blog rendering + Language toggle copied from Home -->
+  <script>
+    (function(){
+      function qs(name){ var u = new URL(window.location.href); return u.searchParams.get(name); }
+      function setHero(url, alt){
+        var hero = document.getElementById('hero');
+        hero.innerHTML = '';
+        if(url){
+          var img = document.createElement('img');
+          img.src = url; img.alt = alt || 'Featured image';
+          img.className = 'w-full h-64 object-cover';
+          img.onerror = function(){ hero.innerHTML = '<div class="w-full h-64 bg-gray-200"></div>'; };
+          hero.appendChild(img);
+        } else {
+          hero.innerHTML = '<div class="w-full h-64 bg-gray-200"></div>';
+        }
+      }
+
+      function formatDate(d){
+        try { return new Date(d).toLocaleString(); } catch(e){ return ''; }
+      }
+
+      function fillAuthor(blog){
+        var name = blog.author_name || blog.author || 'NSM Autos Team';
+        var bio = blog.author_bio || 'We share insights on cars, market trends, and buyer tips.';
+        var img = blog.author_image_url || '/uploads/istockphoto-498580443-612x612.jpg';
+        var imgEl = document.getElementById('authorImage');
+        var nameEl = document.getElementById('authorName');
+        var bioEl = document.getElementById('authorBio');
+        if (imgEl) { imgEl.src = img; imgEl.onerror = function(){ this.src='/uploads/istockphoto-498580443-612x612.jpg'; }; }
+        if (nameEl) nameEl.textContent = name;
+        if (bioEl) bioEl.textContent = bio;
+      }
+
+      function renderRecent(posts){
+        var wrap = document.getElementById('recentPosts');
+        if (!wrap) return;
+        wrap.innerHTML = '';
+        posts.slice(0,3).forEach(p => {
+          var a = document.createElement('a');
+          a.href = 'blog-post.html?id=' + encodeURIComponent(p.id || p._id || p.blog_id || '');
+          a.className = 'flex items-center space-x-3 group';
+          var t = document.createElement('img');
+          t.src = p.featured_image_url || '/uploads/istockphoto-498580443-612x612.jpg';
+          t.className = 'w-14 h-14 rounded object-cover border border-gray-200';
+          t.onerror = function(){ this.src='/uploads/istockphoto-498580443-612x612.jpg'; };
+          var info = document.createElement('div');
+          var ttl = document.createElement('div'); ttl.textContent = p.title || 'Untitled'; ttl.className = 'text-sm font-semibold text-gray-900 group-hover:text-orange-500';
+          var dt = document.createElement('div'); dt.textContent = formatDate(p.date || p.created_at || p.createdAt || ''); dt.className = 'text-xs text-gray-500';
+          info.appendChild(ttl); info.appendChild(dt);
+          a.appendChild(t); a.appendChild(info);
+          wrap.appendChild(a);
+        });
+      }
+
+      async function load(){
+        var id = qs('id');
+        if(!id){ document.getElementById('error').textContent = 'No blog ID provided.'; return; }
+        try {
+          var res = await fetch('http://localhost:3000/public/blogs/' + encodeURIComponent(id), { headers: { 'Accept': 'application/json' } });
+          if(!res.ok) throw new Error('HTTP ' + res.status);
+          var blog = await res.json();
+          setHero(blog.featured_image_url || '', blog.title || '');
+          document.getElementById('title').textContent = blog.title || '';
+          document.getElementById('date').textContent = formatDate(blog.date || blog.created_at || blog.createdAt || '');
+          document.getElementById('content').innerHTML = blog.description_html || blog.content_html || '';
+          fillAuthor(blog);
+        } catch(err){
+          document.getElementById('error').textContent = 'Unable to load this blog post.';
+        }
+
+        // Recent posts
+        try {
+          var allRes = await fetch('http://localhost:3000/public/blogs', { headers: { 'Accept': 'application/json' } });
+          var list = await allRes.json();
+          list.sort((a,b) => new Date(b.date || b.created_at || b.createdAt || 0) - new Date(a.date || a.created_at || a.createdAt || 0));
+          renderRecent(list);
+        } catch(e){ /* silent */ }
+      }
+
+      load();
+    })();
+  </script>
+
+  <script src="scripts/language.js"></script>
+  <script>
+    // Sticky header shadow effect
+    window.addEventListener('scroll', () => {
+      const header = document.getElementById('header');
+      if (window.scrollY > 10) header.classList.add('shadow-xl'); else header.classList.remove('shadow-xl');
+    });
+  </script>
+
+</body>
+</html>

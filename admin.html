@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Super Admin Panel — Dashboard</title>
+  <style>
+    :root {
+      --bg: #f6f7fb;
+      --text: #0f172a;
+      --muted: #64748b;
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --topbar-bg: #ffffff;
+      --topbar-border: #e5e7eb;
+      --sidebar-bg: #0b1220;
+      --sidebar-border: #1f2937;
+      --sidebar-text: #cbd5e1;
+      --sidebar-hover-bg: #111827;
+      --sidebar-active-bg: #1f2937;
+      --card-bg: #ffffff;
+      --card-border: #e5e7eb;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body { margin: 0; background: var(--bg); color: var(--text); font-family: Inter, Segoe UI, Roboto, Helvetica, Arial, system-ui, -apple-system, sans-serif; }
+
+    .admin-layout { display: grid; grid-template-columns: 260px 1fr; grid-template-rows: 64px auto; grid-template-areas: "topbar topbar" "sidebar content"; height: 100vh; width: 100%; }
+    .topbar { grid-area: topbar; display: flex; align-items: center; justify-content: space-between; padding: 0 16px; background: var(--topbar-bg); border-bottom: 1px solid var(--topbar-border); position: sticky; top: 0; z-index: 10; }
+    .brand { display: flex; align-items: center; gap: 12px; font-weight: 600; }
+    .brand-logo { width: 28px; height: 28px; border-radius: 8px; background: linear-gradient(135deg, var(--primary), #9333ea); }
+    .top-actions { display: flex; align-items: center; gap: 8px; }
+    .btn { border: 1px solid var(--card-border); background: #fff; color: var(--text); padding: 8px 12px; border-radius: 8px; cursor: pointer; font-weight: 600; }
+    .btn:hover { background: #f9fafb; }
+    .btn-primary { background: var(--primary); color: #fff; border-color: var(--primary); }
+    .btn-primary:hover { background: var(--primary-hover); }
+    .admin-name { color: var(--muted); font-weight: 500; }
+
+    .sidebar { grid-area: sidebar; background: var(--sidebar-bg); border-right: 1px solid var(--sidebar-border); color: #fff; padding: 16px 12px; overflow-y: auto; }
+    .sidebar-header { font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--sidebar-text); margin-bottom: 12px; opacity: 0.9; }
+    .menu { display: flex; flex-direction: column; gap: 6px; }
+    .menu a { display: flex; align-items: center; gap: 10px; padding: 10px 12px; text-decoration: none; color: var(--sidebar-text); border-radius: 10px; transition: background 160ms ease, color 160ms ease; font-weight: 500; }
+    .menu a:hover { background: var(--sidebar-hover-bg); color: #fff; }
+    .menu a.active { background: var(--sidebar-active-bg); color: #fff; }
+    .menu .icon { width: 18px; height: 18px; border-radius: 4px; background: #334155; flex-shrink: 0; }
+
+    .content { grid-area: content; padding: 20px; overflow-y: auto; }
+    .content h1 { margin: 0 0 12px; font-size: 24px; }
+    .content .muted { color: var(--muted); }
+
+    .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; margin-top: 20px; }
+    .card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 16px; }
+    .card h3 { margin: 0 0 6px; font-size: 16px; }
+    .card .value { font-size: 24px; font-weight: 700; }
+
+    .quick-links { margin-top: 24px; }
+    .qlist { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 10px; }
+    .qlist a { display: block; padding: 12px; background: #fff; border: 1px solid var(--card-border); border-radius: 10px; text-decoration: none; color: var(--text); font-weight: 600; }
+    .qlist a:hover { background: #f9fafb; }
+
+    .footer { margin-top: 24px; padding-top: 12px; border-top: 1px solid var(--card-border); color: var(--muted); font-size: 12px; }
+  </style>
+</head>
+<body>
+  <div class="admin-layout">
+    <header class="topbar" role="banner">
+      <div class="brand" aria-label="Admin brand">
+        <div class="brand-logo" aria-hidden="true"></div>
+        <span>Super Admin Panel</span>
+      </div>
+      <div class="top-actions">
+        <button class="btn" onclick="location.href='home.html'">Back to Site</button>
+        <span class="admin-name">Signed in as <strong>Super Admin</strong></span>
+        <button class="btn-primary" onclick="location.href='signin.html'">Logout</button>
+      </div>
+    </header>
+
+    <aside class="sidebar" role="navigation" aria-label="Admin sidebar">
+      <div class="sidebar-header">Main Menu</div>
+      <nav class="menu">
+        <a href="admin.html" title="Dashboard"><span class="icon"></span> Dashboard</a>
+        <a href="user-management.html" title="User Management"><span class="icon"></span> User Management</a>
+        <a href="listing-approval.html" title="Listing Approvals"><span class="icon"></span> Listing Approvals</a>
+        <a href="create-listing.html" title="Create New Listing"><span class="icon"></span> Create New Listing</a>
+        <a href="manage-all-listings.html" title="Manage All Listings"><span class="icon"></span> Manage All Listings</a>
+        <a href="category-management.html" title="Category Management"><span class="icon"></span> Category Management</a>
+        <a href="tag-management.html" title="Tag Management"><span class="icon"></span> Tag Management</a>
+        <a href="model-management.html" title="Model Management"><span class="icon"></span> Model Management</a>
+        <a href="role-management.html" title="Role Management"><span class="icon"></span> Role Management</a>
+        <a href="slider-management.html" title="Slider Management"><span class="icon"></span> Slider Management</a>
+        <a href="blog-management.html" title="Blog Management"><span class="icon"></span> Blog Management</a>
+        <a href="setting.html" title="Setting"><span class="icon"></span> Setting</a>
+        <a href="admin-messages.html" title="Buyer Messages"><span class="icon"></span> Buyer Messages</a>
+        <a href="invoice-intake.html" title="Invoice Intake"><span class="icon"></span> Invoice Intake</a>
+        <a href="review-management.html" title="Review Management"><span class="icon"></span> Review Management</a>
+      </nav>
+    </aside>
+
+    <main class="content" role="main">
+      <h1>Welcome Admin</h1>
+      <p class="muted">This dashboard is now connected to your site via the Back to Site link and shares navigation with other admin pages. Use the quick links below to jump to key tasks.</p>
+
+      <section class="cards">
+        <div class="card">
+          <h3>Total Users</h3>
+          <div class="value" id="metric-users">—</div>
+        </div>
+        <div class="card">
+          <h3>Pending Listings</h3>
+          <div class="value" id="metric-pending">—</div>
+        </div>
+        <div class="card">
+          <h3>Approved Listings</h3>
+          <div class="value" id="metric-approved">—</div>
+        </div>
+      </section>
+
+      <section class="quick-links">
+        <h2 style="margin:0 0 8px">Quick Links</h2>
+        <div class="qlist">
+          <a href="create-listing.html">Create a new listing</a>
+          <a href="listing-approval.html">Review listing approvals</a>
+          <a href="user-management.html">Manage users</a>
+          <a href="setting.html">Open settings</a>
+        </div>
+      </section>
+
+
+      <footer class="footer">© 2024 NSM Autos Admin</footer>
+    </main>
+
+    <script>
+      // Highlight active page in sidebar
+      (function () {
+        var links = document.querySelectorAll('.sidebar .menu a');
+        var current = location.pathname.split('/').pop().toLowerCase();
+        links.forEach(function (link) {
+          var href = (link.getAttribute('href') || '').split('/').pop().toLowerCase();
+          if (href === current) link.classList.add('active'); else link.classList.remove('active');
+        });
+      })();
+
+      // Demo metrics: pull from backend JSON if available, else fallback
+      (async function () {
+        try {
+          var usersRes = await fetch('backend/users.json', { cache: 'no-store' });
+          var users = usersRes.ok ? await usersRes.json() : [];
+          document.getElementById('metric-users').textContent = Array.isArray(users) ? users.length : 0;
+        } catch (e) {
+          document.getElementById('metric-users').textContent = 4;
+        }
+        try {
+          var listingsRes = await fetch('backend/listings.json', { cache: 'no-store' });
+          var listings = listingsRes.ok ? await listingsRes.json() : [];
+          var pending = Array.isArray(listings) ? listings.filter(function (l) { return (l.status || '').toLowerCase() === 'pending'; }).length : 0;
+          var approved = Array.isArray(listings) ? listings.filter(function (l) { return (l.status || '').toLowerCase() === 'approved'; }).length : 0;
+          document.getElementById('metric-pending').textContent = pending;
+          document.getElementById('metric-approved').textContent = approved;
+        } catch (e) {
+          document.getElementById('metric-pending').textContent = 1;
+          document.getElementById('metric-approved').textContent = 1;
+        }
+      })();
+    </script>
+  </div>
+</body>
+</html>

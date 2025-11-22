@@ -1,0 +1,472 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Super Admin Panel — Listing Approvals</title>
+  <!-- Page Protection: allow superadmin and user_manager -->
+  <script>
+    (function(){
+      try {
+        var role = (localStorage.getItem('userRole') || localStorage.getItem('role') || '').toLowerCase();
+        var token = localStorage.getItem('token');
+        var allowed = ['superadmin','user_manager'];
+        if (!token || allowed.indexOf(role) === -1) {
+          window.location.href = 'signin.html';
+        }
+      } catch (e) {
+        window.location.href = 'signin.html';
+      }
+    })();
+  </script>
+  <style>
+    :root {
+      --bg: #f6f7fb;
+      --text: #0f172a;
+      --muted: #64748b;
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --topbar-bg: #ffffff;
+      --topbar-border: #e5e7eb;
+      --sidebar-bg: #0b1220;
+      --sidebar-border: #1f2937;
+      --sidebar-text: #cbd5e1;
+      --sidebar-hover-bg: #111827;
+      --sidebar-active-bg: #1f2937;
+      --card-bg: #ffffff;
+      --card-border: #e5e7eb;
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body { margin: 0; background: var(--bg); color: var(--text); font-family: Inter, Segoe UI, Roboto, Helvetica, Arial, system-ui, -apple-system, sans-serif; }
+    .admin-layout { display: grid; grid-template-columns: 260px 1fr; grid-template-rows: 64px auto; grid-template-areas: "topbar topbar" "sidebar content"; height: 100vh; width: 100%; }
+    .topbar { grid-area: topbar; display: flex; align-items: center; justify-content: space-between; padding: 0 16px; background: var(--topbar-bg); border-bottom: 1px solid var(--topbar-border); position: sticky; top: 0; z-index: 10; }
+    .brand { display: flex; align-items: center; gap: 12px; font-weight: 600; }
+    .brand-logo { width: 28px; height: 28px; border-radius: 8px; background: linear-gradient(135deg, var(--primary), #9333ea); }
+    .top-actions { display: flex; align-items: center; gap: 12px; }
+    .admin-name { color: var(--muted); font-weight: 500; }
+    .btn-logout { border: none; background: var(--primary); color: #fff; padding: 8px 12px; border-radius: 8px; cursor: pointer; font-weight: 600; }
+    .btn-logout:hover { background: var(--primary-hover); }
+    .sidebar { grid-area: sidebar; background: var(--sidebar-bg); border-right: 1px solid var(--sidebar-border); color: #fff; padding: 16px 12px; overflow-y: auto; }
+    .sidebar-header { font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--sidebar-text); margin-bottom: 12px; opacity: 0.9; }
+    .menu { display: flex; flex-direction: column; gap: 6px; }
+    .menu a { display: flex; align-items: center; gap: 10px; padding: 10px 12px; text-decoration: none; color: var(--sidebar-text); border-radius: 10px; transition: background 160ms ease, color 160ms ease; font-weight: 500; }
+    .menu a:hover { background: var(--sidebar-hover-bg); color: #fff; }
+    .menu a.active { background: var(--sidebar-active-bg); color: #fff; }
+    .menu .icon { width: 18px; height: 18px; border-radius: 4px; background: #334155; flex-shrink: 0; }
+    .content { grid-area: content; padding: 20px; overflow-y: auto; }
+    .content h1 { margin: 0 0 12px; font-size: 24px; }
+    .content .muted { color: var(--muted); }
+    .section { margin-top: 24px; }
+    .table-title { display: flex; align-items: center; justify-content: space-between; margin: 0 0 8px; }
+    .table-title h3 { margin: 0; font-size: 16px; }
+    .toolbar { display: flex; align-items: center; gap: 8px; }
+    .input, .select { padding: 8px 10px; border: 1px solid var(--card-border); border-radius: 8px; font-size: 14px; }
+    .input { width: 260px; }
+    .btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 10px; font-size: 12px; font-weight: 600; border-radius: 8px; border: 1px solid var(--card-border); background: #fff; color: var(--text); cursor: pointer; }
+    .btn:hover { background: #f9fafb; }
+    .btn-primary { background: var(--primary); color: #fff; border-color: var(--primary); }
+    .btn-primary:hover { background: var(--primary-hover); }
+    .footer { margin-top: 24px; padding-top: 12px; border-top: 1px solid var(--card-border); color: var(--muted); font-size: 12px; }
+    .table-responsive { overflow-x: auto; }
+    .table { width: 100%; border-collapse: collapse; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; overflow: hidden; }
+    .table thead th { text-align: left; padding: 12px 14px; font-size: 12px; color: var(--muted); background: #f9fafb; border-bottom: 1px solid var(--card-border); }
+    .table tbody td { padding: 12px 14px; border-bottom: 1px solid var(--card-border); }
+    .table tbody tr:last-child td { border-bottom: none; }
+    .actions { display: flex; gap: 8px; }
+    /* Modal styles */
+    .modal-backdrop { position: fixed; inset: 0; background: rgba(15,23,42,0.5); display: none; align-items: center; justify-content: center; z-index: 1000; }
+    .modal-backdrop.show { display: flex; }
+    .modal { width: 920px; max-width: 92vw; max-height: 88vh; overflow: auto; background: #fff; border-radius: 12px; box-shadow: 0 20px 40px rgba(2,6,23,0.2); border: 1px solid var(--card-border); }
+    .modal-header { display: flex; align-items: center; justify-content: space-between; padding: 16px; border-bottom: 1px solid var(--card-border); }
+    .modal-title { font-size: 18px; margin: 0; }
+    .modal-body { padding: 16px; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .modal-section { border: 1px solid var(--card-border); border-radius: 10px; padding: 12px; background: var(--card-bg); }
+    .modal-section h4 { margin: 0 0 8px; font-size: 14px; color: var(--muted); }
+    .kv { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 12px; font-size: 13px; }
+    .kv dt { color: var(--muted); }
+    .kv dd { margin: 0; }
+    .modal-footer { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 16px; border-top: 1px solid var(--card-border); }
+    .btn-danger { background: #ef4444; border-color: #ef4444; color: #fff; }
+    .btn-danger:hover { background: #dc2626; }
+    .btn-ghost { background: #fff; color: var(--text); }
+  </style>
+</head>
+<body>
+  <div class="admin-layout">
+    <header class="topbar" role="banner">
+      <div class="brand" aria-label="Admin brand">
+        <div class="brand-logo" aria-hidden="true"></div>
+        <span>Super Admin Panel</span>
+      </div>
+      <div class="top-actions">
+        <span class="admin-name">Signed in as <strong>Super Admin</strong></span>
+        <button class="btn-logout" onclick="location.href='signin.html'">Logout</button>
+      </div>
+    </header>
+    <aside class="sidebar" role="navigation" aria-label="Admin sidebar">
+      <div class="sidebar-header">Main Menu</div>
+      <nav class="menu">
+        <a href="admin.html" title="Dashboard"><span class="icon"></span> Dashboard</a>
+        <a href="user-management.html" title="User Management"><span class="icon"></span> User Management</a>
+        <a href="listing-approval.html" title="Listing Approvals"><span class="icon"></span> Listing Approvals</a>
+        <a href="create-listing.html" title="Create New Listing"><span class="icon"></span> Create New Listing</a>
+        <a href="manage-all-listings.html" title="Manage All Listings"><span class="icon"></span> Manage All Listings</a>
+        <a href="category-management.html" title="Category Management"><span class="icon"></span> Category Management</a>
+        <a href="tag-management.html" title="Tag Management"><span class="icon"></span> Tag Management</a>
+        <a href="blog-management.html" title="Blog Management"><span class="icon"></span> Blog Management</a>
+        <a href="role-management.html" title="Role Management"><span class="icon"></span> Role Management</a>
+        <a href="setting.html" title="Setting"><span class="icon"></span> Setting</a>
+      </nav>
+    </aside>
+    <main class="content" role="main">
+      <h1>Listing Approvals</h1>
+      <p class="muted">Review, approve, or reject newly submitted listings. Use search and filters to narrow down items.</p>
+      <section class="section">
+        <div class="table-title">
+          <h3>Pending & Recent Submissions</h3>
+          <div class="toolbar">
+            <input id="search" class="input" type="search" placeholder="Search by title or seller" />
+            <select id="status-filter" class="select">
+              <option value="all">All statuses</option>
+              <option value="pending">Pending</option>
+              <option value="approved">Approved</option>
+              <option value="rejected">Rejected</option>
+            </select>
+            <button id="refresh" class="btn">Refresh</button>
+          </div>
+        </div>
+        <div class="table-responsive">
+          <table class="table" aria-label="Listing approvals table">
+            <thead>
+              <tr>
+                <th style="width: 10%">ID</th>
+                <th style="width: 28%">Title</th>
+                <th style="width: 20%">Seller</th>
+                <th style="width: 18%">Submitted On</th>
+                <th style="width: 12%">Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="listings-tbody"></tbody>
+          </table>
+        </div>
+      </section>
+      <footer class="footer">© 2024 NSM Autos Admin</footer>
+    </main>
+    <!-- Details Modal -->
+    <div id="details-backdrop" class="modal-backdrop" role="dialog" aria-modal="true" aria-hidden="true">
+      <div class="modal" aria-labelledby="details-title">
+        <div class="modal-header">
+          <h3 id="details-title" class="modal-title">Listing Details</h3>
+          <div class="actions">
+            <button id="btn-close" class="btn btn-ghost">Close</button>
+          </div>
+        </div>
+        <div id="details-body" class="modal-body"></div>
+        <div class="modal-footer">
+          <div class="muted">Review all sections before making a decision.</div>
+          <div class="actions">
+            <button id="btn-reject" class="btn btn-danger">Reject</button>
+            <button id="btn-approve" class="btn btn-primary">Approve</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        var links = document.querySelectorAll('.sidebar .menu a');
+        var current = location.pathname.split('/').pop().toLowerCase();
+        links.forEach(function (link) {
+          var href = (link.getAttribute('href') || '').split('/').pop().toLowerCase();
+          if (href === current) link.classList.add('active'); else link.classList.remove('active');
+        });
+      });
+      (function () {
+        var state = { listings: [] };
+        function normalize(l, idx) {
+          var d = l.data || l;
+          var manufacturer = (d.vehicle && (d.vehicle.manufacturer || d.vehicle.make)) || (d.insuranceHistory && d.insuranceHistory.manufacturer) || '';
+          var model = (d.vehicle && d.vehicle.model) || (d.insuranceHistory && d.insuranceHistory.model) || '';
+          var year = (d.vehicle && d.vehicle.year) || (d.insuranceHistory && d.insuranceHistory.year) || '';
+          var providedTitle = (d.title || l.title || d.name || '').toString().trim();
+          var composed = [year, manufacturer, model].filter(Boolean).join(' ').trim();
+          var carLabel = providedTitle || composed || 'Vehicle';
+          return {
+            id: l.id != null ? l.id : idx + 1,
+            title: carLabel,
+            seller: l.seller || l.sellerName || l.seller_name || l.sellerId || l.userId || 'Unknown',
+            submittedAt: l.submittedAt || l.createdAt || l.created_at || new Date().toISOString().slice(0, 10),
+            status: (l.status || 'Pending'),
+            raw: l
+          };
+        }
+        async function load() {
+          try {
+            var token = localStorage.getItem('token') || '';
+            var res = await fetch('http://localhost:3000/admin/all-listings', {
+              cache: 'no-store',
+              headers: { 'Accept': 'application/json', 'Authorization': 'Bearer ' + token }
+            });
+            if (!res.ok) throw new Error('HTTP ' + res.status);
+            var payload = await res.json();
+            var arr = Array.isArray(payload) ? payload : (Array.isArray(payload.listings) ? payload.listings : []);
+            // Only include listings submitted by sellers (i.e., uploaded via Sell My Car)
+            var sellerSubmissions = arr.filter(function (l) { return l && l.seller_id != null; });
+            state.listings = sellerSubmissions.map(normalize);
+          } catch (e) {
+            // Fallback: use local file if backend not reachable
+            try {
+              var res2 = await fetch('backend/listings.json', { cache: 'no-store' });
+              var arr2 = await res2.json();
+              var sellerSubmissions2 = (Array.isArray(arr2) ? arr2 : []).filter(function (l) { return l && l.seller_id != null; });
+              state.listings = sellerSubmissions2.map(normalize);
+            } catch (_) {
+              state.listings = [
+                { id: 101, title: '2018 Honda Civic', seller: 'Bob Smith', submittedAt: '2024-07-01', status: 'Pending' },
+                { id: 102, title: '2020 Toyota Corolla', seller: 'Alice Johnson', submittedAt: '2024-07-02', status: 'Approved' },
+                { id: 103, title: '2015 Ford F-150', seller: 'David Kim', submittedAt: '2024-07-03', status: 'Rejected' }
+              ];
+            }
+          }
+          render();
+        }
+        function render() {
+          var q = (document.getElementById('search').value || '').toLowerCase();
+          var filter = document.getElementById('status-filter').value;
+          var rows = state.listings.filter(function (l) {
+            var matchesQ = !q || (l.title.toLowerCase().includes(q) || l.seller.toLowerCase().includes(q));
+            var matchesStatus = (filter === 'all') || (l.status.toLowerCase() === filter);
+            return matchesQ && matchesStatus;
+          });
+          var tbody = document.getElementById('listings-tbody');
+          tbody.innerHTML = '';
+          rows.forEach(function (l) {
+            var tr = document.createElement('tr');
+            function td(text) { var d = document.createElement('td'); d.textContent = text; return d; }
+            tr.appendChild(td(l.id));
+            tr.appendChild(td(l.title));
+            tr.appendChild(td(l.seller));
+            tr.appendChild(td(l.submittedAt));
+            tr.appendChild(td(l.status));
+            var tdActions = document.createElement('td');
+            var actions = document.createElement('div'); actions.className = 'actions';
+            var btnView = document.createElement('button'); btnView.className = 'btn'; btnView.textContent = 'View Details';
+            btnView.addEventListener('click', function () { if (typeof openDetails === 'function') { openDetails(l.raw || l); } });
+            actions.appendChild(btnView);
+            tdActions.appendChild(actions);
+            tr.appendChild(tdActions);
+            tbody.appendChild(tr);
+          });
+        }
+        // Modal helpers
+        function section(title) {
+          var s = document.createElement('div'); s.className = 'modal-section';
+          var h = document.createElement('h4'); h.textContent = title; s.appendChild(h);
+          return s;
+        }
+        function renderKV(kvObj) {
+          var dl = document.createElement('dl'); dl.className = 'kv';
+          Object.keys(kvObj || {}).forEach(function (key) {
+            var dt = document.createElement('dt'); dt.textContent = key;
+            var dd = document.createElement('dd'); dd.textContent = String(kvObj[key]);
+            dl.appendChild(dt); dl.appendChild(dd);
+          });
+          return dl;
+        }
+        function listToKV(arr) {
+          var obj = {}; (arr || []).forEach(function (v, i) { obj['Item ' + (i+1)] = v; }); return obj;
+        }
+        function openDetails(raw) {
+          var data = raw && raw.data ? raw.data : raw || {};
+          var backdrop = document.getElementById('details-backdrop');
+          var body = document.getElementById('details-body');
+          var titleEl = document.getElementById('details-title');
+          var manufacturer = (data.insuranceHistory && data.insuranceHistory.manufacturer) || (data.vehicle && data.vehicle.manufacturer) || '';
+          var model = (data.insuranceHistory && data.insuranceHistory.model) || (data.vehicle && data.vehicle.model) || '';
+          var year = (data.vehicle && data.vehicle.year) || (data.insuranceHistory && data.insuranceHistory.year) || '';
+          var headerLabel = [year, manufacturer, model].filter(Boolean).join(' ').trim() || 'Vehicle';
+          titleEl.textContent = 'Listing #' + (raw.id || '') + ' — ' + headerLabel;
+          body.innerHTML = '';
+          // Build sections
+          var secVehicle = section('Vehicle Info');
+          secVehicle.appendChild(renderKV(data.vehicle || {}));
+          var secRelevant = section('Relevant Info');
+          secRelevant.appendChild(renderKV(listToKV(data.relevant || [])));
+          var secOptions = section('Option Info');
+          secOptions.appendChild(renderKV(listToKV(data.options || [])));
+          var secInterior = section('Interior');
+          secInterior.appendChild(renderKV(listToKV(data.interior || [])));
+          var secExterior = section('Exterior');
+          secExterior.appendChild(renderKV(listToKV(data.exterior || [])));
+          var secSafety = section('Safety');
+          secSafety.appendChild(renderKV(listToKV(data.safety || [])));
+          var secConvenience = section('Convenience');
+          secConvenience.appendChild(renderKV(listToKV(data.convenience || [])));
+          var secInsurance = section('Insurance History');
+          var ins = data.insuranceHistory || {};
+          var insKV = Object.assign({}, ins);
+          if (Array.isArray(insKV.accidents)) {
+            insKV.accidents = (insKV.accidents.length ? insKV.accidents.map(function(a, i){ return 'Accident ' + (i+1) + ': ' + JSON.stringify(a); }).join('; ') : 'None');
+          }
+          secInsurance.appendChild(renderKV(insKV));
+          // Listing Basics
+          var secBasics = section('Listing Basics');
+          var basicsTitle = data.title || headerLabel;
+          var basicsPrice = (typeof data.price === 'number') ? data.price : (data.price || '');
+          var basicsPin = data.product_id_number || data.productIdNumber || data.product_id || raw.id || '';
+          secBasics.appendChild(renderKV({
+            Title: basicsTitle,
+            Price: basicsPrice,
+            'Product ID Number': basicsPin
+          }));
+          // Categorization
+          var secCategorization = section('Categorization');
+          var catId = (data.categoryId != null ? data.categoryId : (data.category_id != null ? data.category_id : ''));
+          var tagText = (Array.isArray(data.tagIds) ? data.tagIds.join(', ') : (Array.isArray(data.tags) ? data.tags.join(', ') : ''));
+          secCategorization.appendChild(renderKV({
+            CategoryPath: data.categoryPath || '',
+            CategoryId: catId,
+            Tags: tagText
+          }));
+          // Misc
+          var secMisc = section('Misc');
+          secMisc.appendChild(renderKV({
+            Language: data.language || '',
+            PhotoCount: data.photoCount || (Array.isArray(data.photos) ? data.photos.length : 0),
+            Role: data.role || ''
+          }));
+          // Photos
+          function renderPhotos(arr){
+            var wrap = document.createElement('div');
+            (arr || []).forEach(function(p){
+              var src = (p && (p.dataUrl || (p.url ? ('http://localhost:3000' + p.url) : '')));
+              var item = document.createElement('div');
+              item.style.cssText = 'display:inline-block;margin:4px;vertical-align:top;';
+              if (src) {
+                var img = document.createElement('img');
+                img.src = src; img.alt = p.name || 'Photo';
+                img.style.cssText = 'width:120px;height:90px;object-fit:cover;border-radius:6px;border:1px solid #e5e7eb;display:block;';
+                item.appendChild(img);
+                var cap = document.createElement('div');
+                cap.textContent = p.name || '';
+                cap.style.cssText = 'font-size: 11px; color: #64748b; margin-top: 4px; max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;';
+                item.appendChild(cap);
+              } else {
+                var fallback = document.createElement('div');
+                fallback.textContent = p && p.name ? p.name : JSON.stringify(p);
+                item.appendChild(fallback);
+              }
+              wrap.appendChild(item);
+            });
+            return wrap;
+          }
+          var secPhotos = section('Photos');
+          secPhotos.appendChild(renderPhotos(data.photos || []));
+          // Append sections into two-column grid
+          body.appendChild(secBasics);
+          body.appendChild(secVehicle);
+          body.appendChild(secInsurance);
+          body.appendChild(secRelevant);
+          body.appendChild(secOptions);
+          body.appendChild(secInterior);
+          body.appendChild(secExterior);
+          body.appendChild(secSafety);
+          body.appendChild(secConvenience);
+          body.appendChild(secCategorization);
+          body.appendChild(secMisc);
+          body.appendChild(secPhotos);
+          // Wire actions
+          var closeBtn = document.getElementById('btn-close');
+          var approveBtn = document.getElementById('btn-approve');
+          var rejectBtn = document.getElementById('btn-reject');
+          closeBtn.onclick = function(){ backdrop.classList.remove('show'); backdrop.setAttribute('aria-hidden','true'); };
+          // Persist status changes to backend, with UI fallback if API fails
+          async function persistStatusChange(statusValue){
+            try {
+              var token = localStorage.getItem('token') || localStorage.getItem('authToken') || '';
+              var id = raw.id;
+              // Ensure we have required fields; fetch listing details if needed
+              var currentTitle = raw.title || (raw.vehicle && ((raw.vehicle.year||'') + ' ' + (raw.vehicle.manufacturer||'') + ' ' + (raw.vehicle.model||''))).trim() || 'Vehicle';
+              var currentPrice = Number(raw.price);
+              var currentProductId = raw.product_id_number || null;
+              var currentCategoryId = raw.category_id || null;
+              var currentDescription = raw.description || null;
+              var currentTagIds = Array.isArray(raw.tag_ids) ? raw.tag_ids : [];
+              if (!currentTitle || !Number.isFinite(currentPrice) || currentPrice <= 0) {
+                try {
+                  var dRes = await fetch('http://localhost:3000/admin/listing-details/' + encodeURIComponent(id), {
+                    headers: { 'Accept': 'application/json', 'Authorization': token ? ('Bearer ' + token) : '' }
+                  });
+                  if (dRes.ok) {
+                    var det = await dRes.json();
+                    currentTitle = det.title || currentTitle;
+                    currentPrice = Number(det.price || currentPrice || 0);
+                    currentProductId = det.product_id_number || currentProductId;
+                    currentCategoryId = det.category_id || currentCategoryId;
+                    currentDescription = det.description || currentDescription;
+                    currentTagIds = Array.isArray(det.tagIds) ? det.tagIds : currentTagIds;
+                  }
+                } catch (ignore) {}
+              }
+              // Compose payload for update
+              var body = {
+                title: String(currentTitle || 'Vehicle'),
+                price: Number(currentPrice || 0),
+                product_id_number: currentProductId,
+                categoryId: currentCategoryId,
+                description: currentDescription,
+                status: statusValue,
+                tagIds: Array.isArray(currentTagIds) ? currentTagIds : []
+              };
+              var res = await fetch('http://localhost:3000/admin/update-listing/' + encodeURIComponent(id), {
+                method: 'PUT',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Accept': 'application/json',
+                  'Authorization': token ? ('Bearer ' + token) : ''
+                },
+                body: JSON.stringify(body)
+              });
+              if (!res.ok) {
+                // Fall back to local UI update if backend not reachable or unauthorized
+                throw new Error('HTTP ' + res.status);
+              }
+              var updated = await res.json();
+              // Reflect change in local table
+              state.listings = state.listings.map(function(item){ if (String(item.id) === String(id)) { item.status = String(updated.status || statusValue); } return item; });
+              render();
+              return true;
+            } catch (e) {
+              console.warn('Persist approve/reject failed, applying UI-only update:', e.message);
+              return false;
+            }
+          }
+          approveBtn.onclick = async function(){
+            var ok = await persistStatusChange('approved');
+            if (!ok) {
+              state.listings = state.listings.map(function(item){ if (String(item.id) === String(raw.id)) { item.status = 'Approved'; } return item; });
+              render();
+            }
+            backdrop.classList.remove('show'); backdrop.setAttribute('aria-hidden','true');
+          };
+          rejectBtn.onclick = async function(){
+            var ok = await persistStatusChange('rejected');
+            if (!ok) {
+              state.listings = state.listings.map(function(item){ if (String(item.id) === String(raw.id)) { item.status = 'Rejected'; } return item; });
+              render();
+            }
+            backdrop.classList.remove('show'); backdrop.setAttribute('aria-hidden','true');
+          };
+          // Show modal
+          backdrop.classList.add('show'); backdrop.setAttribute('aria-hidden','false');
+        }
+        document.getElementById('search').addEventListener('input', render);
+        document.getElementById('status-filter').addEventListener('change', render);
+        document.getElementById('refresh').addEventListener('click', load);
+        load();
+      })();
+    </script>
+  </div>
+</body>
+</html>

@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Buy Now - NSM Autos</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script>window.FontAwesomeConfig = {autoReplaceSvg: 'nest'};</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <style>
+        ::-webkit-scrollbar { display: none; }
+        * { font-family: 'Inter', sans-serif; }
+        .sticky-right { position: sticky; top: 6rem; }
+        .card-hover { transition: all .3s ease; }
+        .card-hover:hover { transform: translateY(-6px); box-shadow: 0 25px 50px -12px rgba(0,0,0,.25); }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+    <!-- COMPONENT: Language Selector & Top Bar (home style) -->
+    <div class="bg-gray-100 shadow-sm font-body">
+        <div class="container mx-auto px-6 py-2">
+            <div class="flex justify-end items-center space-x-4">
+                <div class="relative">
+                    <button id="languageToggle" class="flex items-center space-x-2 text-gray-700 hover:text-orange-500 font-medium transition-colors">
+                        <i class="fa-solid fa-globe text-base"></i>
+                        <span class="text-sm md:text-base">English</span>
+                        <i class="fa-solid fa-chevron-down text-xs"></i>
+                    </button>
+                    <div id="languageDropdown" class="absolute right-0 top-full mt-1 bg-white rounded-lg shadow-xl border border-gray-200 py-2 min-w-[160px] hidden z-50">
+                        <button class="w-full px-4 py-2 text-left text-sm md:text-base text-gray-700 hover:bg-gray-50 hover:text-orange-500 transition-colors flex items-center space-x-2 font-medium" data-lang="en">
+                            <img src="https://flagcdn.com/w20/us.png" alt="English" class="w-4 h-3">
+                            <span>English</span>
+                        </button>
+                        <button class="w-full px-4 py-2 text-left text-sm md:text-base text-gray-700 hover:bg-gray-50 hover:text-orange-500 transition-colors flex items-center space-x-2 font-medium" data-lang="ko">
+                            <img src="https://flagcdn.com/w20/kr.png" alt="한국어" class="w-4 h-3">
+                            <span>한국어</span>
+                        </button>
+                        <button class="w-full px-4 py-2 text-left text-sm md:text-base text-gray-700 hover:bg-gray-50 hover:text-orange-500 transition-colors flex items-center space-x-2 font-medium" data-lang="fr">
+                            <img src="https://flagcdn.com/w20/fr.png" alt="Français" class="w-4 h-3">
+                            <span>Français</span>
+                        </button>
+                        <button class="w-full px-4 py-2 text-left text-sm md:text-base text-gray-700 hover:bg-gray-50 hover:text-orange-500 transition-colors flex items-center space-x-2 font-medium" data-lang="ar">
+                            <img src="https://flagcdn.com/w20/sa.png" alt="العربية" class="w-4 h-3">
+                            <span>العربية</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="text-gray-300">|</div>
+                <div class="flex items-center space-x-4">
+                    <button class="bg-transparent border border-gray-300 text-gray-700 hover:border-orange-500 hover:text-orange-500 px-6 py-2 rounded-lg font-medium transition-all" data-text="sign-in" onclick="window.location.href='signin.html'">Sign In</button>
+                    <button class="bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-lg font-semibold transition-all transform hover:scale-105" data-text="sign-up" onclick="window.location.href='signup.html'">Sign Up</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header id="header" class="bg-white shadow-sm">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <a href="home.html" class="flex items-center space-x-2">
+                    <span class="text-3xl font-heading font-extrabold text-navy tracking-wide">NSM</span>
+                    <span class="text-3xl font-heading font-extrabold text-mango">Autos</span>
+                </a>
+                <div class="hidden md:flex flex-1 mx-8 max-w-xl">
+                    <div class="flex items-center bg-gray-50 rounded-full border-2 border-gray-200 focus-within:border-orange-500 transition-colors w-full">
+                        <input type="text" data-text="search-placeholder" placeholder="Identification Number / Product Number" class="flex-1 px-6 py-3 bg-transparent text-gray-700 placeholder-gray-500 focus:outline-none rounded-l-full" />
+                        <button class="bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-full font-bold flex items-center space-x-2 transition-all">
+                            <i class="fa-solid fa-search"></i>
+                            <span>Search</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="hidden md:flex items-center space-x-6">
+                    <a id="favorite-action" href="dashboard-saved.html" class="text-gray-700 hover:text-orange-500 font-medium transition-colors cursor-pointer flex items-center space-x-2">
+                        <i class="fa-regular fa-heart text-xl"></i>
+                        <span>Favourite</span>
+                    </a>
+                    <a id="compare-action" href="dashboard-compare.html" class="text-gray-700 hover:text-orange-500 font-medium transition-colors cursor-pointer flex items-center space-x-2">
+                        <i class="fa-solid fa-code-compare text-xl"></i>
+                        <span>Add to Compare</span>
+                    </a>
+                </div>
+            </div>
+            <nav class="flex items-center justify-center space-x-10 mt-4 pt-4 border-t border-gray-100">
+                <a href="home.html" class="text-gray-700 hover:text-orange-500 font-medium transition-colors">Home</a>
+                <a href="inventory.html" class="text-gray-700 hover:text-orange-500 font-medium transition-colors">Inventory</a>
+                <a href="blog.html" class="text-gray-700 hover:text-orange-500 font-medium transition-colors">Blog</a>
+                <a href="about-us.html" class="text-gray-700 hover:text-orange-500 font-medium transition-colors">About Us</a>
+                <a href="contact-us.html" class="text-gray-700 hover:text-orange-500 font-medium transition-colors">Contact Us</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-6 py-10">
+        <div id="vehicle-summary" class="mb-6"></div>
+
+        <div id="option-select" class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <button id="opt-personal" class="bg-white rounded-2xl shadow-lg p-6 text-left card-hover hover:-translate-y-1 hover:shadow-xl">
+                <h2 class="text-xl font-semibold mb-2">For Personal Use</h2>
+                <p class="text-sm text-gray-600">Purchase for personal ownership and use.</p>
+            </button>
+            <button id="opt-business" class="bg-white rounded-2xl shadow-lg p-6 text-left card-hover hover:-translate-y-1 hover:shadow-xl">
+                <h2 class="text-xl font-semibold mb-2">For Business</h2>
+                <p class="text-sm text-gray-600">Purchase for commercial use or resale.</p>
+            </button>
+        </div>
+
+        <div id="flow-container" class="hidden">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <section id="flow-left" class="lg:col-span-2"></section>
+                <aside id="flow-right" class="lg:col-span-1"></aside>
+            </div>
+        </div>
+    </main>
+
+    <!-- Order Review Modal -->
+    <div id="order-modal" class="fixed inset-0 bg-black bg-opacity-40 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl p-6">
+            <div class="flex items-center mb-4">
+                <div class="w-10 h-10 rounded-full bg-green-100 text-green-600 flex items-center justify-center mr-3">
+                    <i class="fa-solid fa-list-check"></i>
+                </div>
+                <div>
+                    <div class="text-lg font-bold text-gray-900">Review Your Order</div>
+                    <div class="text-sm text-gray-500">Confirm details before placing the order</div>
+                </div>
+            </div>
+            <div id="order-modal-details" class="space-y-3 text-sm text-gray-800"></div>
+            <div class="mt-6 flex justify-end gap-3">
+                <button id="order-modal-edit" class="px-4 py-2 border rounded-lg text-gray-700 hover:bg-gray-50">Edit Info</button>
+                <button id="order-modal-confirm" class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-semibold">Confirm Order</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const listingId = urlParams.get('id');
+        const selectedCountry = urlParams.get('country');
+
+        const PORTS_BY_COUNTRY = {
+            "United States": ["New York (NYC)", "Los Angeles (LAX)", "Houston (HOU)", "Baltimore"],
+            "Canada": ["Vancouver", "Toronto", "Montreal"],
+            "United Kingdom": ["London (Tilbury)", "Southampton", "Liverpool"],
+            "Australia": ["Sydney", "Melbourne", "Brisbane"],
+        };
+
+        const COUNTRY_DIAL_CODE = {
+            "United States": "+1",
+            "Canada": "+1",
+            "United Kingdom": "+44",
+            "Australia": "+61",
+        };
+
+        function displayTitle(data) {
+            const t = (data.title || '').trim();
+            if (t) return t;
+            const year = data.year || '';
+            const make = data.make || data.brand || '';
+            const model = data.model || '';
+            return [year, make, model].filter(Boolean).join(' ').trim() || 'Vehicle';
+        }
+
+        function normalizePhotoUrl(photo) {
+            if (!photo) return null;
+            if (typeof photo === 'string') {
+                if (photo.startsWith('http://') || photo.startsWith('https://')) return photo;
+                if (photo.startsWith('data:image')) return photo;
+                return `${window.location.origin}/${photo.replace(/^\/?/, '')}`;
+            }
+            if (photo.dataUrl) return photo.dataUrl;
+            if (photo.url) return photo.url.startsWith('http') ? photo.url : `${window.location.origin}/${photo.url.replace(/^\/?/, '')}`;
+            return null;
+        }
+
+        async function fetchVehicleData(id) {
+            const token = localStorage.getItem('authToken');
+            const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
+            try {
+                const adminRes = await fetch(`http://localhost:3000/admin/listing-details/${id}`, { headers });
+                if (adminRes.ok) {
+                    return await adminRes.json();
+                }
+            } catch (e) {}
+            try {
+                const publicRes2 = await fetch(`http://localhost:3000/public/listings/${id}`);
+                if (publicRes2.ok) return await publicRes2.json();
+            } catch (e) {}
+            try {
+                const jsonRes = await fetch(`backend/listings.json`);
+                if (jsonRes.ok) {
+                    const data = await jsonRes.json();
+                    const match = Array.isArray(data) ? data.find(item => String(item.id) === String(id) || String(item.product_id_number) === String(id)) : null;
+                    if (match) return match;
+                }
+            } catch (e) {}
+            return null;
+        }
+
+        function renderVehicleSummary(vehicle) {
+            const container = document.getElementById('vehicle-summary');
+            const title = displayTitle(vehicle);
+            const img = (function(u){ try { return /^https?:\/\/localhost:3000\//.test(String(u)) ? window.location.origin + '/' + String(u).replace(/^https?:\/\/localhost:3000\//, '') : u; } catch(_) { return u; } })(normalizePhotoUrl((vehicle.photos || [])[0]));
+            const price = vehicle.price || vehicle.sellingPrice || vehicle.listedPrice || vehicle.reservePrice || '—';
+            container.innerHTML = `
+                <div class="bg-white rounded-2xl shadow-lg p-6 flex items-center">
+                    <img src="${img || 'images/placeholder_car.png'}" alt="${title}" class="w-28 h-20 object-cover rounded mr-6">
+                    <div class="flex-1">
+                        <div class="text-xl font-bold text-gray-900">${title}</div>
+                        <div class="text-sm text-gray-600">Selected Country: ${selectedCountry ? decodeURIComponent(selectedCountry) : '—'}</div>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-gray-500 text-xs">Price</div>
+                        <div class="text-2xl font-bold text-gray-900">${typeof price === 'number' ? '$' + price.toLocaleString() : price}</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderRightSticky(vehicle) {
+            const right = document.getElementById('flow-right');
+            const price = vehicle.price || vehicle.sellingPrice || vehicle.listedPrice || vehicle.reservePrice || '—';
+            right.innerHTML = `
+                <div class="bg-white rounded-2xl shadow-lg p-6 sticky-right">
+                    <h3 class="text-lg font-semibold mb-4 text-gray-900">Vehicle Info</h3>
+                    <div class="flex justify-between mb-2">
+                        <span>Price</span>
+                        <span>${typeof price === 'number' ? '$' + price.toLocaleString() : price}</span>
+                    </div>
+                    <div class="flex justify-between mb-2">
+                        <span>Shipping Price</span>
+                        <a href="#" id="shipping-quote" class="text-orange-600 hover:underline">Get a Quote</a>
+                    </div>
+                    <div class="flex justify-between mb-4">
+                        <span>Total</span>
+                        <a href="#" id="total-quote" class="text-orange-600 hover:underline">Get a Quote</a>
+                    </div>
+                    <button id="place-order" class="w-full bg-green-600 hover:bg-green-700 text-white py-3 rounded-lg font-bold transition-colors">Place an Order</button>
+                </div>
+            `;
+            const showQuote = (type) => alert(`${type} quote request submitted. We will contact you.`);
+            document.getElementById('shipping-quote').addEventListener('click', (e) => { e.preventDefault(); showQuote('Shipping'); });
+            document.getElementById('total-quote').addEventListener('click', (e) => { e.preventDefault(); showQuote('Total'); });
+        }
+
+        function renderPersonalLeft(vehicle) {
+            const left = document.getElementById('flow-left');
+            const title = displayTitle(vehicle);
+            const country = selectedCountry ? decodeURIComponent(selectedCountry) : '';
+            left.innerHTML = `
+                <div class="bg-white rounded-2xl shadow-lg p-6 space-y-6">
+                    <div>
+                        <h2 class="text-xl font-semibold mb-2">${title}</h2>
+                        <div class="text-sm text-gray-600">Country: ${country || '—'}</div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm text-gray-700 mb-1">Name</label>
+                            <input id="personal-name" type="text" class="w-full p-3 border rounded" placeholder="Your name" />
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-700 mb-1">Telephone Number</label>
+                            <div class="flex">
+                                <select id="personal-tel-code" class="p-3 border rounded-l w-28">
+                                    <option value="">Code</option>
+                                    ${Object.entries(COUNTRY_DIAL_CODE).map(([c,code]) => `<option value="${code}" ${country===c?'selected':''}>${code}</option>`).join('')}
+                                </select>
+                                <input id="personal-tel" type="tel" class="w-full p-3 border rounded-r" placeholder="Phone number" />
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm text-gray-700 mb-1">Request Memo</label>
+                        <textarea id="personal-memo" class="w-full p-3 border rounded" rows="4" placeholder="Any additional requests or notes..."></textarea>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderBusinessLeft(vehicle) {
+            const left = document.getElementById('flow-left');
+            const title = displayTitle(vehicle);
+            const country = selectedCountry ? decodeURIComponent(selectedCountry) : '';
+            const ports = PORTS_BY_COUNTRY[country] || [];
+            left.innerHTML = `
+                <div class="bg-white rounded-2xl shadow-lg p-6 space-y-6">
+                    <div>
+                        <h2 class="text-xl font-semibold mb-2">${title}</h2>
+                        <div class="text-sm text-gray-600">Country: ${country || '—'}</div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm text-gray-700 mb-1">Port</label>
+                            ${ports.length ? `
+                                <select id="biz-port" class="w-full p-3 border rounded">
+                                    ${ports.map(p => `<option>${p}</option>`).join('')}
+                                </select>
+                            ` : `
+                                <input id="biz-port" type="text" class="w-full p-3 border rounded" placeholder="Enter relevant port" />
+                                <p class="text-xs text-gray-500 mt-1">No preset ports for ${country || 'selected country'}.</p>
+                            `}
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-700 mb-1">Ship Type</label>
+                            <select id="biz-ship-type" class="w-full p-3 border rounded">
+                                <option>RoRo</option>
+                                <option>Container</option>
+                                <option>Consultation Needed</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm text-gray-700 mb-1">Name</label>
+                            <input id="biz-name" type="text" class="w-full p-3 border rounded" placeholder="Your name" />
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-700 mb-1">Telephone Number</label>
+                            <div class="flex">
+                                <select id="biz-tel-code" class="p-3 border rounded-l w-28">
+                                    <option value="">Code</option>
+                                    ${Object.entries(COUNTRY_DIAL_CODE).map(([c,code]) => `<option value="${code}" ${country===c?'selected':''}>${code}</option>`).join('')}
+                                </select>
+                                <input id="biz-tel" type="tel" class="w-full p-3 border rounded-r" placeholder="Phone number" />
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold mb-2">Consignee Information</h3>
+                        <p class="text-xs text-gray-600 mb-3">Please enter the information of the person who will physically receive the vehicle. This information will be recorded on the Bill of Lading (BL).</p>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm mb-1">Name*</label>
+                                <input id="consignee-name" type="text" class="w-full p-3 border rounded" />
+                            </div>
+                            <div>
+                                <label class="block text-sm mb-1">Email*</label>
+                                <input id="consignee-email" type="email" class="w-full p-3 border rounded" />
+                            </div>
+                            <div class="md:col-span-2">
+                                <label class="block text-sm mb-1">Address*</label>
+                                <input id="consignee-address" type="text" class="w-full p-3 border rounded" />
+                            </div>
+                            <div>
+                                <label class="block text-sm mb-1">Tel*</label>
+                                <input id="consignee-tel" type="tel" class="w-full p-3 border rounded" />
+                            </div>
+                            <div>
+                                <label class="block text-sm mb-1">Personal or tax Number (optional)</label>
+                                <input id="consignee-tax" type="text" class="w-full p-3 border rounded" />
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold mb-2">Payer Information</h3>
+                        <p class="text-xs text-gray-600 mb-3">Enter the information of the person sending the remittance receipt for the vehicle purchase. The sender's name must match the receipt and transfer fees are the sender's responsibility.</p>
+                        <div class="flex items-center space-x-4 mb-3">
+                            <label class="inline-flex items-center space-x-2">
+                                <input id="payer-new" type="checkbox" class="form-checkbox"> <span>New information</span>
+                            </label>
+                            <label class="inline-flex items-center space-x-2">
+                                <input id="payer-same" type="checkbox" class="form-checkbox"> <span>Same as consignee information</span>
+                            </label>
+                        </div>
+                        <div id="payer-fields" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm mb-1">(Business) Name*</label>
+                                <input id="payer-name" type="text" class="w-full p-3 border rounded" />
+                            </div>
+                            <div>
+                                <label class="block text-sm mb-1">Email*</label>
+                                <input id="payer-email" type="email" class="w-full p-3 border rounded" />
+                            </div>
+                            <div>
+                                <label class="block text-sm mb-1">Tel*</label>
+                                <input id="payer-tel" type="tel" class="w-full p-3 border rounded" />
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold mb-2">Receipt of B/L</h3>
+                        <div class="space-y-2">
+                            <label class="flex items-center space-x-2"><input type="checkbox" id="bl-surrendered" class="form-checkbox"> <span>Surrendered B/L</span></label>
+                            <label class="flex items-center space-x-2"><input type="checkbox" id="bl-original" class="form-checkbox"> <span>Original B/L</span></label>
+                            <p class="text-xs text-gray-600">The surrender B/L will be sent via email without an original copy.</p>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm text-gray-700 mb-1">Request Memo</label>
+                        <textarea id="biz-memo" class="w-full p-3 border rounded" rows="4" placeholder="Any additional requests or notes..."></textarea>
+                    </div>
+                </div>
+            `;
+
+            // Enforce mutually exclusive B/L checkboxes
+            const surr = document.getElementById('bl-surrendered');
+            const orig = document.getElementById('bl-original');
+            const toggleExclusive = (changed) => {
+                if (changed === surr && surr.checked) orig.checked = false;
+                if (changed === orig && orig.checked) surr.checked = false;
+            };
+            surr.addEventListener('change', () => toggleExclusive(surr));
+            orig.addEventListener('change', () => toggleExclusive(orig));
+
+            // Payer info helper: copy from consignee when selected
+            const payerSame = document.getElementById('payer-same');
+            payerSame.addEventListener('change', () => {
+                if (!payerSame.checked) return;
+                document.getElementById('payer-name').value = document.getElementById('consignee-name').value;
+                document.getElementById('payer-email').value = document.getElementById('consignee-email').value;
+                document.getElementById('payer-tel').value = document.getElementById('consignee-tel').value;
+            });
+        }
+
+        // ----- Helpers for modal & invoice -----
+        function formatMoney(n) {
+            if (typeof n !== 'number') return n || '—';
+            return '$' + n.toLocaleString();
+        }
+
+        function openOrderModal(vehicle, type, selection) {
+            const price = vehicle.price || vehicle.sellingPrice || vehicle.listedPrice || vehicle.reservePrice || null;
+            const vin = vehicle.product_id_number || vehicle.vin || (vehicle.vehicle && vehicle.vehicle.vin) || (vehicle.insuranceHistory && vehicle.insuranceHistory.licensePlate) || 'N/A';
+            const country = selectedCountry ? decodeURIComponent(selectedCountry) : '';
+            const title = displayTitle(vehicle);
+
+            const detailsHtml = `
+                <div class="bg-gray-50 border rounded-xl p-4">
+                    <div class="font-semibold text-gray-900 mb-2">Vehicle</div>
+                    <div class="grid grid-cols-2 gap-2 text-sm">
+                        <div><span class="text-gray-500">Title:</span> ${title}</div>
+                        <div><span class="text-gray-500">VIN:</span> ${vin}</div>
+                        <div><span class="text-gray-500">Country:</span> ${country || '—'}</div>
+                        <div><span class="text-gray-500">Type:</span> ${type}</div>
+                        <div><span class="text-gray-500">Price:</span> ${formatMoney(price)}</div>
+                        <div><span class="text-gray-500">Total:</span> ${formatMoney(price)} + Shipping Fee</div>
+                    </div>
+                </div>
+                ${type === 'business' ? `
+                <div class="bg-gray-50 border rounded-xl p-4">
+                    <div class="font-semibold text-gray-900 mb-2">Business / Shipping</div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div><span class="text-gray-500">Port:</span> ${selection.port || '—'}</div>
+                        <div><span class="text-gray-500">Ship Type:</span> ${selection.shipType || '—'}</div>
+                        <div class="col-span-2"><span class="text-gray-500">B/L:</span> ${selection.bl || '—'}</div>
+                    </div>
+                </div>
+                <div class="bg-gray-50 border rounded-xl p-4">
+                    <div class="font-semibold text-gray-900 mb-2">Consignee</div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div><span class="text-gray-500">Name:</span> ${selection.consignee?.name || '—'}</div>
+                        <div><span class="text-gray-500">Tel:</span> ${selection.consignee?.tel || '—'}</div>
+                        <div class="col-span-2"><span class="text-gray-500">Email:</span> ${selection.consignee?.email || '—'}</div>
+                        <div class="col-span-2"><span class="text-gray-500">Address:</span> ${selection.consignee?.address || '—'}</div>
+                    </div>
+                </div>
+                <div class="bg-gray-50 border rounded-xl p-4">
+                    <div class="font-semibold text-gray-900 mb-2">Payer</div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div><span class="text-gray-500">Name:</span> ${selection.payer?.name || '—'}</div>
+                        <div><span class="text-gray-500">Tel:</span> ${selection.payer?.tel || '—'}</div>
+                        <div class="col-span-2"><span class="text-gray-500">Email:</span> ${selection.payer?.email || '—'}</div>
+                    </div>
+                </div>
+                ` : `
+                <div class="bg-gray-50 border rounded-xl p-4">
+                    <div class="font-semibold text-gray-900 mb-2">Buyer</div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div><span class="text-gray-500">Name:</span> ${selection.name || '—'}</div>
+                        <div><span class="text-gray-500">Tel:</span> ${(selection.telCode||'') + (selection.tel||'')}</div>
+                        <div class="col-span-2"><span class="text-gray-500">Memo:</span> ${selection.memo || '—'}</div>
+                    </div>
+                </div>
+                `}
+            `;
+
+            const modal = document.getElementById('order-modal');
+            const details = document.getElementById('order-modal-details');
+            details.innerHTML = detailsHtml;
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+
+            document.getElementById('order-modal-edit').onclick = () => {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            };
+
+            document.getElementById('order-modal-confirm').onclick = async () => {
+                const token = localStorage.getItem('authToken') || localStorage.getItem('token');
+                const country = selectedCountry ? decodeURIComponent(selectedCountry) : '';
+                try {
+                    const res = await fetch('http://localhost:3000/orders', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', ...(token ? { 'Authorization': `Bearer ${token}` } : {}) },
+                        body: JSON.stringify({ listingId, country, type, selection })
+                    });
+                    const data = await res.json().catch(() => ({}));
+                    if (!res.ok) throw new Error(data.error || `Order failed (HTTP ${res.status})`);
+
+                    const created = new Date(data.createdAt || Date.now());
+                    const y = String(created.getFullYear()).slice(2);
+                    const m = String(created.getMonth() + 1).padStart(2, '0');
+                    const d = String(created.getDate()).padStart(2, '0');
+                    const suffix = String(data.id).slice(-8).padStart(8, '0');
+                    const orderNo = `BUY_${y}${m}${d}_${suffix}`;
+
+                    const latestOrder = {
+                        id: data.id,
+                        orderNo,
+                        listingId,
+                        title,
+                        vin,
+                        price,
+                        country,
+                        type,
+                        selection,
+                        createdAt: data.createdAt || new Date().toISOString()
+                    };
+                    // Persist latest order and append to purchases list for My Purchases
+                    localStorage.setItem('latestOrder', JSON.stringify(latestOrder));
+                    try {
+                        const purchases = JSON.parse(localStorage.getItem('purchases') || '[]');
+                        purchases.push(latestOrder);
+                        localStorage.setItem('purchases', JSON.stringify(purchases));
+                    } catch (e) {
+                        console.warn('Failed to persist purchases list', e);
+                    }
+                    // Do not auto-open invoice; redirect to Orders & Payments for manual admin processing
+                    window.location.href = 'buyerordersandpayments.html';
+                } catch (err) {
+                    console.error('Order error:', err);
+                    alert('Failed to place order: ' + err.message);
+                }
+            };
+        }
+
+        function mountFlow(type, vehicle) {
+            document.getElementById('option-select').classList.add('hidden');
+            document.getElementById('flow-container').classList.remove('hidden');
+            renderRightSticky(vehicle);
+            if (type === 'personal') renderPersonalLeft(vehicle);
+            else renderBusinessLeft(vehicle);
+
+            // Handle order placement: open review modal (POST happens on Confirm)
+            document.getElementById('place-order').addEventListener('click', () => {
+                const country = selectedCountry ? decodeURIComponent(selectedCountry) : '';
+                const selection = type === 'personal' ? {
+                    name: document.getElementById('personal-name').value,
+                    telCode: document.getElementById('personal-tel-code').value,
+                    tel: document.getElementById('personal-tel').value,
+                    memo: document.getElementById('personal-memo').value,
+                } : {
+                    port: document.getElementById('biz-port').value,
+                    shipType: document.getElementById('biz-ship-type').value,
+                    name: document.getElementById('biz-name').value,
+                    telCode: document.getElementById('biz-tel-code').value,
+                    tel: document.getElementById('biz-tel').value,
+                    consignee: {
+                        name: document.getElementById('consignee-name').value,
+                        address: document.getElementById('consignee-address').value,
+                        tel: document.getElementById('consignee-tel').value,
+                        email: document.getElementById('consignee-email').value,
+                        tax: document.getElementById('consignee-tax').value,
+                    },
+                    payer: {
+                        name: document.getElementById('payer-name').value,
+                        tel: document.getElementById('payer-tel').value,
+                        email: document.getElementById('payer-email').value,
+                    },
+                    bl: document.getElementById('bl-surrendered').checked ? 'Surrendered' : (document.getElementById('bl-original').checked ? 'Original' : ''),
+                    memo: document.getElementById('biz-memo').value,
+                };
+                openOrderModal(vehicle, type, selection);
+            });
+        }
+
+        async function init() {
+            if (!listingId) {
+                alert('No vehicle ID provided');
+                window.location.href = 'inventory.html';
+                return;
+            }
+            const vehicle = await fetchVehicleData(listingId);
+            if (!vehicle) {
+                alert('Vehicle not found');
+                window.location.href = 'inventory.html';
+                return;
+            }
+            renderVehicleSummary(vehicle);
+            const optPersonal = document.getElementById('opt-personal');
+            const optBusiness = document.getElementById('opt-business');
+            optPersonal.addEventListener('click', () => mountFlow('personal', vehicle));
+            optBusiness.addEventListener('click', () => mountFlow('business', vehicle));
+        }
+
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+
+    <!-- Header role-based replacement: show Dashboard link when signed in -->
+    <script>
+      (function(){
+        try {
+          var role = (localStorage.getItem('role') || localStorage.getItem('userRole') || '').toLowerCase();
+          if (!role || (role !== 'buyer' && role !== 'seller')) return;
+          var signInEl = document.querySelector('[data-text="sign-in"]');
+          var signUpEl = document.querySelector('[data-text="sign-up"]');
+          var container = (signInEl && signInEl.parentElement) || (signUpEl && signUpEl.parentElement);
+          if (!container) return;
+          if (signInEl) signInEl.remove();
+          if (signUpEl) signUpEl.remove();
+          var link = document.createElement('a');
+          link.textContent = role === 'buyer' ? 'Buyer Dashboard' : 'Seller Dashboard';
+          link.href = role === 'buyer' ? 'buyer-dashboard.html' : 'seller-dashboard.html';
+          link.className = 'bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-lg font-semibold transition-all transform hover:scale-105';
+          container.appendChild(link);
+        } catch(e) { /* no-op */ }
+      })();
+    </script>
+<script src="scripts/language.js"></script>
+</body>
+</html>

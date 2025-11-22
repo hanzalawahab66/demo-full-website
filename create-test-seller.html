@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Test Seller</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .result { margin: 10px 0; padding: 10px; border-radius: 5px; }
+        .success { background-color: #d4edda; color: #155724; }
+        .error { background-color: #f8d7da; color: #721c24; }
+        .info { background-color: #d1ecf1; color: #0c5460; }
+        button { margin: 5px; padding: 10px 15px; }
+        input { margin: 5px; padding: 8px; width: 200px; }
+    </style>
+</head>
+<body>
+    <h1>Create Test Seller</h1>
+    
+    <div>
+        <input type="email" id="email" placeholder="Email" value="testseller@example.com">
+        <input type="password" id="password" placeholder="Password" value="test123">
+        <input type="text" id="name" placeholder="Name" value="Test Seller">
+        <button onclick="createSeller()">Create Seller</button>
+    </div>
+    
+    <div id="results"></div>
+    
+    <button onclick="clearResults()">Clear Results</button>
+
+    <script>
+        function addResult(message, type = 'info') {
+            const results = document.getElementById('results');
+            const div = document.createElement('div');
+            div.className = `result ${type}`;
+            div.innerHTML = `<strong>${new Date().toLocaleTimeString()}</strong>: ${message}`;
+            results.appendChild(div);
+            results.scrollTop = results.scrollHeight;
+        }
+
+        function clearResults() {
+            document.getElementById('results').innerHTML = '';
+        }
+
+        async function createSeller() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const name = document.getElementById('name').value;
+            
+            addResult(`Creating seller with email: ${email}`, 'info');
+            
+            try {
+                const response = await fetch('http://localhost:3001/signup', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        name: name,
+                        email: email,
+                        password: password,
+                        role: 'seller',
+                        profile: {
+                            name: name,
+                            country: 'Test Country',
+                            phone_number: '1234567890',
+                            company_name_korean: 'Test Company KR',
+                            company_name_english: 'Test Company EN',
+                            representative_name: name
+                        }
+                    })
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    addResult(`✅ Seller created successfully! User ID: ${data.user ? data.user.id : 'Unknown'}`, 'success');
+                    addResult(`Note: The seller needs to be approved by an admin before they can login.`, 'info');
+                } else {
+                    addResult(`❌ Failed to create seller: ${data.error || 'Unknown error'} (Status: ${response.status})`, 'error');
+                }
+            } catch (error) {
+                addResult(`❌ Network error: ${error.message}`, 'error');
+            }
+        }
+
+        // Auto-run on load
+        window.addEventListener('load', () => {
+            addResult('Ready to create test seller. Click "Create Seller" to proceed.', 'info');
+        });
+    </script>
+</body>
+</html>

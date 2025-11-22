@@ -1,0 +1,621 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Super Admin Panel — Edit Listing</title>
+  <!-- Page Protection: redirect non-authorized users to signin -->
+  <script>
+    (function () {
+      try {
+        var role = (localStorage.getItem('userRole') || localStorage.getItem('role') || '').toLowerCase();
+        // Allow admin, seller, and super admin roles to access this page
+        if (role !== 'admin' && role !== 'seller' && role !== 'super admin' && role !== 'superadmin') {
+          console.log('Access denied. Current role:', role);
+          window.location.href = 'signin.html';
+        }
+      } catch (e) {
+        console.error('Role check error:', e);
+        window.location.href = 'signin.html';
+      }
+    })();
+  </script>
+  <style>
+    :root {
+      --bg: #f6f7fb;
+      --text: #0f172a;
+      --muted: #64748b;
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --topbar-bg: #ffffff;
+      --topbar-border: #e5e7eb;
+      --sidebar-bg: #0b1220;
+      --sidebar-border: #1f2937;
+      --sidebar-text: #cbd5e1;
+      --sidebar-hover-bg: #111827;
+      --sidebar-active-bg: #1f2937;
+      --card-bg: #ffffff;
+      --card-border: #e5e7eb;
+      --danger: #dc2626;
+      --success: #16a34a;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body { margin: 0; background: var(--bg); color: var(--text); font-family: Inter, Segoe UI, Roboto, Helvetica, Arial, system-ui, -apple-system, sans-serif; }
+
+    .admin-layout { display: grid; grid-template-columns: 260px 1fr; grid-template-rows: 64px auto; grid-template-areas: "topbar topbar" "sidebar content"; height: 100vh; width: 100%; }
+    .topbar { grid-area: topbar; display: flex; align-items: center; justify-content: space-between; padding: 0 16px; background: var(--topbar-bg); border-bottom: 1px solid var(--topbar-border); position: sticky; top: 0; z-index: 10; }
+    .brand { display: flex; align-items: center; gap: 12px; font-weight: 600; }
+    .brand-logo { width: 28px; height: 28px; border-radius: 8px; background: linear-gradient(135deg, var(--primary), #9333ea); }
+    .top-actions { display: flex; align-items: center; gap: 8px; }
+    .btn { border: 1px solid var(--card-border); background: #fff; color: var(--text); padding: 8px 12px; border-radius: 8px; cursor: pointer; font-weight: 600; text-decoration: none; display: inline-block; }
+    .btn:hover { background: #f9fafb; }
+    .btn-primary { background: var(--primary); color: #fff; border-color: var(--primary); }
+    .btn-primary:hover { background: var(--primary-hover); }
+    .btn-danger { background: var(--danger); color: #fff; border-color: var(--danger); }
+    .btn-danger:hover { background: #b91c1c; }
+    .admin-name { color: var(--muted); font-weight: 500; }
+
+    /* Master Sidebar styles */
+    .sidebar { grid-area: sidebar; background: var(--sidebar-bg); border-right: 1px solid var(--sidebar-border); color: #fff; padding: 16px 12px; overflow-y: auto; }
+    .sidebar-header { font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--sidebar-text); margin-bottom: 12px; opacity: 0.9; }
+    .menu { display: flex; flex-direction: column; gap: 6px; }
+    .menu a { display: flex; align-items: center; gap: 10px; padding: 10px 12px; text-decoration: none; color: var(--sidebar-text); border-radius: 10px; transition: background 160ms ease, color 160ms ease; font-weight: 500; }
+    .menu a:hover { background: var(--sidebar-hover-bg); color: #fff; }
+    .menu a.active { background: var(--sidebar-active-bg); color: #fff; }
+    .menu .icon { width: 18px; height: 18px; border-radius: 4px; background: #334155; flex-shrink: 0; }
+
+    .content { grid-area: content; padding: 20px; overflow-y: auto; }
+    .content h1 { margin: 0 0 12px; font-size: 24px; }
+    .muted { color: var(--muted); font-size: 13px; }
+    .footer { margin-top: 24px; padding-top: 12px; border-top: 1px solid var(--card-border); color: var(--muted); font-size: 12px; }
+
+    /* Form styles */
+    .card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 20px; margin-top: 16px; }
+    .card h2 { margin: 0 0 16px 0; font-size: 18px; font-weight: 600; }
+    .grid { display: grid; gap: 16px; }
+    .grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .field label { font-size: 12px; color: var(--muted); display: block; margin-bottom: 6px; font-weight: 500; }
+    .input, .select, .textarea { width: 100%; padding: 10px 12px; border: 1px solid var(--card-border); border-radius: 8px; background: #fff; font-size: 14px; }
+    .textarea { min-height: 100px; resize: vertical; }
+    .checklist { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+    .check { display: flex; align-items: center; gap: 8px; font-size: 13px; }
+    .actions { display: flex; gap: 12px; margin-top: 24px; }
+    .loading { color: var(--muted); font-style: italic; }
+    .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+    .chip { display: inline-flex; gap: 6px; align-items: center; background: #f3f4f6; border: 1px solid var(--card-border); padding: 6px 10px; border-radius: 999px; }
+    .table { width: 100%; border-collapse: collapse; margin-top: 6px; }
+    .table th, .table td { border: 1px solid var(--card-border); padding: 8px; text-align: left; }
+  </style>
+</head>
+<body>
+  <div class="admin-layout">
+    <header class="topbar" role="banner">
+      <div class="brand" aria-label="Admin brand">
+        <div class="brand-logo" aria-hidden="true"></div>
+        <span>Super Admin Panel</span>
+      </div>
+      <div class="top-actions">
+        <a href="manage-all-listings.html" class="btn">← Back to Listings</a>
+        <span class="admin-name">Signed in as <strong>Super Admin</strong></span>
+        <button class="btn-primary" onclick="location.href='signin.html'">Logout</button>
+      </div>
+    </header>
+
+    <!-- Master Sidebar -->
+    <aside class="sidebar" role="navigation" aria-label="Admin sidebar">
+      <div class="sidebar-header">Main Menu</div>
+      <nav class="menu">
+        <a href="admin.html" title="Dashboard"><span class="icon"></span> Dashboard</a>
+        <a href="user-management.html" title="User Management"><span class="icon"></span> User Management</a>
+        <a href="listing-approval.html" title="Listing Approvals"><span class="icon"></span> Listing Approvals</a>
+        <a href="create-listing.html" title="Create New Listing"><span class="icon"></span> Create New Listing</a>
+        <a href="manage-all-listings.html" class="active" title="Manage All Listings"><span class="icon"></span> Manage All Listings</a>
+        <a href="category-management.html" title="Category Management"><span class="icon"></span> Category Management</a>
+        <a href="tag-management.html" title="Tag Management"><span class="icon"></span> Tag Management</a>
+        <a href="blog-management.html" title="Blog Management"><span class="icon"></span> Blog Management</a>
+        <a href="role-management.html" title="Role Management"><span class="icon"></span> Role Management</a>
+      </nav>
+    </aside>
+
+    <main class="content" role="main">
+      <h1>Edit Listing</h1>
+      <p class="muted">Edit the details of this vehicle listing.</p>
+      
+      <div id="loading-message" class="loading">Loading listing data...</div>
+      
+      <form id="edit-form" style="display: none;">
+        <!-- Listing Basics -->
+        <section class="card">
+          <h2>Listing Basics</h2>
+          <div class="grid grid-2">
+            <div class="field">
+              <label for="listing-title">Listing Title</label>
+              <input type="text" id="listing-title" class="input" placeholder="e.g. 2018 Toyota Corolla SE" required>
+            </div>
+            <div class="field">
+              <label for="listing-price">Price</label>
+              <input type="number" id="listing-price" class="input" min="0" step="0.01" placeholder="e.g. 15999" required>
+            </div>
+          </div>
+          <div class="grid grid-2" style="margin-top:12px">
+            <div class="field">
+              <label for="product-id-number">Product Identification Number (PIN)</label>
+              <input type="text" id="product-id-number" class="input" placeholder="e.g. PIN-12345" required>
+            </div>
+          </div>
+        </section>
+
+        <!-- Categorization -->
+        <section class="card">
+          <h2>Categorization</h2>
+          <div class="grid grid-2">
+            <div class="field">
+              <label for="category-id">Category</label>
+              <select id="category-id" class="select" aria-label="Select Category" required>
+                <option value="">— Loading categories —</option>
+              </select>
+              <span class="muted">Only categories from the list can be selected.</span>
+            </div>
+            <div class="field">
+              <label>Tags</label>
+              <div id="tag-list" class="checklist"></div>
+              <span class="muted">Select applicable tags for this listing.</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Vehicle Details -->
+        <section class="card">
+          <h2>Vehicle Details</h2>
+          <div class="grid grid-3">
+            <div class="field"><label for="v-year">Year</label><input type="number" class="input" id="v-year" required></div>
+            <div class="field"><label for="v-trans">Transmission</label><input class="input" id="v-trans" required></div>
+            <div class="field"><label for="v-fuel">Fuel</label><input class="input" id="v-fuel" required></div>
+            <div class="field"><label for="v-color">Color</label><input class="input" id="v-color" required></div>
+            <div class="field"><label for="v-displ">Displacement (L)</label><input type="number" class="input" id="v-displ" required></div>
+            <div class="field"><label for="v-pass">Passenger Capacity</label><input type="number" class="input" id="v-pass" required></div>
+            <div class="field"><label for="v-drive">Drive Type</label><input class="input" id="v-drive" required></div>
+            <div class="field"><label for="v-reg">First Registration Date</label><input type="date" class="input" id="v-reg" required></div>
+            <div class="field"><label for="v-mile">Mileage (km)</label><input type="number" class="input" id="v-mile" required></div>
+            <div class="field"><label for="v-loc">Location</label><input class="input" id="v-loc" required></div>
+          </div>
+        </section>
+
+        <!-- Relevant Information -->
+        <section class="card">
+          <h2>Relevant Information</h2>
+          <div id="relevant-list" class="checklist"></div>
+        </section>
+
+        <!-- Option Info -->
+        <section class="card">
+          <h2>Option Info</h2>
+          <div id="options-list" class="checklist"></div>
+        </section>
+
+        <!-- Interior/Exterior -->
+        <section class="card">
+          <h2>Interior/Exterior</h2>
+          <div id="interior-list" class="checklist"></div>
+        </section>
+
+        <!-- Safety -->
+        <section class="card">
+          <h2>Safety</h2>
+          <div id="safety-list" class="checklist"></div>
+        </section>
+
+        <!-- Convenience / Other -->
+        <section class="card">
+          <h2>Convenience / Other</h2>
+          <div id="conv-list" class="checklist"></div>
+        </section>
+
+        <!-- Insurance History -->
+        <section class="card">
+          <h2>Insurance History</h2>
+          <div class="grid grid-3">
+            <div class="field"><label for="ih-mfr">Manufacturer</label><input class="input" id="ih-mfr" required></div>
+            <div class="field"><label for="ih-model">Model</label><input class="input" id="ih-model" required></div>
+            <div class="field"><label for="ih-year">Year</label><input type="number" class="input" id="ih-year" required></div>
+            <div class="field"><label for="ih-fuel">Fuel</label><input class="input" id="ih-fuel" required></div>
+            <div class="field"><label for="ih-plate">License Plate</label><input class="input" id="ih-plate" required></div>
+          </div>
+          <div style="margin-top:10px">
+            <strong>Accident Records</strong>
+            <table class="table">
+              <thead><tr><th>Repair Cost</th><th>Part</th><th>Labor</th><th>Painting</th><th>Action</th></tr></thead>
+              <tbody id="accident-body"></tbody>
+            </table>
+            <div class="actions"><button id="add-accident" type="button" class="btn">Add Record</button></div>
+          </div>
+        </section>
+
+        <!-- Upload Photos -->
+        <section class="card">
+          <h2>Upload Photos</h2>
+          <div class="grid grid-2">
+            <div class="field">
+              <label for="photo-upload">Photos</label>
+              <input id="photo-upload" type="file" class="input" accept="image/*" multiple>
+              <div class="muted">You can upload up to 20 photos. Supported: JPG, PNG.</div>
+            </div>
+            <div class="field">
+              <label>Uploaded</label>
+              <div id="photo-chips" class="chips"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Status -->
+        <section class="card">
+          <h2>Status</h2>
+          <div class="grid grid-2">
+            <div class="field">
+              <label for="listing-status">Status</label>
+              <select id="listing-status" class="select">
+                <option value="pending">Pending</option>
+                <option value="approved">Approved</option>
+                <option value="rejected">Rejected</option>
+                <option value="sold">Sold</option>
+              </select>
+            </div>
+          </div>
+        </section>
+
+        <!-- Actions -->
+        <div class="actions">
+          <button type="submit" class="btn btn-primary">Save Changes</button>
+          <a href="manage-all-listings.html" class="btn">Cancel</a>
+          <button type="button" id="delete-btn" class="btn btn-danger">Delete Listing</button>
+        </div>
+      </form>
+
+      <footer class="footer">© 2024 NSM Autos Admin</footer>
+    </main>
+  </div>
+
+  <script>
+    let listingId = null;
+    let categories = [];
+    let tags = [];
+    let accidentCount = 0;
+
+    document.addEventListener('DOMContentLoaded', async function () {
+      const urlParams = new URLSearchParams(window.location.search);
+      listingId = urlParams.get('id');
+      
+      if (!listingId) {
+        alert('No listing ID provided');
+        window.location.href = 'manage-all-listings.html';
+        return;
+      }
+
+      const loadingMessage = document.getElementById('loading-message');
+      const editForm = document.getElementById('edit-form');
+      
+      try {
+        // Load categories and tags first
+        await loadCategories();
+        await loadTags();
+        initializeChecklists();
+        
+        // Load listing data
+        const listing = await loadListingData(listingId);
+        if (listing) {
+          populateForm(listing);
+          loadingMessage.style.display = 'none';
+          editForm.style.display = 'block';
+        } else {
+          throw new Error('Listing not found');
+        }
+      } catch (error) {
+        console.error('Error loading listing:', error);
+        loadingMessage.textContent = 'Error loading listing data. Please try again.';
+      }
+
+      // Form submission
+      editForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        await saveListing(listingId);
+      });
+
+      // Delete button
+      document.getElementById('delete-btn').addEventListener('click', async function() {
+        if (confirm('Are you sure you want to delete this listing? This action cannot be undone.')) {
+          await deleteListing(listingId);
+        }
+      });
+
+      // Add accident row button
+      document.getElementById('add-accident').addEventListener('click', addAccidentRow);
+    });
+
+    async function loadCategories() {
+      try {
+        const response = await fetch('backend/categories.json');
+        categories = await response.json();
+        const categorySelect = document.getElementById('category-id');
+        
+        categorySelect.innerHTML = '<option value="">Select a category</option>';
+        categories.forEach(category => {
+          const option = document.createElement('option');
+          option.value = category.id;
+          option.textContent = category.name;
+          categorySelect.appendChild(option);
+        });
+      } catch (error) {
+        console.error('Error loading categories:', error);
+      }
+    }
+
+    async function loadTags() {
+      try {
+        const response = await fetch('backend/tags.json');
+        tags = await response.json();
+        renderTags();
+      } catch (error) {
+        console.error('Error loading tags:', error);
+      }
+    }
+
+    function renderTags() {
+      const container = document.getElementById('tag-list');
+      container.innerHTML = '';
+      
+      tags.forEach(tag => {
+        const checkDiv = document.createElement('div');
+        checkDiv.className = 'check';
+        checkDiv.innerHTML = `
+          <input type="checkbox" id="tag-${tag.id}" value="${tag.id}">
+          <label for="tag-${tag.id}">${tag.name}</label>
+        `;
+        container.appendChild(checkDiv);
+      });
+    }
+
+    function initializeChecklists() {
+      const relevantInfo = ['Air Conditioning', 'Power Steering', 'ABS Brakes', 'Airbags', 'Cruise Control', 'Bluetooth', 'USB Ports', 'Automatic Transmission'];
+      const optionInfo = ['Sunroof', 'Leather Seats', 'Navigation System', 'Backup Camera', 'Heated Seats', 'Premium Sound', 'Keyless Entry', 'Remote Start'];
+      const interiorExterior = ['Alloy Wheels', 'Tinted Windows', 'Premium Interior', 'Sport Package', 'Chrome Trim', 'Fog Lights', 'Roof Rails', 'Running Boards'];
+      const safety = ['Anti-lock Brakes', 'Stability Control', 'Traction Control', 'Side Airbags', 'Blind Spot Monitor', 'Lane Departure Warning', 'Forward Collision Warning', 'Parking Sensors'];
+      const convenience = ['Power Windows', 'Power Locks', 'Automatic Climate', 'Heated Mirrors', 'Memory Seats', 'Wireless Charging', 'Apple CarPlay', 'Android Auto'];
+
+      renderChecklist('relevant-list', relevantInfo, 'relevant');
+      renderChecklist('options-list', optionInfo, 'option');
+      renderChecklist('interior-list', interiorExterior, 'interior');
+      renderChecklist('safety-list', safety, 'safety');
+      renderChecklist('conv-list', convenience, 'convenience');
+    }
+
+    function renderChecklist(containerId, items, prefix) {
+      const container = document.getElementById(containerId);
+      container.innerHTML = '';
+      
+      items.forEach((item, index) => {
+        const checkDiv = document.createElement('div');
+        checkDiv.className = 'check';
+        checkDiv.innerHTML = `
+          <input type="checkbox" id="${prefix}-${index}" value="${item}">
+          <label for="${prefix}-${index}">${item}</label>
+        `;
+        container.appendChild(checkDiv);
+      });
+    }
+
+    function addAccidentRow() {
+      accidentCount++;
+      const tbody = document.getElementById('accident-body');
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td><input type="number" class="input" placeholder="Cost" step="0.01"></td>
+        <td><input type="text" class="input" placeholder="Part details"></td>
+        <td><input type="text" class="input" placeholder="Labor details"></td>
+        <td><input type="text" class="input" placeholder="Painting details"></td>
+        <td><button type="button" onclick="this.closest('tr').remove()" class="btn btn-danger">Remove</button></td>
+      `;
+      tbody.appendChild(row);
+    }
+
+    async function loadListingData(listingId) {
+      try {
+        // Try to fetch from API first
+        const token = localStorage.getItem('authToken');
+        if (token) {
+          const response = await fetch(`/admin/listing/${listingId}`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+          });
+          if (response.ok) {
+            return await response.json();
+          }
+        }
+        
+        // Fallback to JSON file
+        const response = await fetch('backend/listings.json');
+        const listings = await response.json();
+        return listings.find(listing => listing.id == listingId);
+      } catch (error) {
+        console.error('Error loading listing data:', error);
+        return null;
+      }
+    }
+
+    function populateForm(listing) {
+      // Basic information
+      document.getElementById('listing-title').value = listing.title || '';
+      document.getElementById('listing-price').value = listing.price || '';
+      document.getElementById('product-id-number').value = listing.pin || '';
+      
+      // Category
+      if (listing.categoryId) {
+        document.getElementById('category-id').value = listing.categoryId;
+      }
+
+      // Tags
+      if (listing.tags) {
+        listing.tags.forEach(tagId => {
+          const checkbox = document.getElementById(`tag-${tagId}`);
+          if (checkbox) checkbox.checked = true;
+        });
+      }
+
+      // Vehicle details
+      if (listing.vehicle) {
+        document.getElementById('v-year').value = listing.vehicle.year || '';
+        document.getElementById('v-trans').value = listing.vehicle.transmission || '';
+        document.getElementById('v-fuel').value = listing.vehicle.fuel || '';
+        document.getElementById('v-color').value = listing.vehicle.color || '';
+        document.getElementById('v-displ').value = listing.vehicle.displacement || '';
+        document.getElementById('v-pass').value = listing.vehicle.passengers || '';
+        document.getElementById('v-drive').value = listing.vehicle.driveType || '';
+        document.getElementById('v-reg').value = listing.vehicle.firstRegistration || '';
+        document.getElementById('v-mile').value = listing.vehicle.mileage || '';
+        document.getElementById('v-loc').value = listing.vehicle.location || '';
+      }
+
+      // Insurance history
+      if (listing.insuranceHistory) {
+        document.getElementById('ih-mfr').value = listing.insuranceHistory.manufacturer || '';
+        document.getElementById('ih-model').value = listing.insuranceHistory.model || '';
+        document.getElementById('ih-year').value = listing.insuranceHistory.year || '';
+        document.getElementById('ih-fuel').value = listing.insuranceHistory.fuel || '';
+        document.getElementById('ih-plate').value = listing.insuranceHistory.licensePlate || '';
+      }
+      
+      // Status
+      document.getElementById('listing-status').value = listing.status || 'pending';
+
+      // Handle checklist data if available
+      if (listing.features) {
+        Object.keys(listing.features).forEach(category => {
+          listing.features[category].forEach(feature => {
+            const checkbox = document.querySelector(`input[value="${feature}"]`);
+            if (checkbox) checkbox.checked = true;
+          });
+        });
+      }
+    }
+
+    async function saveListing(listingId) {
+      const formData = {
+        id: listingId,
+        title: document.getElementById('listing-title').value,
+        price: parseFloat(document.getElementById('listing-price').value),
+        pin: document.getElementById('product-id-number').value,
+        categoryId: document.getElementById('category-id').value,
+        vehicle: {
+          year: parseInt(document.getElementById('v-year').value),
+          transmission: document.getElementById('v-trans').value,
+          fuel: document.getElementById('v-fuel').value,
+          color: document.getElementById('v-color').value,
+          displacement: parseFloat(document.getElementById('v-displ').value),
+          passengers: parseInt(document.getElementById('v-pass').value),
+          driveType: document.getElementById('v-drive').value,
+          firstRegistration: document.getElementById('v-reg').value,
+          mileage: parseInt(document.getElementById('v-mile').value),
+          location: document.getElementById('v-loc').value
+        },
+        insuranceHistory: {
+          manufacturer: document.getElementById('ih-mfr').value,
+          model: document.getElementById('ih-model').value,
+          year: parseInt(document.getElementById('ih-year').value),
+          fuel: document.getElementById('ih-fuel').value,
+          licensePlate: document.getElementById('ih-plate').value
+        },
+        status: document.getElementById('listing-status').value
+      };
+
+      // Collect selected tags
+      const selectedTags = [];
+      document.querySelectorAll('#tag-list input[type="checkbox"]:checked').forEach(checkbox => {
+        selectedTags.push(parseInt(checkbox.value));
+      });
+      formData.tags = selectedTags;
+
+      // Collect checklist data
+      formData.features = {
+        relevant: Array.from(document.querySelectorAll('#relevant-list input:checked')).map(cb => cb.value),
+        options: Array.from(document.querySelectorAll('#options-list input:checked')).map(cb => cb.value),
+        interior: Array.from(document.querySelectorAll('#interior-list input:checked')).map(cb => cb.value),
+        safety: Array.from(document.querySelectorAll('#safety-list input:checked')).map(cb => cb.value),
+        convenience: Array.from(document.querySelectorAll('#conv-list input:checked')).map(cb => cb.value)
+      };
+
+      // Collect accident history
+      const accidentHistory = [];
+      document.querySelectorAll('#accident-body tr').forEach(row => {
+        const inputs = row.querySelectorAll('input');
+        if (inputs.length >= 4) {
+          accidentHistory.push({
+            repairCost: parseFloat(inputs[0].value) || 0,
+            part: inputs[1].value,
+            labor: inputs[2].value,
+            painting: inputs[3].value
+          });
+        }
+      });
+      formData.accidentHistory = accidentHistory;
+
+      try {
+        // Try to save via API
+        const token = localStorage.getItem('authToken');
+        if (token) {
+          const response = await fetch(`/admin/listing/${listingId}`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify(formData)
+          });
+          
+          if (response.ok) {
+            alert('Listing updated successfully!');
+            window.location.href = 'manage-all-listings.html';
+            return;
+          }
+        }
+        
+        // Fallback: show success message (in real app, this would save to backend)
+        console.log('Listing data to save:', formData);
+        alert('Listing updated successfully! (Note: Changes are not persisted in demo mode)');
+        window.location.href = 'manage-all-listings.html';
+        
+      } catch (error) {
+        console.error('Error saving listing:', error);
+        alert('Error saving listing. Please try again.');
+      }
+    }
+
+    async function deleteListing(listingId) {
+      try {
+        // Try to delete via API
+        const token = localStorage.getItem('authToken');
+        if (token) {
+          const response = await fetch(`/admin/listing/${listingId}`, {
+            method: 'DELETE',
+            headers: { 'Authorization': `Bearer ${token}` }
+          });
+          
+          if (response.ok) {
+            alert('Listing deleted successfully!');
+            window.location.href = 'manage-all-listings.html';
+            return;
+          }
+        }
+        
+        // Fallback: show success message
+        alert('Listing deleted successfully! (Note: Changes are not persisted in demo mode)');
+        window.location.href = 'manage-all-listings.html';
+        
+      } catch (error) {
+        console.error('Error deleting listing:', error);
+        alert('Error deleting listing. Please try again.');
+      }
+    }
+  </script>
+</body>
+</html>

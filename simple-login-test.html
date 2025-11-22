@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Login Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .result { margin: 10px 0; padding: 10px; border-radius: 5px; }
+        .success { background-color: #d4edda; color: #155724; }
+        .error { background-color: #f8d7da; color: #721c24; }
+        .info { background-color: #d1ecf1; color: #0c5460; }
+        button { margin: 5px; padding: 10px 15px; }
+    </style>
+</head>
+<body>
+    <h1>Simple Login Test</h1>
+    
+    <div id="results"></div>
+    
+    <button onclick="testLogin('testseller@example.com', 'secret')">Test Login (secret)</button>
+    <button onclick="testLogin('umarmarwat3@gmail.com', '123456')">Test Login (123456)</button>
+    <button onclick="testLogin('umarmarwat3@gmail.com', 'password123')">Test Login (password123)</button>
+    <button onclick="testLogin('umarmarwat3@gmail.com', '12345678')">Test Login (12345678)</button>
+    <button onclick="testLogin('umarmarwat3@gmail.com', 'admin123')">Test Login (admin123)</button>
+    <button onclick="clearResults()">Clear Results</button>
+
+    <script>
+        function addResult(message, type = 'info') {
+            const results = document.getElementById('results');
+            const div = document.createElement('div');
+            div.className = `result ${type}`;
+            div.innerHTML = `<strong>${new Date().toLocaleTimeString()}</strong>: ${message}`;
+            results.appendChild(div);
+            results.scrollTop = results.scrollHeight;
+        }
+
+        function clearResults() {
+            document.getElementById('results').innerHTML = '';
+        }
+
+        async function testLogin(email, password) {
+            addResult(`Testing login with email: ${email}, password: ${password}`, 'info');
+            
+            try {
+                const response = await fetch('http://localhost:3001/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    addResult(`✅ Login successful! Token: ${data.token ? data.token.substring(0, 20) + '...' : 'No token'}`, 'success');
+                    addResult(`User: ${data.user ? JSON.stringify(data.user, null, 2) : 'No user data'}`, 'success');
+                } else {
+                    addResult(`❌ Login failed: ${data.error || 'Unknown error'} (Status: ${response.status})`, 'error');
+                }
+            } catch (error) {
+                addResult(`❌ Network error: ${error.message}`, 'error');
+            }
+        }
+
+        // Auto-run first test
+        window.addEventListener('load', () => {
+            addResult('Page loaded. Ready to test login credentials.', 'info');
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,1434 @@
+<!DOCTYPE html>
+<html>
+<head> 
+     <meta charset="UTF-8"> 
+     <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+     <title>2022 Toyota RAV4 Hybrid - MangoCar Premium Used Car Dealership</title> 
+     <script src="https://cdn.tailwindcss.com"></script> 
+     <script>window.FontAwesomeConfig = {autoReplaceSvg: 'nest'};</script> 
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script> 
+     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"> 
+     <style> 
+         ::-webkit-scrollbar { display: none;} 
+         * { font-family: 'Inter', sans-serif; } 
+          
+         .sticky-column { 
+             position: sticky; 
+             top: 120px; 
+             height: fit-content; 
+         } 
+          
+         .image-transition { 
+             transition: opacity 0.3s ease-in-out; 
+         } 
+          
+         .thumbnail-active { 
+             border: 3px solid #f97316; 
+             opacity: 1; 
+         } 
+          
+         .thumbnail-inactive { 
+             opacity: 0.7; 
+             border: 2px solid transparent; 
+         } 
+          
+         .thumbnail-inactive:hover { 
+             opacity: 1; 
+             border: 2px solid #f97316; 
+         } 
+          
+         .cta-button { 
+             transition: all 0.3s ease; 
+         } 
+          
+         .cta-button:hover { 
+             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15); 
+             filter: brightness(1.05); 
+         } 
+          
+         .cta-button:active { 
+             transform: scale(0.98); 
+         } 
+          
+         .fade-in-up { 
+             opacity: 0; 
+             transform: translateY(30px); 
+             animation: fadeInUp 0.6s ease-out forwards; 
+         } 
+          
+         @keyframes fadeInUp { 
+             to { 
+                 opacity: 1; 
+                 transform: translateY(0); 
+             } 
+         } 
+          
+         .vehicle-card-hover { 
+             transition: all 0.3s ease; 
+         } 
+          
+         .vehicle-card-hover:hover { 
+             transform: translateY(-5px); 
+             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1); 
+         } 
+          
+         .tab-active { 
+             background-color: #f97316; 
+             color: white; 
+             border-bottom: 3px solid #ea580c; 
+         } 
+          
+         .tab-inactive { 
+             background-color: #f3f4f6; 
+             color: #6b7280; 
+             border-bottom: 3px solid transparent; 
+         } 
+          
+         .tab-inactive:hover { 
+             background-color: #e5e7eb; 
+             color: #374151; 
+         } 
+          
+         .feature-highlight { 
+             background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); 
+             -webkit-background-clip: text; 
+             -webkit-text-fill-color: transparent; 
+             background-clip: text; 
+         } 
+          
+         .pulse-dot { 
+             animation: pulse 2s infinite; 
+         } 
+          
+         @keyframes pulse { 
+             0%, 100% { opacity: 1; } 
+             50% { opacity: 0.5; } 
+         } 
+     </style> 
+ </head> 
+ <body class="bg-gray-50"> 
+  
+<!-- COMPONENT: Language Selector & Header (home page style) -->
+<div class="bg-gray-100 shadow-sm font-body">
+  <div class="container mx-auto px-6 py-2">
+    <div class="flex justify-end items-center space-x-4">
+      <div class="relative">
+        <button id="languageToggle" class="flex items-center space-x-2 text-gray-700 hover:text-orange-500 font-medium transition-colors">
+          <i class="fa-solid fa-globe text-base"></i>
+          <span class="text-sm md:text-base">English</span>
+          <i class="fa-solid fa-chevron-down text-xs"></i>
+        </button>
+        <div id="languageDropdown" class="absolute right-0 top-full mt-1 bg-white rounded-lg shadow-xl border border-gray-200 py-2 min-w-[160px] hidden z-50">
+          <button class="w-full px-4 py-2 text-left text-sm md:text-base text-gray-700 hover:bg-gray-50 hover:text-orange-500 transition-colors flex items-center space-x-2 font-medium" data-lang="en">
+            <img src="https://flagcdn.com/w20/us.png" alt="English" class="w-4 h-3">
+            <span>English</span>
+          </button>
+          <button class="w-full px-4 py-2 text-left text-sm md:text-base text-gray-700 hover:bg-gray-50 hover:text-orange-500 transition-colors flex items-center space-x-2 font-medium" data-lang="ko">
+            <img src="https://flagcdn.com/w20/kr.png" alt="한국어" class="w-4 h-3">
+            <span>한국어</span>
+          </button>
+          <button class="w-full px-4 py-2 text-left text-sm md:text-base text-gray-700 hover:bg-gray-50 hover:text-orange-500 transition-colors flex items-center space-x-2 font-medium" data-lang="ar">
+            <img src="https://flagcdn.com/w20/sa.png" alt="العربية" class="w-4 h-3">
+            <span>العربية</span>
+          </button>
+          <button class="w-full px-4 py-2 text-left text-sm md:text-base text-gray-700 hover:bg-gray-50 hover:text-orange-500 transition-colors flex items-center space-x-2 font-medium" data-lang="fr">
+            <img src="https://flagcdn.com/w20/fr.png" alt="Français" class="w-4 h-3">
+            <span>Français</span>
+          </button>
+        </div>
+      </div>
+      <div class="text-gray-300">|</div>
+      <div class="flex items-center space-x-4">
+        <button class="bg-transparent border border-gray-300 text-gray-700 hover:border-orange-500 hover:text-orange-500 px-6 py-2 rounded-lg font-medium transition-all" data-text="sign-in" onclick="window.location.href='signin.html'">
+          Sign In
+        </button>
+        <button class="bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-lg font-semibold transition-all transform hover:scale-105" data-text="sign-up" onclick="window.location.href='signup.html'">
+          Sign Up
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<header id="header" class="bg-white shadow-sm">
+  <div class="container mx-auto px-6 py-4">
+    <div class="flex items-center justify-between">
+      <a href="home.html" class="flex items-center space-x-2">
+        <span class="text-3xl font-heading font-extrabold text-navy tracking-wide">NSM</span>
+        <span class="text-3xl font-heading font-extrabold text-mango">Autos</span>
+      </a>
+      <div class="hidden md:flex flex-1 mx-8 max-w-xl">
+        <div class="flex items-center bg-gray-50 rounded-full border-2 border-gray-200 focus-within:border-orange-500 transition-colors w-full">
+          <input type="text" data-text="search-placeholder" placeholder="Identification Number / Product Number" class="flex-1 px-6 py-3 bg-transparent text-gray-700 placeholder-gray-500 focus:outline-none rounded-l-full" />
+          <button class="bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-full font-bold flex items-center space-x-2 transition-all">
+            <i class="fa-solid fa-search"></i>
+            <span>Search</span>
+          </button>
+        </div>
+      </div>
+      <div class="hidden md:flex items-center space-x-6">
+        <a id="favorite-action" href="dashboard-saved.html" class="text-gray-700 hover:text-orange-500 font-medium transition-colors cursor-pointer flex items-center space-x-2">
+          <i class="fa-regular fa-heart text-xl"></i>
+          <span>Favourite</span>
+        </a>
+        <a id="compare-action" href="dashboard-compare.html" class="text-gray-700 hover:text-orange-500 font-medium transition-colors cursor-pointer flex items-center space-x-2">
+          <i class="fa-solid fa-code-compare text-xl"></i>
+          <span>Add to Compare</span>
+        </a>
+      </div>
+    </div>
+    <nav class="flex items-center justify-center space-x-10 mt-4 pt-4 border-t border-gray-100">
+      <a href="home.html" class="text-gray-700 hover:text-orange-500 font-medium transition-colors">Home</a>
+      <a href="inventory.html" class="text-gray-700 hover:text-orange-500 font-medium transition-colors">Inventory</a>
+      <a href="blog.html" class="text-gray-700 hover:text-orange-500 font-medium transition-colors">Blog</a>
+      <a href="about-us.html" class="text-gray-700 hover:text-orange-500 font-medium transition-colors">About Us</a>
+      <a href="contact-us.html" class="text-gray-700 hover:text-orange-500 font-medium transition-colors">Contact Us</a>
+    </nav>
+  </div>
+</header>
+  
+ <section id="breadcrumbs-section" class="bg-gray-100 py-4"> 
+     <div class="container mx-auto px-6"> 
+         <nav class="flex items-center space-x-2 text-sm"> 
+             <span class="text-orange-500 hover:text-orange-600 cursor-pointer">Home</span> 
+             <i class="fa-solid fa-chevron-right text-gray-400 text-xs"></i> 
+             <span class="text-orange-500 hover:text-orange-600 cursor-pointer">Inventory</span> 
+             <i class="fa-solid fa-chevron-right text-gray-400 text-xs"></i> 
+             <span class="text-orange-500 hover:text-orange-600 cursor-pointer">SUVs</span> 
+             <i class="fa-solid fa-chevron-right text-gray-400 text-xs"></i> 
+             <span class="text-gray-600" id="breadcrumb-vehicle">2022 Toyota RAV4 Hybrid</span> 
+         </nav> 
+ <div class="mt-4 flex items-center justify-between"> 
+     <div> 
+         <h1 class="text-3xl lg:text-4xl font-bold text-gray-900" id="vehicle-title">2022 Toyota RAV4 Hybrid XLE Premium</h1> 
+         <p class="text-gray-600 mt-2" id="vehicle-stock">Stock #: MC2024-RAV4-001 • VIN: 2T3F1RFV8NC123456</p> 
+     </div> 
+     <div class="hidden md:flex items-center space-x-4"> 
+         <button class="flex items-center text-gray-600 hover:text-orange-500 transition-colors"> 
+                     <i class="fa-solid fa-share mr-2"></i> 
+                     Share 
+                 </button> 
+                 <button class="flex items-center text-gray-600 hover:text-orange-500 transition-colors"> 
+                     <i class="fa-solid fa-print mr-2"></i> 
+                     Print 
+                 </button> 
+                 <button class="flex items-center text-gray-600 hover:text-orange-500 transition-colors"> 
+                     <i class="fa-regular fa-heart mr-2"></i> 
+                     Save 
+                 </button> 
+             </div> 
+         </div> 
+     </div> 
+ </section> 
+  
+ <main class="container mx-auto px-6 py-8"> 
+     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8"> 
+          
+         <div id="media-gallery-section" class="lg:col-span-2"> 
+             <div class="bg-white rounded-2xl shadow-lg overflow-hidden"> 
+                 <div class="relative"> 
+                     <div id="main-image-container" class="relative h-96 lg:h-[500px] bg-gray-100"> 
+                         <div id="main-image" class="lg:col-span-2"> 
+     <div class="bg-white rounded-2xl shadow-lg overflow-hidden"> 
+         <div class="relative bg-black h-[500px] flex items-center justify-center"> 
+             <img class="w-full h-full object-contain image-transition" id="main-vehicle-image" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/2edf96fe03-da1218d26654651f1a43.png" alt="Vehicle main image"> 
+            <div class="absolute bottom-4 right-4 flex items-center space-x-2"> 
+                <button class="w-12 h-12 bg-gray-800 bg-opacity-70 hover:bg-opacity-90 rounded-full flex items-center justify-center transition-transform transform hover:scale-110 shadow-lg" title="Download"> 
+                    <i class="fa-solid fa-download text-white"></i> 
+                </button> 
+                <button id="zoom-btn" class="w-12 h-12 bg-gray-800 bg-opacity-70 hover:bg-opacity-90 rounded-full flex items-center justify-center transition-transform transform hover:scale-110 shadow-lg" title="Zoom"> 
+                    <i class="fa-solid fa-search-plus text-white"></i> 
+                </button> 
+            </div> 
+         </div> 
+         <div id="thumbnail-carousel" class="p-4 bg-gray-100"> 
+             <div class="grid grid-cols-5 gap-3 max-h-[400px] overflow-y-auto pr-2" id="thumbnail-grid"> 
+                 <!-- Thumbnails will be populated dynamically -->
+             </div> 
+         </div> 
+     </div> 
+ </div> 
+                          
+                         <div class="absolute top-4 left-4 flex flex-col space-y-2" id="vehicle-badges"> 
+                             <!-- Badges will be populated dynamically -->
+                         </div> 
+                          
+                         <div class="absolute top-4 right-4 flex flex-col space-y-2"> 
+                             <button class="bg-white bg-opacity-90 hover:bg-opacity-100 rounded-full p-3 shadow-lg transition-all"> 
+                                 <i class="fa-solid fa-expand text-gray-700"></i> 
+                             </button> 
+                             <button id="360-view-btn" class="bg-orange-500 hover:bg-orange-600 text-white rounded-full p-3 shadow-lg transition-all"> 
+                                 <i class="fa-solid fa-rotate text-white"></i> 
+                             </button> 
+                         </div> 
+                          
+                         <div class="absolute bottom-4 right-4 bg-black bg-opacity-75 text-white px-4 py-2 rounded-lg"> 
+                             <span id="image-counter">1 / 24 Photos</span> 
+                         </div> 
+                     </div> 
+                      
+                     <div id="thumbnail-carousel-bottom" class="p-6 bg-gray-50"> 
+                         <div class="flex space-x-4 overflow-x-auto pb-2" id="bottom-thumbnails"> 
+                             <!-- Bottom thumbnails will be populated dynamically -->
+                         </div> 
+                     </div> 
+                 </div> 
+             </div> 
+              
+             <div id="vehicle-details-tabs-section" class="mt-8"> 
+                 <div class="bg-white rounded-2xl shadow-lg overflow-hidden"> 
+                     <div class="flex border-b border-gray-200"> 
+                         <button class="tab-button tab-active px-8 py-4 font-semibold transition-all" data-tab="overview"> 
+                             Vehicle Info 
+                         </button> 
+                         <button class="tab-button tab-inactive px-8 py-4 font-semibold transition-all" data-tab="features"> 
+                             Option Info 
+                         </button> 
+                         <button class="tab-button tab-inactive px-8 py-4 font-semibold transition-all" data-tab="history"> 
+                             Insurance History 
+                         </button> 
+                     </div> 
+                      
+                     <div id="overview-tab" class="tab-content p-8"> 
+     <h2 class="text-3xl font-bold text-gray-800 mb-8">Vehicle Info</h2> 
+      
+     <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-5 text-base border-b border-gray-200 pb-8" id="vehicle-specs"> 
+         <!-- Vehicle specs will be populated dynamically -->
+     </div> 
+      
+     <div class="mt-8"> 
+         <h3 class="text-xl font-bold text-gray-800 mb-6 flex items-center"> 
+             Relevant information 
+             <i class="fa-regular fa-circle-question text-gray-400 ml-2 cursor-pointer"></i> 
+         </h3> 
+          
+         <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-5 text-base" id="insurance-info"> 
+             <!-- Insurance info will be populated dynamically -->
+         </div> 
+     </div> 
+ </div> 
+                      
+                     <div id="features-tab" class="tab-content p-8 hidden"> 
+                         <div class="mb-8"> 
+                             <h3 class="text-2xl font-bold text-gray-900 mb-6">Option Info</h3> 
+                             <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 mb-8" id="feature-icons"> 
+                                 <!-- Feature icons will be populated dynamically -->
+                             </div> 
+                         </div> 
+  
+                         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8" id="feature-categories"> 
+                             <!-- Feature categories will be populated dynamically -->
+                         </div> 
+                     </div> 
+                      
+                     <div id="history-tab" class="tab-content p-8 hidden"> 
+                         <div class="space-y-8" id="insurance-history"> 
+                             <!-- Insurance history will be populated dynamically -->
+                         </div> 
+                     </div> 
+                 </div> 
+             </div> 
+         </div> 
+          
+         <div id="vehicle-info-actions-section" class="lg:col-span-1"> 
+             <div class="sticky-column bg-white rounded-2xl shadow-lg p-6 border border-gray-200"> 
+                 <h2 class="text-2xl lg:text-3xl font-bold text-gray-900" id="sidebar-title">2015 New A3 35 TDI Dynamic</h2> 
+                 <p class="text-gray-600 mt-1 mb-6" id="sidebar-specs">91,391 km | Diesel | 1,968cc | AUTO</p> 
+  
+                 <div class="text-right mb-6"> 
+                     <div class="text-4xl lg:text-5xl font-bold text-gray-900" id="vehicle-price">$ 7,500</div> 
+                     <div class="text-gray-500 mt-1" id="vehicle-location">Location: <span class="text-lg">🇰🇷</span> Korea</div> 
+                 </div> 
+  
+                 <div class="mb-6"> 
+                     <select id="country-select" class="w-full p-3 border border-gray-300 rounded-lg bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-orange-500"> 
+                         <option value="">Select Country</option> 
+                         <option value="United States">United States</option> 
+                         <option value="Canada">Canada</option> 
+                         <option value="United Kingdom">United Kingdom</option> 
+                         <option value="Australia">Australia</option> 
+                     </select> 
+                 </div> 
+  
+                 <div id="price-breakdown-section" class="mb-6"> 
+                     <h3 class="text-lg font-semibold text-gray-800 mb-4">Expected Purchase Price</h3> 
+                     <div class="space-y-3"> 
+                         <div class="flex justify-between items-center text-gray-700"> 
+                             <span>Vehicle Price</span> 
+                             <span class="font-medium" id="base-price">$ 8,100</span> 
+                         </div> 
+                         <div class="flex justify-between items-center"> 
+                             <span class="text-gray-700">Discount</span> 
+                             <span class="font-medium text-red-500" id="discount-amount">- $ 600</span> 
+                         </div> 
+                         <div class="flex justify-between items-center text-gray-700"> 
+                             <span>Shipping Fee</span> 
+                             <span class="font-medium text-gray-900">Please contact us</span> 
+                         </div> 
+                     </div> 
+                     <hr class="my-4 border-gray-200"> 
+                     <div class="flex justify-between items-center"> 
+                         <span class="text-lg font-bold text-gray-900">Total Price</span> 
+                         <span class="text-3xl font-bold text-orange-500" id="total-price">$7,500</span> 
+                     </div> 
+                 </div> 
+  
+                 <div class="bg-gray-100 p-4 rounded-lg mb-6 text-xs text-gray-600 space-y-2"> 
+                     <p>* Shipping costs can be checked through inquiry and will be finalized after the issuance of the invoice.</p> 
+                     <p>* Sales are processed in the order of applications.</p> 
+                 </div> 
+  
+                 <div id="primary-cta-section" class="grid grid-cols-3 gap-4"> 
+                     <button class="w-full bg-green-500 hover:bg-green-600 text-white py-4 px-2 rounded-lg font-bold text-lg cta-button" id="inquiry-btn"> 
+                         Inquiry 
+                     </button> 
+                     <button id="buy-now-btn" class="w-full bg-orange-500 text-white py-4 px-2 rounded-lg font-bold text-lg cta-button opacity-50 cursor-not-allowed" disabled> 
+                         Buy Now 
+                     </button> 
+                     <button id="add-to-compare-btn" class="w-full bg-blue-500 hover:bg-blue-600 text-white py-4 px-2 rounded-lg font-bold text-lg cta-button" title="Add this car to Compare"> 
+                         Add to Compare 
+                     </button> 
+                 </div> 
+             </div> 
+         </div> 
+     </div> 
+      
+     <section id="related-vehicles-section" class="mt-16 relative"> 
+     <h2 class="text-3xl lg:text-4xl font-bold text-gray-900 mb-8">Mango's Pick!</h2> 
+      
+     <div class="absolute inset-y-0 left-0 flex items-center -ml-6 z-10"> 
+         <button class="bg-white/80 hover:bg-white rounded-full w-12 h-12 flex items-center justify-center shadow-lg transition-all"> 
+             <i class="fa-solid fa-chevron-left text-gray-600"></i> 
+         </button> 
+     </div> 
+      
+     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" id="related-vehicles"> 
+         <!-- Related vehicles will be populated dynamically -->
+     </div> 
+      
+     <div class="absolute inset-y-0 right-0 flex items-center -mr-6 z-10"> 
+         <button class="bg-white/80 hover:bg-white rounded-full w-12 h-12 flex items-center justify-center shadow-lg transition-all"> 
+             <i class="fa-solid fa-chevron-right text-gray-600"></i> 
+         </button> 
+     </div> 
+ </section> 
+      
+     <section id="customer-reviews-section" class="mt-16"> 
+     <div class="flex justify-between items-center mb-6"> 
+         <h2 class="text-3xl lg:text-4xl font-bold text-gray-900"> 
+             Mangocar <span class="text-orange-500">Best Reviews</span> 
+         </h2> 
+         <span class="text-gray-700 hover:text-orange-500 font-semibold flex items-center transition-colors cursor-pointer"> 
+             view more 
+             <i class="fa-solid fa-arrow-right ml-2"></i> 
+         </span> 
+     </div> 
+  
+     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"> 
+         <!-- Review Card 1 --> 
+         <div id="review-card-1"> 
+             <div class="overflow-hidden rounded-lg shadow-lg transition-transform duration-300 hover:transform hover:-translate-y-2 hover:shadow-2xl"> 
+                 <img class="w-full h-64 object-cover" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/d399022fe4-7e5086fe051fa956406c.png" alt="a white Porsche 911 sports car being carefully loaded onto a cargo ship, showcasing international shipping, professional photography style"> 
+             </div> 
+             <div class="pt-4"> 
+                 <h3 class="text-xl font-bold text-gray-900 mb-2">Best quality just as expected!</h3> 
+                 <p class="text-gray-600 mb-3 text-base">My Porsche 911 arrived in Kuwait from South Korea, safe, perfect, and exactly as promised. I...</p> 
+                 <div class="flex items-center text-sm text-gray-700"> 
+                     <img class="w-5 h-4 mr-2 object-cover" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/40d9f24548-e91d635594884512ef31.png" alt="Flag of Kuwait, simple icon style"> 
+                     <span>Kuwait</span> 
+                 </div> 
+             </div> 
+         </div> 
+  
+         <!-- Review Card 2 --> 
+         <div id="review-card-2"> 
+             <div class="overflow-hidden rounded-lg shadow-lg transition-transform duration-300 hover:transform hover:-translate-y-2 hover:shadow-2xl"> 
+                 <img class="w-full h-64 object-cover" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/c8c2eb975c-281c82dd90633e3d2138.png" alt="three men outdoors, one signing a contract on the hood of a silver car, showing a successful vehicle sale, candid documentary style"> 
+             </div> 
+             <div class="pt-4"> 
+                 <h3 class="text-xl font-bold text-gray-900 mb-2">Reasonable price!</h3> 
+                 <p class="text-gray-600 mb-3 text-base">I signed the contract on this car on March 20, 2024 and received it on April 25, 2024. The car'...</p> 
+                 <div class="flex items-center text-sm text-gray-700"> 
+                     <img class="w-5 h-4 mr-2 object-cover" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/7c868db9d6-e786f07b6aa8e55928a6.png" alt="Flag of Egypt, simple icon style"> 
+                     <span>Egypt</span> 
+                 </div> 
+             </div> 
+         </div> 
+  
+         <!-- Review Card 3 --> 
+         <div id="review-card-3"> 
+             <div class="overflow-hidden rounded-lg shadow-lg transition-transform duration-300 hover:transform hover:-translate-y-2 hover:shadow-2xl"> 
+                 <img class="w-full h-64 object-cover" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/da6f9a6be5-6b73c956aebba7f0b008.png" alt="three smiling men in an office setting, shaking hands and holding up a signed document, conveying a trustful business deal, professional portrait style"> 
+             </div> 
+             <div class="pt-4"> 
+                 <h3 class="text-xl font-bold text-gray-900 mb-2">Trustful MangoCar!</h3> 
+                 <p class="text-gray-600 mb-3 text-base">I was honored to deal with MangoCar; they were with me every step of the way. The car...</p> 
+                 <div class="flex items-center text-sm text-gray-700"> 
+                     <img class="w-5 h-4 mr-2 object-cover" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/7c868db9d6-e786f07b6aa8e55928a6.png" alt="Flag of Egypt, simple icon style"> 
+                     <span>Egypt</span> 
+                 </div> 
+             </div> 
+         </div> 
+     </div> 
+ </section> 
+      
+     <section id="financing-calculator-section" class="mt-8 bg-white rounded-2xl shadow-lg p-6"> 
+     <h3 class="text-2xl font-bold text-gray-900 mb-6">Seller Information</h3> 
+      
+     <div class="grid grid-cols-1 md:grid-cols-2 gap-6"> 
+         <div class="flex items-start space-x-4"> 
+             <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg" alt="Michael Thompson - Sales Manager" class="w-16 h-16 rounded-full object-cover"> 
+             <div> 
+                 <h4 class="font-bold text-gray-900 text-lg">Michael Thompson</h4> 
+                 <p class="text-orange-500 font-semibold">Senior Sales Manager</p> 
+                 <div class="flex items-center mt-2"> 
+                     <div class="flex text-yellow-400 text-sm mr-2"> 
+                         <i class="fa-solid fa-star"></i> 
+                         <i class="fa-solid fa-star"></i> 
+                         <i class="fa-solid fa-star"></i> 
+                         <i class="fa-solid fa-star"></i> 
+                         <i class="fa-solid fa-star"></i> 
+                     </div> 
+                     <span class="text-sm text-gray-600">(4.9/5 rating)</span> 
+                 </div> 
+                 <p class="text-gray-600 text-sm mt-2">8 years experience • 500+ vehicles sold</p> 
+             </div> 
+         </div> 
+          
+         <div class="space-y-4"> 
+             <div class="flex items-center"> 
+                 <i class="fa-solid fa-phone text-orange-500 mr-3"></i> 
+                 <div> 
+                     <span class="font-semibold text-gray-900">(555) 123-4567</span> 
+                     <p class="text-sm text-gray-600">Direct line</p> 
+                 </div> 
+             </div> 
+              
+             <div class="flex items-center"> 
+                 <i class="fa-solid fa-envelope text-orange-500 mr-3"></i> 
+                 <div> 
+                     <span class="text-gray-900">m.thompson@mangocar.com</span> 
+                     <p class="text-sm text-gray-600">Email response within 2 hours</p> 
+                 </div> 
+             </div> 
+              
+             <div class="flex items-center"> 
+                 <i class="fa-solid fa-clock text-orange-500 mr-3"></i> 
+                 <div> 
+                     <span class="text-gray-900">Available Today</span> 
+                     <p class="text-sm text-gray-600">9:00 AM - 7:00 PM</p> 
+                 </div> 
+             </div> 
+         </div> 
+     </div> 
+      
+     <div class="mt-6 bg-gray-50 rounded-lg p-4"> 
+         <h5 class="font-semibold text-gray-900 mb-2">Recent Customer Feedback</h5> 
+         <p class="text-gray-700 text-sm italic">"Michael was incredibly helpful and patient throughout the entire process. He made sure I understood all the features and financing options. Highly recommend!"</p> 
+         <p class="text-gray-500 text-xs mt-1">- Sarah K., verified buyer</p> 
+     </div> 
+ </section> 
+ </main> 
+  
+ <footer id="footer" class="bg-gray-900 text-white py-16 mt-16"> 
+     <div class="container mx-auto px-6"> 
+         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 mb-12"> 
+             <div class="lg:col-span-2"> 
+                 <div class="flex items-center mb-6"> 
+                     <div class="w-12 h-12 bg-gradient-to-br from-orange-400 to-orange-600 rounded-xl flex items-center justify-center"> 
+                         <i class="fa-solid fa-car text-white text-xl"></i> 
+                     </div> 
+                     <span class="ml-3 text-2xl font-bold">MangoCar</span> 
+                 </div> 
+                 <p class="text-gray-300 mb-6 max-w-md"> 
+                     Your trusted partner in finding the perfect pre-owned vehicle. Quality, transparency, and exceptional service are our commitments to you. 
+                 </p> 
+                 <div class="flex items-center space-x-4"> 
+                     <i class="fa-solid fa-phone text-orange-500"></i> 
+                     <span class="font-semibold">(555) 123-CARS</span> 
+                 </div> 
+                 <div class="flex items-center space-x-4 mt-2"> 
+                     <i class="fa-solid fa-envelope text-orange-500"></i> 
+                     <span>info@mangocar.com</span> 
+                 </div> 
+                 <div class="flex items-center space-x-4 mt-2"> 
+                     <i class="fa-solid fa-location-dot text-orange-500"></i> 
+                     <span>123 Auto Plaza, Car City, CC 12345</span> 
+                 </div> 
+             </div> 
+              
+             <div> 
+                 <h3 class="text-lg font-bold mb-4">Inventory</h3> 
+                 <ul class="space-y-2 text-gray-300"> 
+                     <li><span class="hover:text-orange-500 transition-colors cursor-pointer">All Vehicles</span></li> 
+                     <li><span class="hover:text-orange-500 transition-colors cursor-pointer">SUVs</span></li> 
+                     <li><span class="hover:text-orange-500 transition-colors cursor-pointer">Sedans</span></li> 
+                     <li><span class="hover:text-orange-500 transition-colors cursor-pointer">Trucks</span></li> 
+                     <li><span class="hover:text-orange-500 transition-colors cursor-pointer">Luxury Cars</span></li> 
+                     <li><span class="hover:text-orange-500 transition-colors cursor-pointer">Under $15K</span></li> 
+                 </ul> 
+             </div> 
+              
+             <div> 
+                 <h3 class="text-lg font-bold mb-4">Services</h3> 
+                 <ul class="space-y-2 text-gray-300"> 
+                     <li><span class="hover:text-orange-500 transition-colors cursor-pointer">Financing</span></li> 
+                     <li><span class="hover:text-orange-500 transition-colors cursor-pointer">Trade-In</span></li> 
+                     <li><span class="hover:text-orange-500 transition-colors cursor-pointer">Extended Warranty</span></li> 
+                     <li><span class="hover:text-orange-500 transition-colors cursor-pointer">Vehicle History</span></li> 
+                     <li><span class="hover:text-orange-500 transition-colors cursor-pointer">Inspection</span></li> 
+                     <li><span class="hover:text-orange-500 transition-colors cursor-pointer">Delivery</span></li> 
+                 </ul> 
+             </div> 
+              
+             <div> 
+                 <h3 class="text-lg font-bold mb-4">Company</h3> 
+                 <ul class="space-y-2 text-gray-300"> 
+                     <li><span class="hover:text-orange-500 transition-colors cursor-pointer">About Us</span></li> 
+                     <li><span class="hover:text-orange-500 transition-colors cursor-pointer">Our Team</span></li> 
+                     <li><span class="hover:text-orange-500 transition-colors cursor-pointer">Careers</span></li> 
+                     <li><span class="hover:text-orange-500 transition-colors cursor-pointer">Reviews</span></li> 
+                     <li><span class="hover:text-orange-500 transition-colors cursor-pointer">Contact</span></li> 
+                     <li><span class="hover:text-orange-500 transition-colors cursor-pointer">Blog</span></li> 
+                 </ul> 
+             </div> 
+         </div> 
+          
+         <div class="border-t border-gray-800 pt-8"> 
+             <div class="flex flex-col md:flex-row justify-between items-center"> 
+                 <div class="text-gray-400 mb-4 md:mb-0"> 
+                     © 2024 MangoCar. All rights reserved. 
+                 </div> 
+                 <div class="flex items-center space-x-6"> 
+                     <span class="text-gray-400 hover:text-orange-500 transition-colors cursor-pointer">Privacy Policy</span> 
+                     <span class="text-gray-400 hover:text-orange-500 transition-colors cursor-pointer">Terms of Service</span> 
+                     <div class="flex items-center space-x-4 ml-8"> 
+                         <span class="text-gray-400 hover:text-orange-500 transition-colors cursor-pointer"> 
+                             <i class="fa-brands fa-facebook text-xl"></i> 
+                         </span> 
+                         <span class="text-gray-400 hover:text-orange-500 transition-colors cursor-pointer"> 
+                             <i class="fa-brands fa-twitter text-xl"></i> 
+                         </span> 
+                         <span class="text-gray-400 hover:text-orange-500 transition-colors cursor-pointer"> 
+                             <i class="fa-brands fa-instagram text-xl"></i> 
+                         </span> 
+                         <span class="text-gray-400 hover:text-orange-500 transition-colors cursor-pointer"> 
+                             <i class="fa-brands fa-youtube text-xl"></i> 
+                         </span> 
+                     </div> 
+                 </div> 
+             </div> 
+         </div> 
+     </div> 
+ </footer> 
+  
+ <script> 
+     // Get listing ID from URL parameters (support common aliases)
+     const urlParams = new URLSearchParams(window.location.search);
+     const listingId = urlParams.get('id') || urlParams.get('listingId') || urlParams.get('listing_id') || urlParams.get('vehicleId') || urlParams.get('vehicle_id');
+     
+     let currentVehicleData = null;
+     let currentImages = [];
+     let currentImageIndex = 0;
+
+    // Fetch vehicle data from backend (prefer 3001 admin, then 3001 public, then JSON file)
+    async function fetchVehicleData(id) {
+        try {
+            const apiOrigin = window.__apiOrigin || 'http://localhost:3000';
+            const token = localStorage.getItem('token') || sessionStorage.getItem('token') || '';
+            const adminHeaders = token ? { 'Accept': 'application/json', 'Authorization': 'Bearer ' + token } : { 'Accept': 'application/json' };
+
+            const endpoints = [
+                { url: `${apiOrigin}/admin/listing-details/${id}`, headers: adminHeaders, kind: 'object' },
+                { url: `${apiOrigin}/public/listings/${id}`, headers: { 'Accept': 'application/json' }, kind: 'object' },
+                // As a resilient fallback, load all and look up locally
+                { url: `${apiOrigin}/public/listings`, headers: { 'Accept': 'application/json' }, kind: 'collection' },
+                { url: 'backend/listings.json', headers: { 'Accept': 'application/json' }, kind: 'array' }
+            ];
+
+            let data = null;
+            for (const ep of endpoints) {
+                try {
+                    const res = await fetch(ep.url, { headers: ep.headers, cache: 'no-store' });
+                    if (!res.ok) throw new Error('HTTP ' + res.status);
+                    const json = await res.json();
+                    if (ep.kind === 'array') {
+                        const list = Array.isArray(json) ? json : [];
+                        data = list.find(l => String(l.id) === String(id))
+                            || list.find(l => String(l.product_id_number) === String(id))
+                            || null;
+                    } else if (ep.kind === 'collection') {
+                        const arr = Array.isArray(json?.listings) ? json.listings : (Array.isArray(json) ? json : []);
+                        data = arr.find(l => String(l.id) === String(id))
+                            || arr.find(l => String(l.product_id_number) === String(id))
+                            || null;
+                    } else {
+                        data = json;
+                    }
+                    if (data) break;
+                } catch (e) {
+                    console.warn('Vehicle endpoint failed:', ep.url, e.message);
+                }
+            }
+            if (!data) {
+                throw new Error('Vehicle not found');
+            }
+
+             // Normalize photos to absolute/data URLs
+            const rawPhotos = Array.isArray(data.photos) ? data.photos : (Array.isArray(data.Images) ? data.Images : []);
+            const images = rawPhotos.map(p => {
+                const src = p?.dataUrl || p?.url || p?.name || p?.path || p?.src || '';
+                if (!src) return '';
+                // Rewrite legacy 3000-hosted URLs to current origin
+                if (/^https?:\/\/localhost:3000\//.test(src)) {
+                    return window.location.origin + '/' + src.replace(/^https?:\/\/localhost:3000\//, '');
+                }
+                if (src.startsWith('http://') || src.startsWith('https://') || src.startsWith('data:')) return src;
+                if (src.startsWith('/')) return src; // serve from current origin
+                return '/' + String(src).replace(/^\/+/, '');
+            }).filter(Boolean);
+
+             // Transform data structure to match frontend expectations
+             const transformedData = {
+                 id: Number(data.id || id),
+                 title: data.title || data.name || '',
+                 year: data.vehicle?.year || data.insuranceHistory?.year || data.year || 'N/A',
+                 make: data.vehicle?.manufacturer || data.insuranceHistory?.manufacturer || data.make || 'N/A',
+                 model: data.vehicle?.model || data.insuranceHistory?.model || data.model || 'N/A',
+                 trim: data.trim || '',
+                 mileage: data.vehicle?.mileageKm || data.vehicle?.mileage || data.insuranceHistory?.mileage || 'N/A',
+                 fuelType: data.vehicle?.fuel || data.insuranceHistory?.fuel || data.fuelType || 'N/A',
+                 engineSize: data.vehicle?.displacementL || data.engineSize || 'N/A',
+                 transmission: data.vehicle?.transmission || data.transmission || 'N/A',
+                 price: data.price || 0,
+                 location: data.vehicle?.location || data.location || 'Korea',
+                 color: data.vehicle?.color || data.color || 'N/A',
+                 stockNumber: data.product_id_number || data.stockNumber || data.id,
+                 vin: data.insuranceHistory?.licensePlate || data.vin || 'N/A',
+                 images,
+                 tags: data.tags || data.tagNames || [],
+                 tagIds: data.tagIds || [],
+                 safetyFeatures: data.safety || data.safetyFeatures || [],
+                 insuranceHistory: data.insuranceHistory || {},
+                 passengerCapacity: data.vehicle?.passengerCapacity || data.passengerCapacity || 'N/A',
+                 driveType: data.vehicle?.driveType || data.driveType || 'N/A',
+                 firstRegDate: data.vehicle?.firstRegDate || data.firstRegDate || 'N/A',
+                 // Extended fields from create/sell listing forms
+                 categoryId: data.categoryId || null,
+                 relevant: data.relevant || [],
+                 options: data.options || [],
+                 interior: data.interior || [],
+                 convenience: data.convenience || []
+             };
+
+             return transformedData;
+         } catch (error) {
+             console.error('Error fetching vehicle data:', error);
+             return null;
+         }
+     }
+
+     // Inline error display helper (avoid redirect loops)
+     function showLoadError(message) {
+         try {
+             const titleEl = document.getElementById('vehicle-title');
+             const crumbEl = document.getElementById('breadcrumb-vehicle');
+             const mainImage = document.getElementById('main-vehicle-image');
+             if (titleEl) titleEl.textContent = 'Vehicle';
+             if (crumbEl) crumbEl.textContent = 'Vehicle';
+             if (mainImage) mainImage.alt = 'Vehicle';
+             const container = document.getElementById('vehicle-specs');
+             if (container) {
+                 container.innerHTML = `<div class="p-6 bg-yellow-50 border border-yellow-200 rounded-lg text-yellow-800">${String(message || 'Failed to load vehicle')}</div>`;
+             }
+         } catch (_) { /* noop */ }
+     }
+
+     // Normalize a raw listing into lightweight card fields for Related section
+     function transformListingToCard(listing) {
+         if (!listing) return null;
+         const rawPhotos = Array.isArray(listing.photos) ? listing.photos : (Array.isArray(listing.Images) ? listing.Images : []);
+        const images = rawPhotos.map(p => {
+            const src = p?.dataUrl || p?.url || p?.name || p?.path || p?.src || '';
+            if (!src) return '';
+            // Rewrite legacy 3000-hosted URLs to current origin
+            if (/^https?:\/\/localhost:3000\//.test(src)) {
+                return window.location.origin + '/' + src.replace(/^https?:\/\/localhost:3000\//, '');
+            }
+            if (src.startsWith('http://') || src.startsWith('https://') || src.startsWith('data:')) return src;
+            if (src.startsWith('/')) return src; // serve from current origin
+            return '/' + String(src).replace(/^\/+/, '');
+        }).filter(Boolean);
+
+         return {
+             id: Number(listing.id),
+             year: listing.vehicle?.year || listing.insuranceHistory?.year || listing.year || 'N/A',
+             make: listing.vehicle?.manufacturer || listing.insuranceHistory?.manufacturer || listing.make || 'N/A',
+             model: listing.vehicle?.model || listing.insuranceHistory?.model || listing.model || 'N/A',
+             trim: listing.trim || '',
+             mileage: listing.vehicle?.mileageKm || listing.vehicle?.mileage || listing.insuranceHistory?.mileage || 'N/A',
+             fuelType: listing.vehicle?.fuel || listing.insuranceHistory?.fuel || 'N/A',
+             engineSize: listing.vehicle?.displacementL || listing.engineSize || 'N/A',
+             transmission: listing.vehicle?.transmission || listing.transmission || 'N/A',
+             location: listing.vehicle?.location || listing.location || 'Korea',
+             price: listing.price || 0,
+             images,
+             tags: listing.tags || listing.tagNames || []
+         };
+     }
+
+     // Fetch related vehicles
+    async function fetchRelatedVehicles() {
+        const apiOrigin = window.__apiOrigin || 'http://localhost:3000';
+        const endpoints = [
+            apiOrigin + '/public/listings',
+            'backend/listings.json'
+        ];
+        for (const url of endpoints) {
+            try {
+                const res = await fetch(url, { cache: 'no-store' });
+                if (!res.ok) throw new Error('HTTP ' + res.status);
+                const data = await res.json();
+                const listings = Array.isArray(data.listings) ? data.listings : (Array.isArray(data) ? data : []);
+                const approved = (Array.isArray(listings) ? listings : []).filter(l => !l.status || String(l.status).toLowerCase() === 'approved');
+                const cards = approved
+                    .filter(l => String(l.id) !== String(listingId))
+                    .map(transformListingToCard)
+                    .filter(Boolean)
+                    .slice(0, 4);
+                return cards;
+            } catch (e) {
+                console.warn('Related vehicles endpoint failed:', url, e.message);
+            }
+        }
+        console.error('All related vehicle endpoints failed');
+        return [];
+    }
+
+     // Update page title and meta information
+     function updatePageMeta(vehicle) {
+         const displayTitle = (vehicle.title && vehicle.title.trim()) ? vehicle.title : `${vehicle.year} ${vehicle.make} ${vehicle.model}`.trim();
+         document.title = `${displayTitle} - MangoCar Premium Used Car Dealership`;
+         
+         // Update breadcrumb
+         document.getElementById('breadcrumb-vehicle').textContent = displayTitle;
+         
+         // Update main title
+         document.getElementById('vehicle-title').textContent = `${displayTitle} ${vehicle.trim || ''}`.trim();
+         
+         // Update stock info
+         document.getElementById('vehicle-stock').textContent = `Stock #: ${vehicle.stockNumber || 'N/A'} • VIN: ${vehicle.vin || 'N/A'}`;
+     }
+
+     // Update vehicle images
+     function updateVehicleImages(vehicle) {
+         const mainImage = document.getElementById('main-vehicle-image');
+         const thumbnailGrid = document.getElementById('thumbnail-grid');
+         const bottomThumbnails = document.getElementById('bottom-thumbnails');
+         
+         currentImages = vehicle.images || [];
+         
+         if (currentImages.length > 0) {
+             const displayTitle = (vehicle.title && vehicle.title.trim()) ? vehicle.title : `${vehicle.year} ${vehicle.make} ${vehicle.model}`.trim();
+             mainImage.src = currentImages[0];
+             mainImage.alt = displayTitle;
+             
+             // Update thumbnail grid
+             thumbnailGrid.innerHTML = '';
+             currentImages.forEach((image, index) => {
+                 const thumbnail = document.createElement('div');
+                 thumbnail.className = 'rounded-lg overflow-hidden cursor-pointer group';
+                 thumbnail.innerHTML = `
+                     <img class="w-full h-full object-cover transition-transform group-hover:scale-105" 
+                          src="${image}" 
+                          alt="${displayTitle} - Image ${index + 1}"
+                          data-index="${index}">
+                 `;
+                 thumbnail.addEventListener('click', () => switchImage(index));
+                 thumbnailGrid.appendChild(thumbnail);
+             });
+             
+             // Update bottom thumbnails
+             bottomThumbnails.innerHTML = '';
+             currentImages.slice(0, 6).forEach((image, index) => {
+                 const thumbnail = document.createElement('img');
+                 thumbnail.className = `w-20 h-20 object-cover rounded-lg cursor-pointer transition-all ${index === 0 ? 'thumbnail-active' : 'thumbnail-inactive'}`;
+                 thumbnail.src = image;
+                 const displayTitle = (vehicle.title && vehicle.title.trim()) ? vehicle.title : `${vehicle.year} ${vehicle.make} ${vehicle.model}`.trim();
+                 thumbnail.alt = `${displayTitle} - Thumbnail ${index + 1}`;
+                 thumbnail.setAttribute('data-index', index);
+                 thumbnail.addEventListener('click', () => switchImage(index));
+                 bottomThumbnails.appendChild(thumbnail);
+             });
+             
+             // Update image counter
+             document.getElementById('image-counter').textContent = `1 / ${currentImages.length} Photos`;
+         }
+     }
+
+     // Switch main image
+     function switchImage(index) {
+         if (index >= 0 && index < currentImages.length) {
+             const mainImage = document.getElementById('main-vehicle-image');
+             const imageCounter = document.getElementById('image-counter');
+             
+             mainImage.style.opacity = '0';
+             setTimeout(() => {
+                 mainImage.src = currentImages[index];
+                 imageCounter.textContent = `${index + 1} / ${currentImages.length} Photos`;
+                 mainImage.style.opacity = '1';
+             }, 150);
+             
+             // Update thumbnail states
+             document.querySelectorAll('#bottom-thumbnails img').forEach((thumb, i) => {
+                 thumb.classList.remove('thumbnail-active');
+                 thumb.classList.add('thumbnail-inactive');
+                 if (i === index) {
+                     thumb.classList.remove('thumbnail-inactive');
+                     thumb.classList.add('thumbnail-active');
+                 }
+             });
+             
+             currentImageIndex = index;
+         }
+     }
+
+     // Image modal helpers
+     function openImageModal(index) {
+         try {
+             const modal = document.getElementById('image-modal');
+             const modalImg = document.getElementById('image-modal-img');
+             if (!modal || !modalImg) return;
+             const idx = Number.isFinite(index) ? index : (Number.isFinite(currentImageIndex) ? currentImageIndex : 0);
+             const src = (currentImages && currentImages.length) ? currentImages[Math.max(0, Math.min(idx, currentImages.length - 1))] : null;
+             if (!src) return;
+             modalImg.src = src;
+             modal.classList.remove('hidden');
+             modal.classList.add('flex');
+         } catch (e) { console.warn('openImageModal error:', e); }
+     }
+     function closeImageModal() {
+         const modal = document.getElementById('image-modal');
+         if (modal) {
+             modal.classList.add('hidden');
+             modal.classList.remove('flex');
+         }
+     }
+     function setupImageModalBindings() {
+         const mainImage = document.getElementById('main-vehicle-image');
+         const zoomBtn = document.getElementById('zoom-btn');
+         const closeBtn = document.getElementById('image-modal-close');
+         const modal = document.getElementById('image-modal');
+         if (mainImage) {
+             mainImage.style.cursor = 'zoom-in';
+             mainImage.addEventListener('click', () => openImageModal(currentImageIndex));
+         }
+         if (zoomBtn) {
+             zoomBtn.addEventListener('click', () => openImageModal(currentImageIndex));
+         }
+         if (closeBtn) {
+             closeBtn.addEventListener('click', closeImageModal);
+         }
+         if (modal) {
+             modal.addEventListener('click', (e) => { if (e.target === modal) closeImageModal(); });
+         }
+         window.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeImageModal(); });
+     }
+     // Update vehicle badges
+     function updateVehicleBadges(vehicle) {
+         const badgesContainer = document.getElementById('vehicle-badges');
+         badgesContainer.innerHTML = '';
+         
+         if (vehicle.tags && vehicle.tags.length > 0) {
+             vehicle.tags.forEach(tag => {
+                 const badge = document.createElement('div');
+                 badge.className = 'bg-green-500 text-white px-3 py-1 rounded-full text-sm font-semibold';
+                 badge.textContent = tag;
+                 badgesContainer.appendChild(badge);
+             });
+         }
+     }
+
+     // Update vehicle specifications
+     function updateVehicleSpecs(vehicle) {
+         const specsContainer = document.getElementById('vehicle-specs');
+         specsContainer.innerHTML = `
+             <div class="flex justify-between">
+                 <span class="text-gray-500">Year</span>
+                 <span class="font-bold text-gray-900">${vehicle.year}</span>
+             </div>
+             <div class="flex justify-between">
+                 <span class="text-gray-500">Transmission</span>
+                 <span class="font-bold text-gray-900">${vehicle.transmission || 'N/A'}</span>
+             </div>
+             <div class="flex justify-between">
+                 <span class="text-gray-500">Fuel</span>
+                 <span class="font-bold text-gray-900">${vehicle.fuelType || 'N/A'}</span>
+             </div>
+             <div class="flex justify-between">
+                 <span class="text-gray-500">Color</span>
+                 <span class="font-bold text-gray-900">${vehicle.color || 'N/A'}</span>
+             </div>
+             <div class="flex justify-between">
+                 <span class="text-gray-500">Displacement</span>
+                 <span class="font-bold text-gray-900">${vehicle.engineSize || 'N/A'}</span>
+             </div>
+             <div class="flex justify-between">
+                 <span class="text-gray-500">Passenger Capacity</span>
+                 <span class="font-bold text-gray-900">${vehicle.passengerCapacity || 'N/A'}</span>
+             </div>
+             <div class="flex justify-between">
+                 <span class="text-gray-500">Drive Type</span>
+                 <span class="font-bold text-gray-900">${vehicle.driveType || 'N/A'}</span>
+             </div>
+             <div class="flex justify-between">
+                 <span class="text-gray-500">First Registration Date</span>
+                 <span class="font-bold text-gray-900">${vehicle.firstRegDate || 'N/A'}</span>
+             </div>
+             <div class="flex justify-between">
+                 <span class="text-gray-500">Mileage</span>
+                 <span class="font-bold text-gray-900">${vehicle.mileage || 'N/A'}</span>
+             </div>
+             <div class="flex justify-between">
+                 <span class="text-gray-500">Location</span>
+                 <span class="font-bold text-gray-900">${vehicle.location || 'N/A'}</span>
+             </div>
+         `;
+     }
+
+     // Update insurance information
+     function updateInsuranceInfo(vehicle) {
+         const insuranceContainer = document.getElementById('insurance-info');
+         const insurance = vehicle.insuranceHistory || {};
+         
+         insuranceContainer.innerHTML = `
+             <div class="flex justify-between">
+                 <span class="text-gray-500">Total Loss Insurance</span>
+                 <span class="font-bold text-gray-900">${insurance.totalLoss ? 'YES' : 'NO'}</span>
+             </div>
+             <div class="flex justify-between">
+                 <span class="text-gray-500">Flood damage insurance</span>
+                 <span class="font-bold text-gray-900">${insurance.floodDamage ? 'YES' : 'NO'}</span>
+             </div>
+             <div class="flex justify-between">
+                 <span class="text-gray-500">Theft insurance</span>
+                 <span class="font-bold text-gray-900">${insurance.theft ? 'YES' : 'NO'}</span>
+             </div>
+             <div class="flex justify-between">
+                 <span class="text-gray-500">Government usage</span>
+                 <span class="font-bold text-gray-900">${insurance.governmentUsage ? 'YES' : 'NO'}</span>
+             </div>
+             <div class="flex justify-between">
+                 <span class="text-gray-500">Record of use (general) for commercial purposes</span>
+                 <span class="font-bold text-gray-900">${insurance.commercialGeneral ? 'YES' : 'NO'}</span>
+             </div>
+             <div class="flex justify-between">
+                 <span class="text-gray-500">Record of use (rent) for commercial purposes</span>
+                 <span class="font-bold text-gray-900">${insurance.commercialRent ? 'YES' : 'NO'}</span>
+             </div>
+             <div class="flex justify-between">
+                 <span class="text-gray-500">Fuel system modification</span>
+                 <span class="font-bold text-gray-900">${insurance.fuelModification ? 'YES' : 'NO'}</span>
+             </div>
+             <div class="flex justify-between">
+                 <span class="text-gray-500">Seat Modification</span>
+                 <span class="font-bold text-gray-900">${insurance.seatModification ? 'YES' : 'NO'}</span>
+             </div>
+         `;
+     }
+
+     // Update sidebar information
+     function updateSidebar(vehicle) {
+         const displayTitle = (vehicle.title && vehicle.title.trim()) ? vehicle.title : `${vehicle.year} ${vehicle.make} ${vehicle.model}`.trim();
+         document.getElementById('sidebar-title').textContent = `${displayTitle} ${vehicle.trim || ''}`.trim();
+         const mileageRaw = vehicle.mileage || vehicle.mileageKm || 'N/A';
+         let mileageText = (mileageRaw === 'N/A') ? 'N/A' : String(mileageRaw).trim();
+         if (mileageText !== 'N/A') {
+             const num = Number(String(mileageText).replace(/[^0-9.]/g, ''));
+             if (Number.isFinite(num)) {
+                 mileageText = `${Math.round(num).toLocaleString()} km`;
+             } else if (!/\bkm\b/i.test(mileageText)) {
+                 mileageText = `${mileageText} km`;
+             }
+         }
+
+         const engineRaw = vehicle.engineSize || vehicle.displacementL || 'N/A';
+         let engineText = (engineRaw === 'N/A') ? 'N/A' : String(engineRaw).trim();
+         if (engineText !== 'N/A') {
+             const litersMatch = engineText.match(/^\s*([0-9]+(?:\.[0-9]+)?)\s*l?\s*$/i);
+             if (litersMatch) {
+                 const liters = parseFloat(litersMatch[1]);
+                 if (Number.isFinite(liters)) engineText = `${Math.round(liters * 1000).toLocaleString()}cc`;
+             } else {
+                 const num = Number(String(engineText).replace(/[^0-9.]/g, ''));
+                 if (Number.isFinite(num)) {
+                     engineText = `${Math.round(num).toLocaleString()}cc`;
+                 } else if (!/\bcc\b/i.test(engineText)) {
+                     engineText = `${engineText} cc`;
+                 }
+             }
+         }
+
+         document.getElementById('sidebar-specs').textContent = `${mileageText} | ${vehicle.fuelType || 'N/A'} | ${engineText} | ${vehicle.transmission || 'N/A'}`;
+         document.getElementById('vehicle-price').textContent = `$ ${vehicle.price ? vehicle.price.toLocaleString() : 'N/A'}`;
+         document.getElementById('vehicle-location').innerHTML = `Location: <span class="text-lg">🇰🇷</span> ${vehicle.location || 'Korea'}`;
+         
+         // Update price breakdown
+         const basePrice = vehicle.price ? Math.round(vehicle.price * 1.08) : 0;
+         const discount = vehicle.price ? Math.round(vehicle.price * 0.08) : 0;
+         
+         document.getElementById('base-price').textContent = `$ ${basePrice.toLocaleString()}`;
+         document.getElementById('discount-amount').textContent = `- $ ${discount.toLocaleString()}`;
+         document.getElementById('total-price').textContent = `$${vehicle.price ? vehicle.price.toLocaleString() : 'N/A'}`;
+     }
+
+    // Update features tab
+    function updateFeatures(vehicle) {
+        const options = Array.isArray(vehicle.options) ? vehicle.options : [];
+        const interior = Array.isArray(vehicle.interior) ? vehicle.interior : [];
+        const safety = Array.isArray(vehicle.safety) ? vehicle.safety : (vehicle.safetyFeatures || []);
+        const convenience = Array.isArray(vehicle.convenience) ? vehicle.convenience : [];
+
+        const featureIconsContainer = document.getElementById('feature-icons');
+        const featureCategoriesContainer = document.getElementById('feature-categories');
+
+        // Normalizer for matching synonyms
+        const norm = (s) => String(s || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+        const selectedSet = new Set([...options, ...interior, ...safety, ...convenience].map(norm));
+
+        // Canonical option list with icons and synonyms
+        const OPTION_DEFS = [
+            { label: 'Sunroof', icon: 'fa-solar-panel', synonyms: ['sunroof'] },
+            { label: '4WD', icon: 'fa-gears', synonyms: ['4wd','awd','4 wheel drive','four wheel drive'] },
+            { label: 'Leather Seat', icon: 'fa-chair', synonyms: ['leather seat','leather seats','leather'] },
+            { label: 'Heated Seat(Front Seat)', icon: 'fa-fire', synonyms: ['heated seat','heated seats','heated front seat','heated front seats'] },
+            { label: 'Ventilated Seat(Front Seat)', icon: 'fa-fan', synonyms: ['ventilated seat','ventilated seats','cooled seat','cooled seats'] },
+            { label: 'Rear Camera', icon: 'fa-camera', synonyms: ['rear camera','backup camera','rearview camera','parking camera'] },
+            { label: '360° Around View', icon: 'fa-camera-rotate', synonyms: ['360 view','360° view','around view','avm'] },
+            { label: 'SmartKey(AfterMarket)', icon: 'fa-key', synonyms: ['smart key aftermarket','smartkey aftermarket'] },
+            { label: 'Navigation(Aftermarket)', icon: 'fa-map', synonyms: ['navigation aftermarket','gps aftermarket'] },
+            { label: 'Smart Key', icon: 'fa-key', synonyms: ['smart key','smartkey'] },
+            { label: 'Navigation', icon: 'fa-location-dot', synonyms: ['navigation','gps','navi'] },
+            { label: 'Automatic air conditioner', icon: 'fa-snowflake', synonyms: ['automatic air conditioner','auto ac','auto a c','auto a/c','auto air conditioner'] }
+        ];
+
+        // Render feature icons grid with availability styling
+        featureIconsContainer.innerHTML = '';
+        OPTION_DEFS.forEach(def => {
+            const isAvailable = selectedSet.has(norm(def.label)) || def.synonyms.some(s => selectedSet.has(norm(s)));
+            const block = document.createElement('div');
+            block.className = isAvailable
+                ? 'flex flex-col items-center p-4 bg-white rounded-lg ring-1 ring-orange-300 shadow-sm'
+                : 'flex flex-col items-center p-4 bg-gray-100 rounded-lg opacity-60';
+            block.innerHTML = `
+                <i class="fa-solid ${def.icon} ${isAvailable ? 'text-orange-500' : 'text-gray-400'} text-2xl mb-2"></i>
+                <span class="block w-full px-1 text-sm ${isAvailable ? 'text-gray-900 font-semibold' : 'text-gray-400'} text-center whitespace-nowrap truncate leading-tight">${def.label}</span>
+            `;
+            featureIconsContainer.appendChild(block);
+        });
+
+        // Render feature categories from listing data
+        const toList = (arr) => (Array.isArray(arr) && arr.length)
+            ? arr.map(item => `<li class="flex items-center"><i class="fa-solid fa-check text-green-500 mr-2"></i>${item}</li>`).join('')
+            : '<li class="text-gray-400">No items</li>';
+
+        featureCategoriesContainer.innerHTML = `
+            <div>
+                <h3 class="text-xl font-bold text-gray-900 mb-4 feature-highlight">Interior/Exterior</h3>
+                <ul class="space-y-2 text-gray-700">${toList(interior)}</ul>
+            </div>
+            <div>
+                <h3 class="text-xl font-bold text-gray-900 mb-4 feature-highlight">Safety</h3>
+                <ul class="space-y-2 text-gray-700">${toList(safety)}</ul>
+            </div>
+            <div>
+                <h3 class="text-xl font-bold text-gray-900 mb-4 feature-highlight">Convenience/Other</h3>
+                <ul class="space-y-2 text-gray-700">${toList(convenience)}</ul>
+            </div>
+        `;
+    }
+
+     // Update insurance history tab
+     function updateInsuranceHistory(vehicle) {
+         const historyContainer = document.getElementById('insurance-history');
+         const accidents = vehicle.insuranceHistory?.accidents || [];
+         
+         historyContainer.innerHTML = `
+             <div>
+                 <h3 class="text-2xl font-bold text-gray-900 mb-6">Insurance History</h3>
+                 <div class="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-6">
+                     <h4 class="font-bold text-blue-800 mb-2">Used Car Accident Summary</h4>
+                     <p class="text-blue-700 text-sm mb-3">Inquiry Date: ${new Date().toLocaleDateString()}</p>
+                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                         <div>
+                             <span class="text-blue-700 font-semibold">Manufacturer:</span> ${vehicle.make}
+                         </div>
+                         <div>
+                             <span class="text-blue-700 font-semibold">Record of Change of usage purpose:</span> N
+                         </div>
+                         <div>
+                             <span class="text-blue-700 font-semibold">Car ownership change record:</span> 0 times / 2 times
+                         </div>
+                         <div>
+                             <span class="text-blue-700 font-semibold">Record of specific accidents:</span> Total Loss 0 times / Flood 0 times / Theft 0 times
+                         </div>
+                     </div>
+                 </div>
+             </div>
+             
+             <div>
+                 <h4 class="text-lg font-bold text-gray-900 mb-4">Information on unusual accidents in car insurance record</h4>
+                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                     <div class="bg-green-50 border border-green-200 rounded-lg p-4 text-center">
+                         <h5 class="font-semibold text-green-800">Total Loss Insurance</h5>
+                         <p class="text-green-700">No records found</p>
+                     </div>
+                     <div class="bg-green-50 border border-green-200 rounded-lg p-4 text-center">
+                         <h5 class="font-semibold text-green-800">Flood damage insurance</h5>
+                         <p class="text-green-700">No records found</p>
+                     </div>
+                     <div class="bg-green-50 border border-green-200 rounded-lg p-4 text-center">
+                         <h5 class="font-semibold text-green-800">Theft insurance</h5>
+                         <p class="text-green-700">No records found</p>
+                     </div>
+                 </div>
+             </div>
+         `;
+     }
+
+     // Update related vehicles
+     function updateRelatedVehicles(vehicles) {
+         const relatedContainer = document.getElementById('related-vehicles');
+         relatedContainer.innerHTML = '';
+         if (!Array.isArray(vehicles) || vehicles.length === 0) {
+             relatedContainer.innerHTML = '<div class="col-span-4 text-center text-gray-500">No related vehicles available.</div>';
+             return;
+         }
+         
+         vehicles.forEach(vehicle => {
+             const vehicleCard = document.createElement('div');
+             vehicleCard.className = 'bg-white rounded-xl shadow-lg overflow-hidden vehicle-card-hover transition-all duration-300 cursor-pointer';
+             vehicleCard.onclick = () => window.location.href = `product-detail.html?id=${vehicle.id}`;
+             
+             vehicleCard.innerHTML = `
+                 <div class="relative">
+                     <img class="w-full h-56 object-cover" src="${vehicle.images?.[0] || 'placeholder-car.svg'}" alt="${vehicle.year} ${vehicle.make} ${vehicle.model}">
+                     <button class="absolute top-3 right-3 bg-black/30 hover:bg-black/50 w-8 h-8 rounded-full flex items-center justify-center transition-all">
+                         <i class="fa-regular fa-heart text-white"></i>
+                     </button>
+                 </div>
+                 <div class="p-5">
+                     <p class="text-sm text-gray-500">${vehicle.year} ${vehicle.make}</p>
+                     <h3 class="font-bold text-lg text-gray-900 mt-1 mb-3">${vehicle.model} ${vehicle.trim || ''}</h3>
+                     <div class="grid grid-cols-3 gap-y-2 text-sm text-gray-600 mb-4">
+                         <div class="flex items-center"><i class="fa-solid fa-gauge-high mr-1.5 text-gray-400"></i>${vehicle.mileage || 'N/A'}</div>
+                         <div class="flex items-center"><i class="fa-solid fa-gas-pump mr-1.5 text-gray-400"></i>${vehicle.fuelType || 'N/A'}</div>
+                         <div class="flex items-center"><i class="fa-solid fa-cogs mr-1.5 text-gray-400"></i>${vehicle.engineSize || 'N/A'}</div>
+                         <div class="flex items-center"><i class="fa-solid fa-gears mr-1.5 text-gray-400"></i>${vehicle.transmission || 'N/A'}</div>
+                         <div class="flex items-center col-span-2"><i class="fa-solid fa-location-dot mr-1.5 text-gray-400"></i>${vehicle.location || 'Korea'}</div>
+                     </div>
+                     <div class="flex items-center space-x-2 mb-4">
+                         ${vehicle.tags ? vehicle.tags.map(tag => `<button class="px-3 py-1 text-xs font-semibold text-gray-700 border border-gray-300 rounded-full hover:bg-gray-100 transition-colors">${tag}</button>`).join('') : ''}
+                     </div>
+                     <div class="text-right">
+                         <span class="text-2xl font-bold text-orange-500">$ ${vehicle.price ? vehicle.price.toLocaleString() : 'N/A'}</span>
+                     </div>
+                 </div>
+             `;
+             
+             relatedContainer.appendChild(vehicleCard);
+         });
+     }
+
+     // Initialize page
+     async function initializePage() {
+         if (!listingId) {
+             console.warn('No vehicle ID provided in URL');
+             showLoadError('No vehicle ID provided.');
+             return;
+         }
+         
+         const vehicleData = await fetchVehicleData(listingId);
+         if (!vehicleData) {
+             console.warn('Vehicle not found for ID:', listingId);
+             showLoadError('Vehicle not found.');
+             return;
+         }
+         
+         currentVehicleData = vehicleData;
+         
+         // Update all sections with vehicle data
+         updatePageMeta(vehicleData);
+         updateVehicleImages(vehicleData);
+         setupImageModalBindings();
+         updateVehicleBadges(vehicleData);
+         updateVehicleSpecs(vehicleData);
+         updateInsuranceInfo(vehicleData);
+         updateSidebar(vehicleData);
+         updateFeatures(vehicleData);
+         updateInsuranceHistory(vehicleData);
+         setupBuyNowFlow(vehicleData);
+         
+         // Load related vehicles
+         const relatedVehicles = await fetchRelatedVehicles();
+         updateRelatedVehicles(relatedVehicles);
+     }
+     
+     // Tab functionality
+     const tabButtons = document.querySelectorAll('.tab-button');
+     const tabContents = document.querySelectorAll('.tab-content');
+     
+     tabButtons.forEach(button => {
+         button.addEventListener('click', () => {
+             const targetTab = button.getAttribute('data-tab');
+             
+             tabButtons.forEach(btn => {
+                 btn.classList.remove('tab-active');
+                 btn.classList.add('tab-inactive');
+             });
+             
+             button.classList.remove('tab-inactive');
+             button.classList.add('tab-active');
+             
+             tabContents.forEach(content => {
+                 content.classList.add('hidden');
+             });
+             
+             const targetContent = document.getElementById(`${targetTab}-tab`);
+             if (targetContent) {
+                 targetContent.classList.remove('hidden');
+             }
+         });
+     });
+     
+     // Scroll effects
+     window.addEventListener('scroll', () => {
+         const header = document.getElementById('header');
+         if (window.scrollY > 10) {
+             header.classList.add('shadow-xl');
+         } else {
+             header.classList.remove('shadow-xl');
+         }
+     });
+     
+     // Initialize page when DOM is loaded
+     document.addEventListener('DOMContentLoaded', initializePage);
+
+     // Buy Now flow: require country selection and navigate with params
+     function setupBuyNowFlow(vehicle) {
+         const countrySelect = document.getElementById('country-select');
+         const buyBtn = document.getElementById('buy-now-btn');
+         if (!countrySelect || !buyBtn) return;
+
+         const updateState = () => {
+             const country = (countrySelect.value || '').trim();
+             const enabled = country.length > 0;
+             buyBtn.disabled = !enabled;
+             buyBtn.classList.toggle('opacity-50', !enabled);
+             buyBtn.classList.toggle('cursor-not-allowed', !enabled);
+             buyBtn.classList.toggle('hover:bg-orange-600', enabled);
+         };
+
+         countrySelect.addEventListener('change', updateState);
+         updateState();
+
+         buyBtn.addEventListener('click', (e) => {
+             if (buyBtn.disabled) {
+                 e.preventDefault();
+                 return;
+             }
+             const country = encodeURIComponent((countrySelect.value || '').trim());
+             const url = `buy-now.html?id=${encodeURIComponent(listingId)}&country=${country}`;
+             window.location.href = url;
+         });
+     }
+
+     // Compare list helpers
+     function getCompareList(){
+         try { return JSON.parse(localStorage.getItem('compareList')||'[]'); } catch(e){ return []; }
+     }
+     function setCompareList(list){
+         localStorage.setItem('compareList', JSON.stringify(list));
+     }
+     function existsInCompare(id){
+         return getCompareList().some(v=>String(v.id)===String(id));
+     }
+     function addCurrentToCompare(){
+         if(!currentVehicleData){ alert('Vehicle data not loaded yet.'); return; }
+         const list=getCompareList();
+         // Prevent duplicates
+         const id=currentVehicleData.id;
+         if(list.some(v=>String(v.id)===String(id))){
+             toast('Already in Compare list');
+             return;
+         }
+         // Limit to 4 items
+         if(list.length>=4){
+             // remove oldest
+             list.shift();
+         }
+         const snapshot={...currentVehicleData, addedAt: Date.now()};
+         list.push(snapshot);
+         setCompareList(list);
+         updateCompareButtonState();
+         toast('Added to Compare');
+     }
+     function removeCurrentFromCompare(){
+         const id=currentVehicleData?.id; if(!id) return;
+         const list=getCompareList().filter(v=>String(v.id)!==String(id));
+         setCompareList(list);
+         updateCompareButtonState();
+         toast('Removed from Compare');
+     }
+     function updateCompareButtonState(){
+         const btn=document.getElementById('add-to-compare-btn'); if(!btn) return;
+         const inList=existsInCompare(currentVehicleData?.id);
+         btn.textContent = inList ? 'Remove from Compare' : 'Add to Compare';
+         btn.classList.toggle('bg-blue-500', !inList);
+         btn.classList.toggle('hover:bg-blue-600', !inList);
+         btn.classList.toggle('bg-red-500', inList);
+         btn.classList.toggle('hover:bg-red-600', inList);
+     }
+     function wireCompareButton(){
+         const btn=document.getElementById('add-to-compare-btn'); if(!btn) return;
+         btn.addEventListener('click', ()=>{
+             const inList=existsInCompare(currentVehicleData?.id);
+             if(inList) removeCurrentFromCompare(); else addCurrentToCompare();
+         });
+     }
+     function toast(msg){
+         try{
+             const el=document.createElement('div');
+             el.className='fixed bottom-6 left-1/2 -translate-x-1/2 bg-black/80 text-white px-4 py-2 rounded-lg shadow-lg z-50';
+             el.textContent=msg;
+             document.body.appendChild(el);
+             setTimeout(()=>{ el.style.opacity='0'; el.style.transition='opacity 300ms'; setTimeout(()=>el.remove(),300); }, 1200);
+         }catch(e){ alert(msg); }
+     }
+
+     // Re-run button state after initialize
+     document.addEventListener('DOMContentLoaded', ()=>{
+         wireCompareButton();
+         // Update state after vehicle loads
+         const origInit = initializePage;
+         // We cannot reassign function declared with function keyword; instead rely on event timing:
+         // attach a small interval to wait for currentVehicleData then update button state
+         const iv=setInterval(()=>{
+             if(currentVehicleData){ updateCompareButtonState(); clearInterval(iv); }
+         }, 200);
+     });
+ </script> 
+ 
+ <!-- Image Modal -->
+ <div id="image-modal" class="fixed inset-0 bg-black bg-opacity-80 hidden items-center justify-center z-50">
+   <button id="image-modal-close" class="absolute top-6 right-6 w-10 h-10 rounded-full bg-white/80 hover:bg-white flex items-center justify-center shadow">
+     <i class="fa-solid fa-xmark text-gray-800 text-lg"></i>
+   </button>
+   <img id="image-modal-img" class="max-w-[90vw] max-h-[90vh] object-contain rounded-xl shadow-2xl" alt="Zoomed image">
+ </div>
+  
+  
+<script src="scripts/language.js"></script>
+
+ </body>
+</html>

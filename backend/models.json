@@ -1,0 +1,38 @@
+[
+  {
+    "id": 1,
+    "name": "SUV",
+    "slug": "suv",
+    "created_at": "2025-11-15T19:50:42.400Z"
+  },
+  {
+    "id": 2,
+    "name": "Sedan",
+    "slug": "sedan",
+    "created_at": "2025-11-15T19:51:04.167Z"
+  },
+  {
+    "id": 3,
+    "name": "MPV/Van",
+    "slug": "mpv/van",
+    "created_at": "2025-11-15T19:51:30.119Z"
+  },
+  {
+    "id": 4,
+    "name": "Truck",
+    "slug": "truch",
+    "created_at": "2025-11-15T19:51:47.250Z"
+  },
+  {
+    "id": 5,
+    "name": "Bus/ETC",
+    "slug": "bus-etc",
+    "created_at": "2025-11-15T19:52:08.457Z"
+  },
+  {
+    "id": 6,
+    "name": "Unclassified",
+    "slug": "unclassified",
+    "created_at": "2025-11-15T19:52:20.305Z"
+  }
+]

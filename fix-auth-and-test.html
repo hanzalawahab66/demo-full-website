@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fix Authentication - NSM Autos</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 p-8">
+    <div class="max-w-4xl mx-auto">
+        <h1 class="text-3xl font-bold mb-6">Fixing Authentication...</h1>
+        <div id="status" class="bg-white rounded-lg shadow p-6">
+            <div id="progress" class="space-y-2"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:3001';
+        
+        function log(message, type = 'info') {
+            const progress = document.getElementById('progress');
+            const timestamp = new Date().toLocaleTimeString();
+            const color = type === 'error' ? 'text-red-600' : type === 'success' ? 'text-green-600' : 'text-blue-600';
+            progress.innerHTML += `<div class="${color}">[${timestamp}] ${message}</div>`;
+        }
+
+        async function checkAndFixAuth() {
+            log('Starting authentication check...');
+            
+            // Check current token
+            const currentToken = localStorage.getItem('token');
+            if (currentToken) {
+                log('Found existing token, testing validity...');
+                
+                try {
+                    const response = await fetch(`${API_BASE}/my-listings`, {
+                        method: 'GET',
+                        headers: {
+                            'Accept': 'application/json',
+                            'Authorization': `Bearer ${currentToken}`
+                        }
+                    });
+
+                    if (response.ok) {
+                        log('Token is valid! Redirecting to my-listings...', 'success');
+                        setTimeout(() => {
+                            window.location.href = 'my-listings.html';
+                        }, 1000);
+                        return;
+                    } else {
+                        const data = await response.json();
+                        log(`Token invalid: ${data.error}. Will refresh authentication.`, 'error');
+                    }
+                } catch (error) {
+                    log(`Error testing token: ${error.message}`, 'error');
+                }
+            } else {
+                log('No token found in localStorage');
+            }
+
+            // Clear old authentication
+            log('Clearing old authentication data...');
+            localStorage.removeItem('token');
+            localStorage.removeItem('userRole');
+            localStorage.removeItem('role');
+            localStorage.removeItem('user');
+
+            // Perform fresh login
+            log('Performing fresh login as test seller...');
+            try {
+                const response = await fetch(`${API_BASE}/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        email: 'seller@test.com',
+                        password: 'password123'
+                    })
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    log('Login successful! Storing new authentication data...', 'success');
+                    
+                    localStorage.setItem('token', data.token);
+                    localStorage.setItem('userRole', data.user.role);
+                    localStorage.setItem('role', data.user.role);
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                    
+                    // Test the new token
+                    log('Testing new token...');
+                    const testResponse = await fetch(`${API_BASE}/my-listings`, {
+                        method: 'GET',
+                        headers: {
+                            'Accept': 'application/json',
+                            'Authorization': `Bearer ${data.token}`
+                        }
+                    });
+
+                    if (testResponse.ok) {
+                        const testData = await testResponse.json();
+                        log(`New token works! Found ${testData.listings ? testData.listings.length : 0} listings.`, 'success');
+                        log('Redirecting to my-listings page in 2 seconds...', 'success');
+                        
+                        setTimeout(() => {
+                            window.location.href = 'my-listings.html';
+                        }, 2000);
+                    } else {
+                        const testData = await testResponse.json();
+                        log(`New token test failed: ${testData.error}`, 'error');
+                    }
+                } else {
+                    log(`Login failed: ${data.error || 'Unknown error'}`, 'error');
+                }
+            } catch (error) {
+                log(`Login error: ${error.message}`, 'error');
+            }
+        }
+
+        // Start the process
+        checkAndFixAuth();
+    </script>
+</body>
+</html>

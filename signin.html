@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'mango': '#FF8C42',
+                        'navy': '#1B2951',
+                        'charcoal': '#2D3748'
+                    },
+                    fontFamily: {
+                        'heading': ['Inter', 'sans-serif'],
+                        'body': ['Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Removed external Google Fonts to avoid net::ERR_ABORTED in preview env -->
+    <script> window.FontAwesomeConfig = { autoReplaceSvg: 'nest'};</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <style>::-webkit-scrollbar { display: none;}</style>
+</head>
+<body class="font-body bg-gray-50">
+    
+    <div id="main-container" class="min-h-screen flex items-center justify-center py-12 px-4">
+        <div id="login-card" class="w-full max-w-md bg-white rounded-2xl shadow-xl p-8">
+            
+            <!-- Logo Section -->
+            <div id="logo-section" class="text-center mb-10">
+                <div class="flex items-center justify-center space-x-2">
+                    <span class="text-3xl font-heading font-extrabold text-navy tracking-wide">NSM</span>
+                    <span class="text-3xl font-heading font-extrabold text-mango">Autos</span>
+                </div>
+            </div>
+
+            <!-- Login Form -->
+            <form id="login-form" class="space-y-6" action="#" method="post" novalidate>
+                
+                <!-- User ID Field -->
+                <div id="userid-field">
+                    <label for="email" class="block text-sm font-medium text-charcoal mb-2">User ID</label>
+                    <input type="email" id="email" name="email" autocomplete="username" required 
+                           placeholder="Please enter your email address" 
+                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-mango focus:border-transparent transition-all">
+                </div>
+
+                <!-- Password Field -->
+                <div id="password-field">
+                    <label for="password" class="block text-sm font-medium text-charcoal mb-2">Password</label>
+                    <div class="relative">
+                        <input type="password" id="password" name="password" autocomplete="current-password" required 
+                               placeholder="Please enter your password" 
+                               class="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-mango focus:border-transparent transition-all">
+                        <button id="toggle-password" type="button" aria-label="Show password" aria-pressed="false" class="absolute inset-y-0 right-0 flex items-center pr-4">
+                            <i class="fa-regular fa-eye text-black hover:text-gray-600"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Options Row -->
+                <div id="options-row" class="flex items-center justify-between">
+                    <div class="flex items-center">
+                        <input type="checkbox" id="save-id" name="remember" class="h-4 w-4 text-mango focus:ring-mango border-gray-300 rounded">
+                        <label for="save-id" class="ml-2 text-sm text-charcoal">Save ID</label>
+                    </div>
+                    <div class="flex space-x-4">
+                        <a href="find-id.html" class="text-sm text-charcoal hover:text-mango transition-colors cursor-pointer">Forgot ID</a>
+                        <a href="forgot-password.html" class="text-sm text-charcoal hover:text-mango transition-colors cursor-pointer">Forgot Password</a>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div id="action-buttons" class="space-y-3">
+                    <button type="submit" class="w-full py-3 bg-black text-white font-medium rounded-lg hover:bg-gray-800 transition-all">
+                        Log in
+                    </button>
+                    
+                    <button type="button" class="w-full py-3 bg-white text-black font-medium border border-black rounded-lg hover:bg-gray-50 transition-all">
+                        Sign up
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Password visibility toggle (scoped to the password field)
+        const toggleBtn = document.querySelector('#toggle-password');
+        const input = document.querySelector('#password');
+        toggleBtn.addEventListener('click', function() {
+            const icon = this.querySelector('i');
+            const isHidden = input.type === 'password';
+            input.type = isHidden ? 'text' : 'password';
+            this.setAttribute('aria-pressed', isHidden ? 'true' : 'false');
+            this.setAttribute('aria-label', isHidden ? 'Hide password' : 'Show password');
+            icon.classList.toggle('fa-eye', !isHidden);
+            icon.classList.toggle('fa-eye-slash', isHidden);
+        });
+    </script>
+
+    <script>
+      // Login form submission -> calls backend /login and redirects by role
+      (function(){
+        const form = document.getElementById('login-form');
+        if(!form) return;
+        form.addEventListener('submit', async function(e){
+          e.preventDefault();
+          const emailEl = document.getElementById('email');
+          const passEl = document.getElementById('password');
+          const email = (emailEl && emailEl.value || '').trim();
+          const password = (passEl && passEl.value) || '';
+          if(!email || !password){
+            alert('Please enter email and password.');
+            return;
+          }
+          try{
+            const res = await fetch('http://localhost:3000/login',{
+              method:'POST',
+              mode:'cors',
+              headers:{
+                'Content-Type':'application/json',
+                'Accept':'application/json'
+              },
+              body: JSON.stringify({ email, password })
+            });
+            const data = await res.json();
+            if(!res.ok){
+              alert(data.error || 'Login failed');
+              return;
+            }
+            const { token, role, user, redirect } = data;
+            if(token) localStorage.setItem('token', token);
+            if(role) { localStorage.setItem('role', role); localStorage.setItem('userRole', role); }
+            if(user) localStorage.setItem('user', JSON.stringify(user));
+            if (redirect) {
+              window.location.href = redirect;
+            } else if (role === 'buyer') {
+              window.location.href = 'buyer-dashboard.html';
+            } else if (role === 'seller') {
+              window.location.href = 'seller-dashboard.html';
+            } else if (role === 'admin' || role === 'superadmin') {
+              window.location.href = 'admin.html';
+            } else if (role === 'listing_editor') {
+              window.location.href = 'create-listing.html';
+            }
+          }catch(err){
+            console.error('Login error:', err);
+            alert('Network error contacting backend. Is the server running?');
+          }
+        });
+    
+        // Optional: wire the Sign up button to go to signup.html
+        const signupBtn = document.querySelector('#action-buttons button[type="button"]');
+        if(signupBtn){ signupBtn.addEventListener('click', () => { window.location.href = 'signup.html'; }); }
+      })();
+    </script>
+</body>
+</html>

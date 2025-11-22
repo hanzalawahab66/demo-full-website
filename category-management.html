@@ -1,0 +1,594 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Super Admin Panel — Category Management</title>
+  <script>
+    // Pin backend API origin to the running server to avoid 3001 connection errors
+    window.__apiOrigin = 'http://localhost:3000';
+  </script>
+  <style>
+    :root {
+      --bg: #f6f7fb;
+      --text: #0f172a;
+      --muted: #64748b;
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --topbar-bg: #ffffff;
+      --topbar-border: #e5e7eb;
+      --sidebar-bg: #0b1220;
+      --sidebar-border: #1f2937;
+      --sidebar-text: #cbd5e1;
+      --sidebar-hover-bg: #111827;
+      --sidebar-active-bg: #1f2937;
+      --card-bg: #ffffff;
+      --card-border: #e5e7eb;
+      --danger: #ef4444;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body { margin: 0; background: var(--bg); color: var(--text); font-family: Inter, Segoe UI, Roboto, Helvetica, Arial, system-ui, -apple-system, sans-serif; }
+
+    .admin-layout { display: grid; grid-template-columns: 260px 1fr; grid-template-rows: 64px auto; grid-template-areas: "topbar topbar" "sidebar content"; height: 100vh; width: 100%; }
+    .topbar { grid-area: topbar; display: flex; align-items: center; justify-content: space-between; padding: 0 16px; background: var(--topbar-bg); border-bottom: 1px solid var(--topbar-border); position: sticky; top: 0; z-index: 10; }
+    .brand { display: flex; align-items: center; gap: 12px; font-weight: 600; }
+    .brand-logo { width: 28px; height: 28px; border-radius: 8px; background: linear-gradient(135deg, var(--primary), #9333ea); }
+    .top-actions { display: flex; align-items: center; gap: 8px; }
+    .btn { border: 1px solid var(--card-border); background: #fff; color: var(--text); padding: 8px 12px; border-radius: 8px; cursor: pointer; font-weight: 600; }
+    .btn:hover { background: #f9fafb; }
+    .btn-primary { background: var(--primary); color: #fff; border-color: var(--primary); }
+    .btn-primary:hover { background: var(--primary-hover); }
+    .btn-danger { background: var(--danger); color: #fff; border-color: var(--danger); }
+    .admin-name { color: var(--muted); font-weight: 500; }
+
+    .sidebar { grid-area: sidebar; background: var(--sidebar-bg); border-right: 1px solid var(--sidebar-border); color: #fff; padding: 16px 12px; overflow-y: auto; }
+    .sidebar-header { font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--sidebar-text); margin-bottom: 12px; opacity: 0.9; }
+    .menu { display: flex; flex-direction: column; gap: 6px; }
+    .menu a { display: flex; align-items: center; gap: 10px; padding: 10px 12px; text-decoration: none; color: var(--sidebar-text); border-radius: 10px; transition: background 160ms ease, color 160ms ease; font-weight: 500; }
+    .menu a:hover { background: var(--sidebar-hover-bg); color: #fff; }
+    .menu a.active { background: var(--sidebar-active-bg); color: #fff; }
+    .menu .icon { width: 18px; height: 18px; border-radius: 4px; background: #334155; flex-shrink: 0; }
+
+    .content { grid-area: content; padding: 20px; overflow-y: auto; }
+    .content h1 { margin: 0 0 12px; font-size: 24px; }
+    .content .muted { color: var(--muted); }
+
+    .section { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 16px; margin-top: 16px; }
+    .row { display: flex; gap: 12px; flex-wrap: wrap; }
+    .col { flex: 1 1 260px; }
+    label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 6px; }
+    .input { width: 100%; padding: 10px 12px; border-radius: 8px; border: 1px solid var(--card-border); background: #fff; color: var(--text); }
+
+    /* Tree styles */
+    .tree-wrap ul { list-style: none; padding-left: 18px; margin: 6px 0; }
+    .tree-wrap li { margin: 4px 0; }
+    .tree-row { display: flex; align-items: center; gap: 8px; padding: 6px 8px; border-radius: 8px; }
+    .tree-row:hover { background: #f9fafb; }
+    .toggle { width: 18px; height: 18px; display: inline-flex; align-items: center; justify-content: center; border: 1px solid var(--card-border); border-radius: 6px; cursor: pointer; font-size: 12px; color: var(--muted); }
+    .label { flex: 1; }
+    .actions { display: inline-flex; gap: 6px; }
+
+    .footer { margin-top: 24px; padding-top: 12px; border-top: 1px solid var(--card-border); color: var(--muted); font-size: 12px; }
+  </style>
+</head>
+<body>
+  <div class="admin-layout">
+    <header class="topbar" role="banner">
+      <div class="brand" aria-label="Admin brand">
+        <div class="brand-logo" aria-hidden="true"></div>
+        <span>Super Admin Panel</span>
+      </div>
+      <div class="top-actions">
+        <button class="btn" onclick="location.href='home.html'">Back to Site</button>
+        <span class="admin-name">Signed in as <strong>Super Admin</strong></span>
+        <button class="btn-primary" onclick="localStorage.removeItem('token'); localStorage.removeItem('role'); localStorage.removeItem('user'); location.href='signin.html'">Logout</button>
+      </div>
+    </header>
+
+    <aside class="sidebar" role="navigation" aria-label="Admin sidebar">
+      <div class="sidebar-header">Main Menu</div>
+      <nav class="menu">
+        <a href="admin.html" title="Dashboard"><span class="icon"></span> Dashboard</a>
+        <a href="user-management.html" title="User Management"><span class="icon"></span> User Management</a>
+        <a href="listing-approval.html" title="Listing Approvals"><span class="icon"></span> Listing Approvals</a>
+        <a href="create-listing.html" title="Create New Listing"><span class="icon"></span> Create New Listing</a>
+        <a href="manage-all-listings.html" title="Manage All Listings"><span class="icon"></span> Manage All Listings</a>
+        <a href="category-management.html" title="Category Management"><span class="icon"></span> Category Management</a>
+        <a href="tag-management.html" title="Tag Management"><span class="icon"></span> Tag Management</a>
+        <a href="blog-management.html" title="Blog Management"><span class="icon"></span> Blog Management</a>
+        <a href="role-management.html" title="Role Management"><span class="icon"></span> Role Management</a>
+        <a href="setting.html" title="Setting"><span class="icon"></span> Setting</a>
+      </nav>
+    </aside>
+
+    <main class="content" role="main">
+      <h1>Category Management</h1>
+      <p class="muted">Create, edit, and organize categories. Sub-categories nest under their parents.</p>
+
+      <!-- Add New Category -->
+      <section class="section" aria-label="Add category">
+        <h3 style="margin:0">Add New Category</h3>
+        <div class="row" style="margin-top:8px">
+          <div class="col">
+            <label for="cat-name">Name</label>
+            <input id="cat-name" class="input" type="text" placeholder="e.g. Vehicles" />
+          </div>
+          <div class="col">
+            <label for="parent-select">Parent (optional)</label>
+            <select id="parent-select" class="input">
+              <option value="">— None (top-level) —</option>
+            </select>
+          </div>
+          <div class="col">
+            <label for="cat-picture">Picture (required for parent)</label>
+            <input id="cat-picture" class="input" type="file" accept="image/*" />
+            <div id="cat-picture-preview-wrap" style="margin-top:8px; display:flex; align-items:center; gap:8px">
+              <div style="width:32px; height:32px; border-radius:50%; overflow:hidden; background:#f3f4f6; display:flex; align-items:center; justify-content:center">
+                <img id="cat-picture-preview" alt="Preview" style="width:24px; height:24px; object-fit:contain; display:none" />
+              </div>
+              <span id="cat-picture-name" class="muted" style="font-size:12px"></span>
+            </div>
+          </div>
+          <div class="col" style="flex:0 0 auto; display:flex; align-items:flex-end;">
+            <button id="add-category" class="btn btn-primary">Add Category</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Tree View -->
+      <section class="section" aria-label="Categories tree">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+          <h3 style="margin:0">All Categories</h3>
+          <div class="toolbar">
+            <button id="reload-categories" class="btn">Reload</button>
+            <button id="expand-all" class="btn">Expand All</button>
+            <button id="collapse-all" class="btn">Collapse All</button>
+          </div>
+        </div>
+        <div id="categories-tree" class="tree-wrap" style="margin-top:8px"></div>
+        <p id="status-msg" class="muted" style="margin-top:8px"></p>
+      </section>
+
+      <footer class="footer">© 2024 NSM Autos Admin</footer>
+    </main>
+
+    <script>
+      // Highlight active page in sidebar
+      (function () {
+        var links = document.querySelectorAll('.sidebar .menu a');
+        var current = location.pathname.split('/').pop().toLowerCase();
+        links.forEach(function (link) {
+          var href = (link.getAttribute('href') || '').split('/').pop().toLowerCase();
+          if (href === current) link.classList.add('active'); else link.classList.remove('active');
+        });
+      })();
+
+      (function(){
+        var state = { tree: [], expanded: new Set(), pictureDataUrl: null, pictureFileName: null };
+        var wrap = document.getElementById('categories-tree');
+        var msg = document.getElementById('status-msg');
+        var nameEl = document.getElementById('cat-name');
+        var parentSel = document.getElementById('parent-select');
+        var picInput = document.getElementById('cat-picture');
+        var picPreview = document.getElementById('cat-picture-preview');
+        var picNameEl = document.getElementById('cat-picture-name');
+
+        function setMessage(t){ msg.textContent = t || ''; }
+
+        function getTokenOrRedirect(){
+          var token = localStorage.getItem('token');
+          if(!token){ alert('Please sign in to manage categories.'); window.location.href='signin.html'; return null; }
+          return token;
+        }
+
+        function escapeHtml(str){ var map={ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;' }; return String(str||'').replace(/[&<>"']/g,function(m){return map[m]||m;}); }
+
+        // Fallback brand logos for well-known parent categories
+        function brandLogoFor(name){
+          var n = String(name||'').toLowerCase().trim();
+          var map = {
+            'bmw': '/uploads/bmw.svg',
+            'audi': '/uploads/audi.png',
+            'toyota': '/uploads/istockphoto-2062732046-612x612.jpg',
+            'honda': '/uploads/istockphoto-2149237608-612x612.jpg',
+            'hyundai': '/uploads/istockphoto-498580443-612x612.jpg',
+            'mercedes-benz': '/uploads/mercdies.png',
+            'mercdes-benz': '/uploads/mercdies.png',
+            'kia': '/uploads/kia.png',
+            'kg mobility': '/uploads/kg mobility.png',
+            'genesis': '/uploads/genesis.png',
+            'renault korea': '/uploads/renault korea.png',
+            'mini': '/uploads/mini.png',
+            'chevrolet': '/uploads/chevrolet.png'
+          };
+          return map[n] || null;
+        }
+
+        function ensureChildren(arr){ (arr||[]).forEach(function(n){ if(!Array.isArray(n.children)) n.children = []; ensureChildren(n.children); }); }
+
+        function buildTreeFromFlat(items){
+          var nodesById = {};
+          (items||[]).forEach(function(it){
+            var id = Number(it.id);
+            if(!nodesById[id]) nodesById[id] = { id: id, name: String(it.name||''), image_url: it.image_url || null, children: [] };
+            else {
+              nodesById[id].name = String(it.name||'');
+              nodesById[id].image_url = it.image_url || nodesById[id].image_url || null;
+            }
+            nodesById[id].parent_id = it.parent_id == null ? null : Number(it.parent_id);
+          });
+          var roots = [];
+          (items||[]).forEach(function(it){
+            var id = Number(it.id); var parentId = it.parent_id == null ? null : Number(it.parent_id);
+            var node = nodesById[id];
+            if(parentId == null){ roots.push(node); }
+            else {
+              var parent = nodesById[parentId];
+              if(!parent){ parent = nodesById[parentId] = { id: parentId, name: '(Unknown '+parentId+')', image_url: null, children: [], parent_id: null }; roots.push(parent); }
+              parent.children.push(node);
+            }
+          });
+          return roots;
+        }
+
+        function flattenTree(nodes, parentId){
+          var out = [];
+          (nodes||[]).forEach(function(n){
+            out.push({ id: Number(n.id), name: String(n.name||''), parent_id: parentId == null ? null : Number(parentId) });
+            if(Array.isArray(n.children) && n.children.length){ out = out.concat(flattenTree(n.children, n.id)); }
+          });
+          return out;
+        }
+
+        async function fetchCategoriesNested(){
+          var token = localStorage.getItem('token');
+          // Some pages store role under 'userRole', prefer either without blocking auth header
+          var role = localStorage.getItem('role') || localStorage.getItem('userRole');
+          var allowed = ['superadmin','listing_editor','user_manager'];
+          var isPriv = !!token; // always send Authorization when token exists; server enforces roles
+          const origins = getApiOrigins();
+          const endpoints = origins.map(function(o){ return o + '/admin/categories'; }).concat([location.origin + '/backend/categories.json']);
+          for (var i=0; i<endpoints.length; i++){
+            var url = endpoints[i];
+            try{
+              var headers = { 'Accept':'application/json' };
+              if (url.includes('/admin/categories') && isPriv) headers['Authorization'] = 'Bearer '+token;
+              var res = await fetch(url, { headers: headers });
+              if(res.ok) {
+                if (url.includes('/admin/categories')) {
+                  try { state.lastApiOrigin = url.split('/admin/categories')[0]; } catch(_){}
+                }
+                return await res.json();
+              }
+            }catch(_){ /* try next */ }
+          }
+          throw new Error('No categories endpoint available');
+        }
+
+        function onPictureChange(){
+          try {
+            var file = picInput && picInput.files && picInput.files[0];
+            if (!file) { state.pictureDataUrl = null; state.pictureFileName = null; if (picPreview) picPreview.style.display = 'none'; if (picNameEl) picNameEl.textContent = ''; return; }
+            state.pictureFileName = file.name || 'category-image';
+            var reader = new FileReader();
+            reader.onload = function(ev){
+              state.pictureDataUrl = ev.target && ev.target.result ? String(ev.target.result) : null;
+              if (picPreview) { picPreview.src = state.pictureDataUrl || ''; picPreview.style.display = state.pictureDataUrl ? 'block' : 'none'; }
+              if (picNameEl) picNameEl.textContent = file.name || '';
+            };
+            reader.readAsDataURL(file);
+          } catch(_) {
+            state.pictureDataUrl = null; state.pictureFileName = null; if (picPreview) picPreview.style.display = 'none'; if (picNameEl) picNameEl.textContent = '';
+          }
+        }
+
+        function getApiOrigins(){
+          var origins = [];
+          // Prefer explicit hint first (e.g., backend at 3000)
+          var hinted = window.__apiOrigin; if (hinted) origins.push(String(hinted));
+          // Default to 3000 before any remembered origin
+          origins.push('http://localhost:3000');
+          // Consider last working origin after defaults
+          if (state.lastApiOrigin) origins.push(String(state.lastApiOrigin));
+          // Intentionally skip 3001 to avoid connection refused noise unless explicitly hinted
+          // Deduplicate while preserving order
+          var seen = {}; var out = [];
+          for (var i=0;i<origins.length;i++){ var o = String(origins[i]); if(!seen[o]){ seen[o]=true; out.push(o); } }
+          return out;
+        }
+
+        async function uploadImageIfNeeded(name, dataUrlOverride, filenameOverride){
+          try {
+            var dataUrl = dataUrlOverride || state.pictureDataUrl;
+            if (!dataUrl) return null;
+            var base = String(name || filenameOverride || state.pictureFileName || 'category').trim();
+            var filename = filenameOverride || state.pictureFileName || (base.replace(/[^a-z0-9]+/gi, '-').toLowerCase() + '.png');
+            var origins = getApiOrigins();
+            for (var i=0; i<origins.length; i++){
+              var url = origins[i] + '/upload';
+              try {
+                var res = await fetch(url, {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                  body: JSON.stringify({ filename: filename, dataUrl: dataUrl })
+                });
+                var data = await res.json();
+                if (res.ok) { return String(data.url || '').trim() || null; }
+              } catch(_) { /* try next origin */ }
+            }
+            throw new Error('No upload endpoint available');
+          } catch(err) {
+            console.error('Upload failed:', err);
+            alert('Upload failed: '+err.message);
+            return null;
+          }
+        }
+
+        async function requestAdminWithFallback(path, method, bodyObj){
+          var token = getTokenOrRedirect(); if(!token) return null;
+          var origins = getApiOrigins();
+          var lastErr = null;
+          for (var i=0; i<origins.length; i++){
+            var url = origins[i] + path;
+            try{
+              var res = await fetch(url, {
+                method: method,
+                headers: { 'Content-Type':'application/json', 'Accept':'application/json', 'Authorization':'Bearer '+token },
+                body: bodyObj ? JSON.stringify(bodyObj) : undefined
+              });
+              var data = await res.json().catch(()=>({}));
+              if (res.status === 401) {
+                localStorage.removeItem('token'); localStorage.removeItem('role'); localStorage.removeItem('user');
+                alert(data.error || 'Session expired. Please sign in again.');
+                window.location.href = 'signin.html';
+                return null;
+              }
+              if (res.ok) return data;
+              lastErr = new Error(data.error || ('HTTP '+res.status));
+            }catch(err){ lastErr = err; }
+          }
+          throw (lastErr || new Error('No admin endpoint available'));
+        }
+
+        function parseCategoriesData(data){
+          var raw = Array.isArray(data && data.tree) ? data.tree : Array.isArray(data) ? data : [];
+          var hasParent = raw.some(function(x){ return x && x.parent_id !== undefined; });
+          var tree = hasParent ? buildTreeFromFlat(raw) : raw;
+          ensureChildren(tree);
+          return tree;
+        }
+
+        function renderNode(node){
+          var li = document.createElement('li');
+          var hasChildren = Array.isArray(node.children) && node.children.length > 0;
+          var row = document.createElement('div'); row.className = 'tree-row';
+          var toggle = document.createElement('span'); toggle.className = 'toggle'; toggle.textContent = hasChildren ? (state.expanded.has(node.id) ? '−' : '+') : '';
+          toggle.title = hasChildren ? (state.expanded.has(node.id) ? 'Collapse' : 'Expand') : '';
+          toggle.addEventListener('click', function(e){ e.stopPropagation(); if(!hasChildren) return; if(state.expanded.has(node.id)){ state.expanded.delete(node.id); } else { state.expanded.add(node.id); } renderTree(); });
+
+          // Parent categories: show picture, then name
+          var isParent = (node.parent_id == null);
+          var pictureWrap = null;
+          if (isParent) {
+            pictureWrap = document.createElement('span');
+            pictureWrap.style = 'display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;overflow:hidden;background:#f3f4f6;margin-right:8px;';
+            var img = document.createElement('img');
+            img.alt = 'Category';
+            var src = node.image_url || brandLogoFor(node.name);
+            img.style = 'width:22px;height:22px;object-fit:contain;'+(src ? '' : 'display:none');
+            if (src) img.src = String(src);
+            img.onerror = function(){ img.style.display = 'none'; };
+            pictureWrap.appendChild(img);
+          }
+
+          var label = document.createElement('span'); label.className = 'label'; label.textContent = String(node.name || '');
+          var actions = document.createElement('span'); actions.className = 'actions';
+          var btnEdit = document.createElement('button'); btnEdit.className = 'btn'; btnEdit.textContent = 'Edit';
+          btnEdit.addEventListener('click', function(){ onEdit(node); });
+          var btnDelete = document.createElement('button'); btnDelete.className = 'btn btn-danger'; btnDelete.textContent = 'Delete';
+          btnDelete.addEventListener('click', function(){ onDelete(node); });
+          actions.appendChild(btnEdit); actions.appendChild(btnDelete);
+
+          row.appendChild(toggle);
+          if (pictureWrap) row.appendChild(pictureWrap);
+          row.appendChild(label);
+          row.appendChild(actions);
+          li.appendChild(row);
+
+          if(hasChildren && state.expanded.has(node.id)){
+            var ul = document.createElement('ul');
+            node.children.forEach(function(child){ ul.appendChild(renderNode(child)); });
+            li.appendChild(ul);
+          }
+          return li;
+        }
+
+        function renderTree(){
+          wrap.innerHTML = '';
+          var ul = document.createElement('ul');
+          (state.tree || []).forEach(function(n){ ul.appendChild(renderNode(n)); });
+          wrap.appendChild(ul);
+        }
+
+        async function loadCategories(){
+          setMessage('Loading categories...');
+          try{
+            var data = await fetchCategoriesNested();
+            var tree = parseCategoriesData(data);
+            state.tree = tree;
+            (state.tree || []).forEach(function(n){ state.expanded.add(n.id); });
+            renderTree();
+            var flat = flattenTree(state.tree, null);
+            parentSel.innerHTML = '<option value="">— None (top-level) —</option>' + flat.map(function(x){ return '<option value="'+x.id+'">'+escapeHtml(x.name)+'</option>'; }).join('');
+            setMessage('');
+          }catch(err){ console.error('Load failed:', err); setMessage('Failed to load categories: '+err.message); }
+        }
+
+        async function addCategory(){
+          var name = String(nameEl.value||'').trim(); var parent_id = parentSel.value ? Number(parentSel.value) : null;
+          if(!name){ alert('Please enter a name'); return; }
+          // Require picture for parent (top-level) categories
+          if (parent_id == null && !state.pictureDataUrl) { alert('Please upload a picture for the parent category.'); return; }
+          var token = getTokenOrRedirect(); if(!token) return;
+          try{
+            var image_url = null;
+            if (state.pictureDataUrl) {
+              image_url = await uploadImageIfNeeded(name, state.pictureDataUrl, state.pictureFileName);
+              if (!image_url && parent_id == null) { return; }
+            }
+            var data = await requestAdminWithFallback('/admin/categories', 'POST', { name, parent_id, image_url });
+            if (!data) return;
+            // Clear inputs and preview
+            wrap.innerHTML = ''; state.tree = []; state.expanded.clear();
+            nameEl.value=''; parentSel.value=''; state.pictureDataUrl = null; state.pictureFileName = null;
+            if (picPreview) { picPreview.src = ''; picPreview.style.display = 'none'; }
+            if (picNameEl) picNameEl.textContent = '';
+            await loadCategories(); setMessage('Category added.');
+          }catch(err){ console.error('Add failed:', err); alert('Add failed: '+err.message); }
+        }
+
+        
+
+        async function onEdit(node){
+          // Inline modal panel for editing name and picture
+          var overlay = document.createElement('div');
+          overlay.style = 'position:fixed;inset:0;background:rgba(0,0,0,0.35);display:flex;align-items:center;justify-content:center;z-index:1000;';
+          var panel = document.createElement('div');
+          panel.className = 'section';
+          panel.style = 'width:420px;max-width:95vw;background:#fff;border:1px solid var(--card-border);border-radius:12px;';
+
+          var title = document.createElement('h3');
+          title.textContent = 'Edit Category';
+          title.style = 'margin:0 0 8px';
+
+          var nameLabel = document.createElement('label');
+          nameLabel.textContent = 'Name';
+          var nameInput = document.createElement('input');
+          nameInput.className = 'input';
+          nameInput.type = 'text';
+          nameInput.value = String(node.name || '');
+
+          var picLabel = document.createElement('label');
+          picLabel.textContent = 'Picture';
+          var previewWrap = document.createElement('div');
+          previewWrap.style = 'margin-top:6px;display:flex;align-items:center;gap:8px';
+          var avatar = document.createElement('div');
+          avatar.style = 'width:36px;height:36px;border-radius:50%;overflow:hidden;background:#f3f4f6;display:flex;align-items:center;justify-content:center';
+          var img = document.createElement('img');
+          img.alt = 'Current';
+          var currentSrc = node.image_url || brandLogoFor(node.name);
+          img.style = 'width:28px;height:28px;object-fit:contain;'+(currentSrc ? '' : 'display:none');
+          if (currentSrc) img.src = String(currentSrc);
+          img.onerror = function(){ img.style.display = 'none'; };
+          avatar.appendChild(img);
+          var fileNameSpan = document.createElement('span');
+          fileNameSpan.className = 'muted';
+          fileNameSpan.style = 'font-size:12px';
+          fileNameSpan.textContent = currentSrc ? String(currentSrc).split('/').pop() : '';
+          previewWrap.appendChild(avatar);
+          previewWrap.appendChild(fileNameSpan);
+
+          var fileInput = document.createElement('input');
+          fileInput.className = 'input';
+          fileInput.type = 'file';
+          fileInput.accept = 'image/*';
+          fileInput.style = 'margin-top:6px';
+
+          // Local state just for edit change
+          var editDataUrl = null;
+          var editFileName = null;
+          fileInput.addEventListener('change', function(){
+            try{
+              var f = fileInput.files && fileInput.files[0];
+              if(!f){ editDataUrl=null; editFileName=null; img.style.display='none'; fileNameSpan.textContent=''; return; }
+              editFileName = f.name || 'category-image';
+              var reader = new FileReader();
+              reader.onload = function(ev){
+                editDataUrl = ev.target && ev.target.result ? String(ev.target.result) : null;
+                if (editDataUrl) { img.src = editDataUrl; img.style.display='block'; fileNameSpan.textContent = f.name || ''; }
+                else { img.style.display='none'; fileNameSpan.textContent=''; }
+              };
+              reader.readAsDataURL(f);
+            }catch(_){ editDataUrl=null; editFileName=null; img.style.display='none'; fileNameSpan.textContent=''; }
+          });
+
+          var actions = document.createElement('div');
+          actions.style = 'display:flex;gap:8px;margin-top:12px;justify-content:flex-end';
+          var saveBtn = document.createElement('button'); saveBtn.className = 'btn btn-primary'; saveBtn.textContent = 'Save';
+          var removeBtn = document.createElement('button'); removeBtn.className = 'btn'; removeBtn.textContent = 'Remove Picture';
+          var cancelBtn = document.createElement('button'); cancelBtn.className = 'btn'; cancelBtn.textContent = 'Cancel';
+
+          actions.appendChild(cancelBtn); actions.appendChild(removeBtn); actions.appendChild(saveBtn);
+
+          panel.appendChild(title);
+          panel.appendChild(nameLabel);
+          panel.appendChild(nameInput);
+          panel.appendChild(picLabel);
+          panel.appendChild(previewWrap);
+          panel.appendChild(fileInput);
+          panel.appendChild(actions);
+          overlay.appendChild(panel);
+          document.body.appendChild(overlay);
+
+          function close(){ try{ document.body.removeChild(overlay); }catch(_){ } }
+
+          cancelBtn.addEventListener('click', function(e){ e.preventDefault(); close(); });
+
+          removeBtn.addEventListener('click', async function(e){
+            e.preventDefault();
+            var token = getTokenOrRedirect(); if(!token) return;
+            var name = String(nameInput.value||'').trim(); if(!name){ alert('Name cannot be empty'); return; }
+            try{
+              var data = await requestAdminWithFallback('/admin/categories/'+encodeURIComponent(node.id), 'PUT', { name, remove_image: true });
+              if (!data) return;
+              close();
+              wrap.innerHTML = ''; state.tree = []; state.expanded.clear();
+              await loadCategories(); setMessage('Picture removed.');
+            }catch(err){ console.error('Update failed:', err); alert('Update failed: '+err.message); }
+          });
+
+          saveBtn.addEventListener('click', async function(e){
+            e.preventDefault();
+            var token = getTokenOrRedirect(); if(!token) return;
+            var name = String(nameInput.value||'').trim(); if(!name){ alert('Name cannot be empty'); return; }
+            try{
+              var image_url = null;
+              if (editDataUrl) {
+                image_url = await uploadImageIfNeeded(name, editDataUrl, editFileName);
+                if (!image_url) return; // upload failed
+              }
+              var payload = image_url ? { name, image_url } : { name };
+              var data = await requestAdminWithFallback('/admin/categories/'+encodeURIComponent(node.id), 'PUT', payload);
+              if (!data) return;
+              close();
+              wrap.innerHTML = ''; state.tree = []; state.expanded.clear();
+              await loadCategories(); setMessage('Category updated.');
+            }catch(err){ console.error('Update failed:', err); alert('Update failed: '+err.message); }
+          });
+        }
+
+        async function onDelete(node){
+          if(!confirm('Delete this category? Children will move to top-level.')) return;
+          var token = getTokenOrRedirect(); if(!token) return;
+          try{
+            var data = await requestAdminWithFallback('/admin/categories/'+encodeURIComponent(node.id), 'DELETE');
+            if (!data) return;
+            wrap.innerHTML = ''; state.tree = []; state.expanded.clear();
+            await loadCategories(); setMessage('Category deleted.');
+          }catch(err){ console.error('Delete failed:', err); alert('Delete failed: '+err.message); }
+        }
+
+        document.getElementById('add-category').addEventListener('click', addCategory);
+        if (picInput) picInput.addEventListener('change', onPictureChange);
+        document.getElementById('reload-categories').addEventListener('click', function(){ wrap.innerHTML=''; state.expanded.clear(); loadCategories(); });
+        document.getElementById('expand-all').addEventListener('click', function(){ (state.tree||[]).forEach(function(n){ state.expanded.add(n.id); }); renderTree(); });
+        document.getElementById('collapse-all').addEventListener('click', function(){ state.expanded.clear(); renderTree(); });
+
+        loadCategories();
+      })();
+    </script>
+  </div>
+</body>
+</html>

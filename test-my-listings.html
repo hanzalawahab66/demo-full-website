@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test My Listings - NSM Autos</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
+        .success { background-color: #d4edda; border-color: #c3e6cb; }
+        .error { background-color: #f8d7da; border-color: #f5c6cb; }
+        .info { background-color: #d1ecf1; border-color: #bee5eb; }
+        button { padding: 10px 15px; margin: 5px; cursor: pointer; }
+        pre { background: #f8f9fa; padding: 10px; border-radius: 3px; overflow-x: auto; }
+        .listing-item { border: 1px solid #ccc; margin: 10px 0; padding: 10px; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <h1>Test My Listings Page</h1>
+    
+    <div class="test-section info">
+        <h3>Test Status</h3>
+        <div id="status">Ready to test...</div>
+    </div>
+
+    <div class="test-section">
+        <h3>Actions</h3>
+        <button onclick="testLogin()">1. Login as Test Seller</button>
+        <button onclick="testMyListings()">2. Test My Listings API</button>
+        <button onclick="openMyListingsPage()">3. Open My Listings Page</button>
+        <button onclick="clearStorage()">Clear Storage</button>
+    </div>
+
+    <div class="test-section">
+        <h3>Results</h3>
+        <div id="results"></div>
+    </div>
+
+    <script>
+        function log(message, type = 'info') {
+            const results = document.getElementById('results');
+            const div = document.createElement('div');
+            div.className = `test-section ${type}`;
+            div.innerHTML = `<strong>${new Date().toLocaleTimeString()}</strong>: ${message}`;
+            results.appendChild(div);
+            results.scrollTop = results.scrollHeight;
+        }
+
+        function updateStatus(message) {
+            document.getElementById('status').textContent = message;
+        }
+
+        async function testLogin() {
+            updateStatus('Testing login...');
+            log('Starting login test with testseller@example.com');
+            
+            try {
+                const response = await fetch('http://localhost:3001/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        email: 'testseller@example.com',
+                        password: 'secret'
+                    })
+                });
+
+                const data = await response.json();
+                
+                if (response.ok && data.token) {
+                    localStorage.setItem('token', data.token);
+                    localStorage.setItem('role', data.role || 'seller');
+                    localStorage.setItem('userRole', data.role || 'seller');
+                    localStorage.setItem('user', JSON.stringify(data.user || {}));
+                    
+                    log(`Login successful! Token: ${data.token.substring(0, 20)}...`, 'success');
+                    log(`Role: ${data.role}`, 'success');
+                    updateStatus('Login successful');
+                } else {
+                    log(`Login failed: ${data.error || 'Unknown error'}`, 'error');
+                    updateStatus('Login failed');
+                }
+            } catch (error) {
+                log(`Login error: ${error.message}`, 'error');
+                updateStatus('Login error');
+            }
+        }
+
+        async function testMyListings() {
+            updateStatus('Testing my-listings API...');
+            const token = localStorage.getItem('token');
+            
+            if (!token) {
+                log('No token found. Please login first.', 'error');
+                return;
+            }
+
+            log('Testing /my-listings API endpoint...');
+            
+            const url = 'http://localhost:3001/my-listings';
+            const options = {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            };
+            
+            debugNetworkCall(url, options);
+            
+            try {
+                const response = await fetch(url, options);
+
+                const data = await response.json();
+                
+                log(`Response status: ${response.status}`, response.ok ? 'success' : 'error');
+                log(`Response data: ${JSON.stringify(data, null, 2)}`, response.ok ? 'success' : 'error');
+                
+                if (response.ok) {
+                    log(`API call successful! Found ${data.listings ? data.listings.length : 0} listings`, 'success');
+                    
+                    if (data.listings && data.listings.length > 0) {
+                        log('<h4>Listings found:</h4>', 'success');
+                        data.listings.forEach((listing, index) => {
+                            log(`
+                                <div class="listing-item">
+                                    <strong>Listing ${index + 1}:</strong><br>
+                                    ID: ${listing.id}<br>
+                                    Title: ${listing.title}<br>
+                                    Price: $${listing.price}<br>
+                                    Status: ${listing.status}<br>
+                                    Created: ${listing.created_at}
+                                </div>
+                            `, 'success');
+                        });
+                    } else {
+                        log('No listings found for this seller', 'info');
+                    }
+                    
+                    updateStatus('API test successful');
+                } else {
+                    log(`API call failed: ${data.error || 'Unknown error'}`, 'error');
+                    updateStatus('API test failed');
+                }
+            } catch (error) {
+                log(`API error: ${error.message}`, 'error');
+                updateStatus('API test error');
+            }
+        }
+
+        function openMyListingsPage() {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                log('No token found. Please login first.', 'error');
+                return;
+            }
+            
+            log('Opening my-listings.html page...', 'info');
+            window.open('my-listings.html', '_blank');
+        }
+
+        function clearStorage() {
+            localStorage.clear();
+            log('Local storage cleared', 'info');
+            updateStatus('Storage cleared');
+        }
+
+        // Auto-run tests on load
+        window.addEventListener('load', async () => {
+            const token = localStorage.getItem('token');
+            const role = localStorage.getItem('role');
+            
+            if (token) {
+                log(`Found existing token: ${token.substring(0, 20)}...`, 'info');
+                log(`Role: ${role}`, 'info');
+                updateStatus('Already authenticated - running API test');
+                
+                // Auto-test the API if we have a token
+                setTimeout(() => testMyListings(), 1000);
+            } else {
+                log('No existing authentication found - running login test', 'info');
+                updateStatus('Not authenticated - running login test');
+                
+                // Auto-login and then test API
+                setTimeout(async () => {
+                    await testLogin();
+                    setTimeout(() => testMyListings(), 2000);
+                }, 1000);
+            }
+        });
+
+        // Add network debugging
+        function debugNetworkCall(url, options) {
+            log(`Making network call to: ${url}`, 'info');
+            log(`Headers: ${JSON.stringify(options.headers || {})}`, 'info');
+            log(`Method: ${options.method || 'GET'}`, 'info');
+            if (options.body) {
+                log(`Body: ${options.body}`, 'info');
+            }
+        }
+    </script>
+</body>
+</html>

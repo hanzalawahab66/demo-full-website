@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Token Debug - NSM Autos</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 p-8">
+    <div class="max-w-4xl mx-auto">
+        <h1 class="text-3xl font-bold mb-6">Token Debug Tool</h1>
+        
+        <div class="bg-white rounded-lg shadow p-6 mb-6">
+            <h2 class="text-xl font-semibold mb-4">Current Authentication Status</h2>
+            <div id="auth-status" class="space-y-2"></div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow p-6 mb-6">
+            <h2 class="text-xl font-semibold mb-4">Test API Calls</h2>
+            <div class="space-y-4">
+                <button id="test-my-listings" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                    Test /my-listings
+                </button>
+                <button id="fresh-login" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
+                    Fresh Login as Test Seller
+                </button>
+                <button id="clear-auth" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">
+                    Clear Authentication
+                </button>
+            </div>
+            <div id="test-results" class="mt-4 p-4 bg-gray-100 rounded"></div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow p-6">
+            <h2 class="text-xl font-semibold mb-4">Actions</h2>
+            <div class="space-y-2">
+                <button id="go-to-listings" class="bg-purple-500 text-white px-4 py-2 rounded hover:bg-purple-600">
+                    Go to My Listings Page
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:3001';
+        
+        function log(message, type = 'info') {
+            const results = document.getElementById('test-results');
+            const timestamp = new Date().toLocaleTimeString();
+            const color = type === 'error' ? 'text-red-600' : type === 'success' ? 'text-green-600' : 'text-blue-600';
+            results.innerHTML += `<div class="${color}">[${timestamp}] ${message}</div>`;
+            results.scrollTop = results.scrollHeight;
+        }
+
+        function updateAuthStatus() {
+            const token = localStorage.getItem('token');
+            const role = localStorage.getItem('userRole') || localStorage.getItem('role');
+            const user = localStorage.getItem('user');
+            
+            const statusDiv = document.getElementById('auth-status');
+            statusDiv.innerHTML = `
+                <div><strong>Token:</strong> ${token ? 'Present (' + token.substring(0, 20) + '...)' : 'Missing'}</div>
+                <div><strong>Role:</strong> ${role || 'Not set'}</div>
+                <div><strong>User:</strong> ${user || 'Not set'}</div>
+                <div><strong>Token Length:</strong> ${token ? token.length + ' characters' : 'N/A'}</div>
+            `;
+        }
+
+        document.getElementById('test-my-listings').addEventListener('click', async () => {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                log('No token found in localStorage', 'error');
+                return;
+            }
+
+            try {
+                log('Testing /my-listings endpoint...');
+                const response = await fetch(`${API_BASE}/my-listings`, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    log(`Success! Got ${data.listings ? data.listings.length : 0} listings`, 'success');
+                } else {
+                    log(`Error ${response.status}: ${data.error || 'Unknown error'}`, 'error');
+                }
+            } catch (error) {
+                log(`Network error: ${error.message}`, 'error');
+            }
+        });
+
+        document.getElementById('fresh-login').addEventListener('click', async () => {
+            try {
+                log('Attempting fresh login...');
+                const response = await fetch(`${API_BASE}/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        email: 'seller@test.com',
+                        password: 'password123'
+                    })
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    localStorage.setItem('token', data.token);
+                    localStorage.setItem('userRole', data.user.role);
+                    localStorage.setItem('role', data.user.role);
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                    
+                    log('Login successful! Token updated.', 'success');
+                    updateAuthStatus();
+                } else {
+                    log(`Login failed: ${data.error || 'Unknown error'}`, 'error');
+                }
+            } catch (error) {
+                log(`Login error: ${error.message}`, 'error');
+            }
+        });
+
+        document.getElementById('clear-auth').addEventListener('click', () => {
+            localStorage.removeItem('token');
+            localStorage.removeItem('userRole');
+            localStorage.removeItem('role');
+            localStorage.removeItem('user');
+            log('Authentication cleared', 'info');
+            updateAuthStatus();
+        });
+
+        document.getElementById('go-to-listings').addEventListener('click', () => {
+            window.location.href = 'my-listings.html';
+        });
+
+        // Initialize
+        updateAuthStatus();
+        log('Debug tool loaded. Check authentication status above.');
+    </script>
+</body>
+</html>

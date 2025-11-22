@@ -1,0 +1,2442 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MangoCar - Premium Used Car Dealership</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'mango': {
+                            50: '#fff7ed',
+                            100: '#ffedd5',
+                            200: '#fed7aa',
+                            300: '#fdba74',
+                            400: '#fb923c',
+                            500: '#f97316',
+                            600: '#ea580c',
+                            700: '#c2410c',
+                            800: '#9a3412',
+                            900: '#7c2d12'
+                        },
+                        'navy': {
+                            50: '#f8fafc',
+                            100: '#f1f5f9',
+                            200: '#e2e8f0',
+                            300: '#cbd5e1',
+                            400: '#94a3b8',
+                            500: '#64748b',
+                            600: '#475569',
+                            700: '#334155',
+                            800: '#1e293b',
+                            900: '#0f172a'
+                        }
+                    },
+                    fontFamily: {
+                        'sans': ['Inter', 'system-ui', 'sans-serif'],
+                        'display': ['Poppins', 'Inter', 'system-ui', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <script>window.FontAwesomeConfig = {autoReplaceSvg: 'nest'};</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>::-webkit-scrollbar { display: none; }</style>
+</head>
+<body class="bg-gray-50 font-sans">
+
+<!-- COMPONENT: Language Selector & Header -->
+<div class="bg-gray-100 shadow-sm font-body">
+    <div class="container mx-auto px-6 py-2">
+        <div class="flex justify-end items-center space-x-4">
+            <div class="relative">
+                <button id="languageToggle" class="flex items-center space-x-2 text-gray-700 hover:text-orange-500 font-medium transition-colors">
+                    <i class="fa-solid fa-globe text-base"></i>
+                    <span class="text-sm md:text-base">English</span>
+                    <i class="fa-solid fa-chevron-down text-xs"></i>
+                </button>
+                
+                <div id="languageDropdown" class="absolute right-0 top-full mt-1 bg-white rounded-lg shadow-xl border border-gray-200 py-2 min-w-[160px] hidden z-50">
+                    <button class="w-full px-4 py-2 text-left text-sm md:text-base text-gray-700 hover:bg-gray-50 hover:text-orange-500 transition-colors flex items-center space-x-2 font-medium" data-lang="en">
+                        <img src="https://flagcdn.com/w20/us.png" alt="English" class="w-4 h-3">
+                        <span>English</span>
+                    </button>
+                    <button class="w-full px-4 py-2 text-left text-sm md:text-base text-gray-700 hover:bg-gray-50 hover:text-orange-500 transition-colors flex items-center space-x-2 font-medium" data-lang="ko">
+                        <img src="https://flagcdn.com/w20/kr.png" alt="한국어" class="w-4 h-3">
+                        <span>한국어</span>
+                    </button>
+                    <button class="w-full px-4 py-2 text-left text-sm md:text-base text-gray-700 hover:bg-gray-50 hover:text-orange-500 transition-colors flex items-center space-x-2 font-medium" data-lang="ar">
+                        <img src="https://flagcdn.com/w20/sa.png" alt="العربية" class="w-4 h-3">
+                        <span>العربية</span>
+                    </button>
+                    <button class="w-full px-4 py-2 text-left text-sm md:text-base text-gray-700 hover:bg-gray-50 hover:text-orange-500 transition-colors flex items-center space-x-2 font-medium" data-lang="fr">
+                        <img src="https://flagcdn.com/w20/fr.png" alt="Français" class="w-4 h-3">
+                        <span>Français</span>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="text-gray-300">|</div>
+            
+            <div class="flex items-center space-x-4">
+                <button class="bg-transparent border border-gray-300 text-gray-700 hover:border-orange-500 hover:text-orange-500 px-6 py-2 rounded-lg font-medium transition-all" data-text="sign-in" onclick="window.location.href='signin.html'">
+                    Sign In
+                </button>
+                <button class="bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-lg font-semibold transition-all transform hover:scale-105" data-text="sign-up" onclick="window.location.href='signup.html'">
+                    Sign Up
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<header id="header" class="bg-white shadow-sm">
+  <div class="container mx-auto px-6 py-4">
+    <div class="flex items-center justify-between">
+      <!-- Branding -->
+      <a href="home.html" class="flex items-center space-x-2">
+        <span class="text-3xl font-heading font-extrabold text-navy tracking-wide">NSM</span>
+        <span class="text-3xl font-heading font-extrabold text-mango">Autos</span>
+      </a>
+      <!-- Search (seller header style; keep data-text for home script) -->
+      <div class="hidden md:flex flex-1 mx-8 max-w-xl">
+        <div class="flex items-center bg-gray-50 rounded-full border-2 border-gray-200 focus-within:border-orange-500 transition-colors w-full">
+          <input type="text" data-text="search-placeholder" placeholder="Identification Number / Product Number" class="flex-1 px-6 py-3 bg-transparent text-gray-700 placeholder-gray-500 focus:outline-none rounded-l-full" />
+          <button class="bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-full font-bold flex items-center space-x-2 transition-all">
+            <i class="fa-solid fa-search"></i>
+            <span>Search</span>
+          </button>
+        </div>
+      </div>
+      <!-- Icons -->
+      <div class="hidden md:flex items-center space-x-6">
+        <a id="favorite-action" href="dashboard-saved.html" class="text-gray-700 hover:text-orange-500 font-medium transition-colors cursor-pointer flex items-center space-x-2">
+          <i class="fa-regular fa-heart text-xl"></i>
+          <span>Favourite</span>
+        </a>
+        <a id="compare-action" href="dashboard-compare.html" class="text-gray-700 hover:text-orange-500 font-medium transition-colors cursor-pointer flex items-center space-x-2">
+          <i class="fa-solid fa-code-compare text-xl"></i>
+          <span>Add to Compare</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Nav -->
+    <nav class="flex items-center justify-center space-x-10 mt-4 pt-4 border-t border-gray-100">
+      <a href="home.html" class="text-gray-700 hover:text-orange-500 font-medium transition-colors">Home</a>
+      <a href="inventory.html" class="text-gray-700 hover:text-orange-500 font-medium transition-colors">Inventory</a>
+      <a href="blog.html" class="text-gray-700 hover:text-orange-500 font-medium transition-colors">Blog</a>
+      <a href="about-us.html" class="text-gray-700 hover:text-orange-500 font-medium transition-colors">About Us</a>
+      <a href="contact-us.html" class="text-gray-700 hover:text-orange-500 font-medium transition-colors">Contact Us</a>
+    </nav>
+  </div>
+</header>
+
+<!-- Breadcrumbs Section -->
+<section id="breadcrumbs-section" class="bg-white border-b border-gray-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        <nav class="flex items-center space-x-2 text-sm">
+            <span class="text-navy-600 hover:text-mango-600 transition-colors duration-200 cursor-pointer">Home</span>
+            <i class="fa-solid fa-chevron-right text-gray-400 text-xs"></i>
+            <span class="text-navy-900 font-medium">Vehicle Inventory</span>
+        </nav>
+        <div class="mt-2">
+            <h1 class="text-3xl font-display font-bold text-navy-900">Explore Our Premium Inventory</h1>
+            <p class="text-navy-600 mt-1">Discover quality pre-owned vehicles with transparent pricing and detailed histories</p>
+        </div>
+    </div>
+}</section>
+
+<!-- Quick Search Bar / Mango's Pick -->
+<section id="quick-search-section" class="py-16 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 class="text-3xl font-display font-bold text-navy-900 mb-6">Mango's Pick!</h2>
+        <div class="relative">
+            <div id="mangos-pick-grid" class="flex items-center space-x-6 overflow-x-auto pb-4 -mb-4">
+                <!-- Mango's Pick cards will be rendered dynamically: only 'nsm autos pickup' tagged cars -->
+            </div>
+            <!-- Navigation Buttons -->
+            <button id="mango-prev" class="absolute top-1/2 -translate-y-1/2 -left-4 w-10 h-10 bg-white rounded-full shadow-md flex items-center justify-center text-gray-600 hover:bg-gray-100 transition">
+                <i class="fa-solid fa-chevron-left"></i>
+            </button>
+            <button id="mango-next" class="absolute top-1/2 -translate-y-1/2 -right-4 w-10 h-10 bg-white rounded-full shadow-md flex items-center justify-center text-gray-600 hover:bg-gray-100 transition">
+                <i class="fa-solid fa-chevron-right"></i>
+            </button>
+        </div>
+    </div>
+}</section>
+
+<!-- Main Content Area -->
+<section id="main-content" class="py-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col lg:flex-row gap-8">
+            <!-- Left Sidebar - Filters -->
+            <aside id="filters-sidebar" class="w-full lg:w-80 bg-white rounded-xl shadow-lg p-6 h-fit lg:sticky lg:top-28">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-lg font-display font-bold text-navy-900">Refine Your Search</h3>
+                    <button class="text-mango-600 hover:text-mango-700 text-sm font-medium">Reset All</button>
+                </div>
+
+                <!-- Product ID Search -->
+                <div class="mb-6">
+                    <label for="search-input" class="block text-sm font-medium text-navy-700 mb-2">Product ID Search</label>
+                    <div class="relative">
+                        <input id="search-input" type="text" placeholder="Enter vehicle ID or VIN..." class="w-full px-4 py-3 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-mango-500 focus:border-transparent" />
+                        <i id="search-trigger" class="fa-solid fa-search absolute left-3 top-3.5 text-gray-400 cursor-pointer" title="Search"></i>
+                    </div>
+                </div>
+
+                <!-- Car Model Filter -->
+                <div class="mb-6 border-b border-gray-200 pb-6">
+                    <button class="flex items-center justify-between w-full text-left" onclick="toggleFilter('model-filter')">
+                        <span class="text-sm font-semibold text-navy-900">Car Model</span>
+                        <i class="fa-solid fa-chevron-down text-gray-400 transition-transform duration-200" id="model-filter-icon"></i>
+                    </button>
+                    <div id="model-filter" class="mt-4">
+                        <div class="space-y-2">
+                            <label class="flex items-center">
+                                <input type="radio" name="car-model" value="SUV" class="rounded-full border-gray-300 text-mango-600 focus:ring-mango-500">
+                                <span class="ml-2 text-sm text-navy-700">SUV</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="radio" name="car-model" value="Sedan" class="rounded-full border-gray-300 text-mango-600 focus:ring-mango-500">
+                                <span class="ml-2 text-sm text-navy-700">Sedan</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="radio" name="car-model" value="MPV/Van" class="rounded-full border-gray-300 text-mango-600 focus:ring-mango-500">
+                                <span class="ml-2 text-sm text-navy-700">MPV/Van</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="radio" name="car-model" value="Truck" class="rounded-full border-gray-300 text-mango-600 focus:ring-mango-500">
+                                <span class="ml-2 text-sm text-navy-700">Truck</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="radio" name="car-model" value="Bus/ETC" class="rounded-full border-gray-300 text-mango-600 focus:ring-mango-500">
+                                <span class="ml-2 text-sm text-navy-700">Bus/ETC</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="radio" name="car-model" value="Unclassified" class="rounded-full border-gray-300 text-mango-600 focus:ring-mango-500">
+                                <span class="ml-2 text-sm text-navy-700">Unclassified</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Manufacturer Filter -->
+                <div class="mb-6 border-b border-gray-200 pb-6">
+                    <button class="flex items-center justify-between w-full text-left" onclick="toggleFilter('manufacturer-filter')">
+                        <span class="text-sm font-semibold text-navy-900">Manufacturer</span>
+                        <i class="fa-solid fa-chevron-down text-gray-400 transition-transform duration-200" id="manufacturer-filter-icon"></i>
+                    </button>
+                    <div id="manufacturer-filter" class="mt-4">
+                        <div class="space-y-2">
+                            <label class="flex items-center">
+                                <input type="radio" name="manufacturer" class="rounded-full border-gray-300 text-mango-600 focus:ring-mango-500">
+                                <div class="ml-2 flex items-center">
+                                    <div class="w-6 h-6 mr-2 rounded-full overflow-hidden flex items-center justify-center bg-gray-100">
+                                        <img class="w-4 h-4 object-contain" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/f0a17767ca-cdfeabe30608e3ae3a6f.png" alt="BMW logo">
+                                    </div>
+                                    <span class="text-sm text-navy-700">BMW</span>
+                                </div>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="radio" name="manufacturer" class="rounded-full border-gray-300 text-mango-600 focus:ring-mango-500">
+                                <div class="ml-2 flex items-center">
+                                    <div class="w-6 h-6 mr-2 rounded-full overflow-hidden flex items-center justify-center bg-gray-100">
+                                        <img class="w-4 h-4 object-contain" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/890e06e65a-f3abe3ba91765162840a.png" alt="Mercedes-Benz logo">
+                                    </div>
+                                    <span class="text-sm text-navy-700">Mercedes-Benz</span>
+                                </div>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="radio" name="manufacturer" class="rounded-full border-gray-300 text-mango-600 focus:ring-mango-500">
+                                <div class="ml-2 flex items-center">
+                                    <div class="w-6 h-6 mr-2 rounded-full overflow-hidden flex items-center justify-center bg-gray-100">
+                                        <img class="w-4 h-4 object-contain" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/87ab911594-b05ae4cdc8972f8d166c.png" alt="Audi logo">
+                                    </div>
+                                    <span class="text-sm text-navy-700">Audi</span>
+                                </div>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="radio" name="manufacturer" class="rounded-full border-gray-300 text-mango-600 focus:ring-mango-500">
+                                <div class="ml-2 flex items-center">
+                                    <div class="w-6 h-6 mr-2 rounded-full overflow-hidden flex items-center justify-center bg-gray-100">
+                                        <img class="w-4 h-4 object-contain" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/0e28b9a6f7-d8b386f9fdb9987e62ac.png" alt="Toyota logo">
+                                    </div>
+                                    <span class="text-sm text-navy-700">Toyota</span>
+                                </div>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="radio" name="manufacturer" class="rounded-full border-gray-300 text-mango-600 focus:ring-mango-500">
+                                <div class="ml-2 flex items-center">
+                                    <div class="w-6 h-6 mr-2 rounded-full overflow-hidden flex items-center justify-center bg-gray-100">
+                                        <img class="w-4 h-4 object-contain" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/edc2e9aad7-a02162065049679aa236.png" alt="Honda logo">
+                                    </div>
+                                    <span class="text-sm text-navy-700">Honda</span>
+                                </div>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="radio" name="manufacturer" class="rounded-full border-gray-300 text-mango-600 focus:ring-mango-500">
+                                <div class="ml-2 flex items-center">
+                                    <div class="w-6 h-6 mr-2 rounded-full overflow-hidden flex items-center justify-center bg-gray-100">
+                                        <img class="w-4 h-4 object-contain" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/66f31d0c9d-1f59dc4f6aa9c28900cb.png" alt="Hyundai logo">
+                                    </div>
+                                    <span class="text-sm text-navy-700">Hyundai</span>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Price Setting Filter -->
+                <div class="mb-6 border-b border-gray-200 pb-6">
+                    <button class="flex items-center justify-between w-full text-left" onclick="toggleFilter('price-filter')">
+                        <span class="text-sm font-semibold text-navy-900">Price Range</span>
+                        <i class="fa-solid fa-chevron-down text-gray-400 transition-transform duration-200" id="price-filter-icon"></i>
+                    </button>
+                    <div id="price-filter" class="mt-4">
+                        <div class="flex items-center space-x-4 mb-4">
+                            <div class="flex-1">
+                                <label class="block text-xs text-navy-600 mb-1">Min Price</label>
+                                <input id="price-min-input" type="number" placeholder="$0" class="w-full px-3 py-2 border border-gray-300 rounded text-sm">
+                            </div>
+                            <div class="flex-1">
+                                <label class="block text-xs text-navy-600 mb-1">Max Price</label>
+                                <input id="price-max-input" type="number" placeholder="$100,000" class="w-full px-3 py-2 border border-gray-300 rounded text-sm">
+                            </div>
+                        </div>
+                        <div class="space-y-2">
+                            <label class="flex items-center">
+                                <input type="radio" name="price-range" class="rounded-full border-gray-300 text-mango-600 focus:ring-mango-500" data-min="0" data-max="15000">
+                                <span class="ml-2 text-sm text-navy-700">Under $15,000</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="radio" name="price-range" class="rounded-full border-gray-300 text-mango-600 focus:ring-mango-500" data-min="15000" data-max="25000">
+                                <span class="ml-2 text-sm text-navy-700">$15,000 - $25,000</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="radio" name="price-range" class="rounded-full border-gray-300 text-mango-600 focus:ring-mango-500" data-min="25000" data-max="35000">
+                                <span class="ml-2 text-sm text-navy-700">$25,000 - $35,000</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="radio" name="price-range" class="rounded-full border-gray-300 text-mango-600 focus:ring-mango-500" data-min="35000">
+                                <span class="ml-2 text-sm text-navy-700">$35,000+</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Year Filter -->
+                <div class="mb-6 border-b border-gray-200 pb-6">
+                    <button class="flex items-center justify-between w-full text-left" onclick="toggleFilter('year-filter')">
+                        <span class="text-sm font-semibold text-navy-900">Year</span>
+                        <i class="fa-solid fa-chevron-down text-gray-400 transition-transform duration-200" id="year-filter-icon"></i>
+                    </button>
+                    <div id="year-filter" class="mt-4">
+                        <div class="flex items-center space-x-4 mb-4">
+                            <div class="flex-1">
+                                <label class="block text-xs text-navy-600 mb-1">From Year</label>
+                                <input id="year-min-input" type="number" placeholder="2000" class="w-full px-3 py-2 border border-gray-300 rounded text-sm">
+                            </div>
+                            <div class="flex-1">
+                                <label class="block text-xs text-navy-600 mb-1">To Year</label>
+                                <input id="year-max-input" type="number" placeholder="2024" class="w-full px-3 py-2 border border-gray-300 rounded text-sm">
+                            </div>
+                        </div>
+                        <div class="space-y-2">
+                            <label class="flex items-center">
+                                <input type="radio" name="year-range" class="rounded-full border-gray-300 text-mango-600 focus:ring-mango-500" data-min="2020" data-max="2024">
+                                <span class="ml-2 text-sm text-navy-700">2020-2024</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="radio" name="year-range" class="rounded-full border-gray-300 text-mango-600 focus:ring-mango-500" data-min="2015" data-max="2019">
+                                <span class="ml-2 text-sm text-navy-700">2015-2019</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="radio" name="year-range" class="rounded-full border-gray-300 text-mango-600 focus:ring-mango-500" data-min="2010" data-max="2014">
+                                <span class="ml-2 text-sm text-navy-700">2010-2014</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="radio" name="year-range" class="rounded-full border-gray-300 text-mango-600 focus:ring-mango-500" data-max="2009">
+                                <span class="ml-2 text-sm text-navy-700">Before 2010</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mileage Filter -->
+                <div class="mb-6 border-b border-gray-200 pb-6">
+                    <button class="flex items-center justify-between w-full text-left" onclick="toggleFilter('mileage-filter')">
+                        <span class="text-sm font-semibold text-navy-900">Mileage</span>
+                        <i class="fa-solid fa-chevron-down text-gray-400 transition-transform duration-200" id="mileage-filter-icon"></i>
+                    </button>
+                    <div id="mileage-filter" class="mt-4">
+                        <div class="flex items-center space-x-4 mb-4">
+                            <div class="flex-1">
+                                <label class="block text-xs text-navy-600 mb-1">Min Miles</label>
+                                <input id="mileage-min-input" type="number" placeholder="0" class="w-full px-3 py-2 border border-gray-300 rounded text-sm">
+                            </div>
+                            <div class="flex-1">
+                                <label class="block text-xs text-navy-600 mb-1">Max Miles</label>
+                                <input id="mileage-max-input" type="number" placeholder="200,000" class="w-full px-3 py-2 border border-gray-300 rounded text-sm">
+                            </div>
+                        </div>
+                        <div class="space-y-2">
+                            <label class="flex items-center">
+                                <input type="radio" name="mileage-range" class="rounded-full border-gray-300 text-mango-600 focus:ring-mango-500" data-min="0" data-max="25000">
+                                <span class="ml-2 text-sm text-navy-700">Under 25,000 miles</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="radio" name="mileage-range" class="rounded-full border-gray-300 text-mango-600 focus:ring-mango-500" data-min="25000" data-max="50000">
+                                <span class="ml-2 text-sm text-navy-700">25,000 - 50,000 miles</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="radio" name="mileage-range" class="rounded-full border-gray-300 text-mango-600 focus:ring-mango-500" data-min="50000" data-max="100000">
+                                <span class="ml-2 text-sm text-navy-700">50,000 - 100,000 miles</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="radio" name="mileage-range" class="rounded-full border-gray-300 text-mango-600 focus:ring-mango-500" data-min="100000">
+                                <span class="ml-2 text-sm text-navy-700">Over 100,000 miles</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Colors Filter -->
+                <div class="mb-6 border-b border-gray-200 pb-6">
+                    <button class="flex items-center justify-between w-full text-left" onclick="toggleFilter('colors-filter')">
+                        <span class="text-sm font-semibold text-navy-900">Colors</span>
+                        <i class="fa-solid fa-chevron-down text-gray-400 transition-transform duration-200" id="colors-filter-icon"></i>
+                    </button>
+                    <div id="colors-filter" class="mt-4">
+                        <div class="grid grid-cols-4 gap-3">
+                            <label class="flex flex-col items-center cursor-pointer">
+                                <input type="checkbox" class="sr-only" name="color-filter" value="White" data-color="White">
+                                <div class="w-8 h-8 rounded-full bg-white border-2 border-gray-300 hover:border-mango-500"></div>
+                                <span class="text-xs text-navy-700 mt-1">White</span>
+                            </label>
+                            <label class="flex flex-col items-center cursor-pointer">
+                                <input type="checkbox" class="sr-only" name="color-filter" value="Black" data-color="Black">
+                                <div class="w-8 h-8 rounded-full bg-black border-2 border-gray-300 hover:border-mango-500"></div>
+                                <span class="text-xs text-navy-700 mt-1">Black</span>
+                            </label>
+                            <label class="flex flex-col items-center cursor-pointer">
+                                <input type="checkbox" class="sr-only" name="color-filter" value="Gray" data-color="Gray">
+                                <div class="w-8 h-8 rounded-full bg-gray-500 border-2 border-gray-300 hover:border-mango-500"></div>
+                                <span class="text-xs text-navy-700 mt-1">Gray</span>
+                            </label>
+                            <label class="flex flex-col items-center cursor-pointer">
+                                <input type="checkbox" class="sr-only" name="color-filter" value="Blue" data-color="Blue">
+                                <div class="w-8 h-8 rounded-full bg-blue-600 border-2 border-gray-300 hover:border-mango-500"></div>
+                                <span class="text-xs text-navy-700 mt-1">Blue</span>
+                            </label>
+                            <label class="flex flex-col items-center cursor-pointer">
+                                <input type="checkbox" class="sr-only" name="color-filter" value="Red" data-color="Red">
+                                <div class="w-8 h-8 rounded-full bg-red-600 border-2 border-gray-300 hover:border-mango-500"></div>
+                                <span class="text-xs text-navy-700 mt-1">Red</span>
+                            </label>
+                            <label class="flex flex-col items-center cursor-pointer">
+                                <input type="checkbox" class="sr-only" name="color-filter" value="Green" data-color="Green">
+                                <div class="w-8 h-8 rounded-full bg-green-600 border-2 border-gray-300 hover:border-mango-500"></div>
+                                <span class="text-xs text-navy-700 mt-1">Green</span>
+                            </label>
+                            <label class="flex flex-col items-center cursor-pointer">
+                                <input type="checkbox" class="sr-only" name="color-filter" value="Yellow" data-color="Yellow">
+                                <div class="w-8 h-8 rounded-full bg-yellow-500 border-2 border-gray-300 hover:border-mango-500"></div>
+                                <span class="text-xs text-navy-700 mt-1">Yellow</span>
+                            </label>
+                            <label class="flex flex-col items-center cursor-pointer">
+                                <input type="checkbox" class="sr-only" name="color-filter" value="Purple" data-color="Purple">
+                                <div class="w-8 h-8 rounded-full bg-purple-600 border-2 border-gray-300 hover:border-mango-500"></div>
+                                <span class="text-xs text-navy-700 mt-1">Purple</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Fuel Type Filter -->
+                <div class="mb-6 border-b border-gray-200 pb-6">
+                    <button class="flex items-center justify-between w-full text-left" onclick="toggleFilter('fuel-filter')">
+                        <span class="text-sm font-semibold text-navy-900">Fuel Type</span>
+                        <i class="fa-solid fa-chevron-down text-gray-400 transition-transform duration-200" id="fuel-filter-icon"></i>
+                    </button>
+                    <div id="fuel-filter" class="mt-4">
+                        <div class="space-y-2">
+                            <label class="flex items-center">
+                                <input type="radio" name="fuel-type" value="Gasoline" data-fuel="Gasoline" class="rounded-full border-gray-300 text-mango-600 focus:ring-mango-500">
+                                <span class="ml-2 text-sm text-navy-700">Gasoline</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="radio" name="fuel-type" value="Hybrid" data-fuel="Hybrid" class="rounded-full border-gray-300 text-mango-600 focus:ring-mango-500">
+                                <span class="ml-2 text-sm text-navy-700">Hybrid</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="radio" name="fuel-type" value="Electric" data-fuel="Electric" class="rounded-full border-gray-300 text-mango-600 focus:ring-mango-500">
+                                <span class="ml-2 text-sm text-navy-700">Electric</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="radio" name="fuel-type" value="Diesel" data-fuel="Diesel" class="rounded-full border-gray-300 text-mango-600 focus:ring-mango-500">
+                                <span class="ml-2 text-sm text-navy-700">Diesel</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Engine Displacement Filter -->
+                <div class="mb-6 border-b border-gray-200 pb-6">
+                    <button class="flex items-center justify-between w-full text-left" onclick="toggleFilter('displacement-filter')">
+                        <span class="text-sm font-semibold text-navy-900">Engine Displacement</span>
+                        <i class="fa-solid fa-chevron-down text-gray-400 transition-transform duration-200" id="displacement-filter-icon"></i>
+                    </button>
+                    <div id="displacement-filter" class="mt-4">
+                        <div class="space-y-2">
+                            <label class="flex items-center">
+                                <input type="radio" name="displacement" value="1.0-1.5" data-min="1.0" data-max="1.5" class="rounded-full border-gray-300 text-mango-600 focus:ring-mango-500">
+                                <span class="ml-2 text-sm text-navy-700">1.0L - 1.5L</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="radio" name="displacement" value="1.6-2.0" data-min="1.6" data-max="2.0" class="rounded-full border-gray-300 text-mango-600 focus:ring-mango-500">
+                                <span class="ml-2 text-sm text-navy-700">1.6L - 2.0L</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="radio" name="displacement" value="2.1-3.0" data-min="2.1" data-max="3.0" class="rounded-full border-gray-300 text-mango-600 focus:ring-mango-500">
+                                <span class="ml-2 text-sm text-navy-700">2.1L - 3.0L</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="radio" name="displacement" value="3.1+" data-min="3.1" data-max="" class="rounded-full border-gray-300 text-mango-600 focus:ring-mango-500">
+                                <span class="ml-2 text-sm text-navy-700">3.1L+</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Transmission Filter -->
+                <div class="mb-6 border-b border-gray-200 pb-6">
+                    <button class="flex items-center justify-between w-full text-left" onclick="toggleFilter('transmission-filter')">
+                        <span class="text-sm font-semibold text-navy-900">Transmission</span>
+                        <i class="fa-solid fa-chevron-down text-gray-400 transition-transform duration-200" id="transmission-filter-icon"></i>
+                    </button>
+                    <div id="transmission-filter" class="mt-4">
+                        <div class="space-y-2">
+                            <label class="flex items-center">
+                                <input type="radio" name="transmission" value="Automatic" data-trans="Automatic" class="rounded-full border-gray-300 text-mango-600 focus:ring-mango-500">
+                                <span class="ml-2 text-sm text-navy-700">Automatic</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="radio" name="transmission" value="Manual" data-trans="Manual" class="rounded-full border-gray-300 text-mango-600 focus:ring-mango-500">
+                                <span class="ml-2 text-sm text-navy-700">Manual</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="radio" name="transmission" value="CVT" data-trans="CVT" class="rounded-full border-gray-300 text-mango-600 focus:ring-mango-500">
+                                <span class="ml-2 text-sm text-navy-700">CVT</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Drive Type Filter -->
+                <div class="mb-6 border-b border-gray-200 pb-6">
+                    <button class="flex items-center justify-between w-full text-left" onclick="toggleFilter('drive-filter')">
+                        <span class="text-sm font-semibold text-navy-900">Drive Type</span>
+                        <i class="fa-solid fa-chevron-down text-gray-400 transition-transform duration-200" id="drive-filter-icon"></i>
+                    </button>
+                    <div id="drive-filter" class="mt-4">
+                        <div class="space-y-2">
+                            <label class="flex items-center">
+                                <input type="radio" name="drive-type" value="FWD" data-drive="FWD" class="rounded-full border-gray-300 text-mango-600 focus:ring-mango-500">
+                                <span class="ml-2 text-sm text-navy-700">Front-Wheel Drive (FWD)</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="radio" name="drive-type" value="RWD" data-drive="RWD" class="rounded-full border-gray-300 text-mango-600 focus:ring-mango-500">
+                                <span class="ml-2 text-sm text-navy-700">Rear-Wheel Drive (RWD)</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="radio" name="drive-type" value="AWD" data-drive="AWD" class="rounded-full border-gray-300 text-mango-600 focus:ring-mango-500">
+                                <span class="ml-2 text-sm text-navy-700">All-Wheel Drive (AWD)</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Passenger Capacity Filter -->
+                <div class="mb-6 border-b border-gray-200 pb-6">
+                    <button class="flex items-center justify-between w-full text-left" onclick="toggleFilter('capacity-filter')">
+                        <span class="text-sm font-semibold text-navy-900">Passenger Capacity</span>
+                        <i class="fa-solid fa-chevron-down text-gray-400 transition-transform duration-200" id="capacity-filter-icon"></i>
+                    </button>
+                    <div id="capacity-filter" class="mt-4">
+                        <div class="space-y-2">
+                            <label class="flex items-center">
+                                <input type="radio" name="capacity" value="2" data-min="2" data-max="2" class="rounded-full border-gray-300 text-mango-600 focus:ring-mango-500">
+                                <span class="ml-2 text-sm text-navy-700">2 Seats</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="radio" name="capacity" value="4-5" data-min="4" data-max="5" class="rounded-full border-gray-300 text-mango-600 focus:ring-mango-500">
+                                <span class="ml-2 text-sm text-navy-700">4-5 Seats</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Right Content - Vehicle Results -->
+            <main id="vehicle-results" class="flex-1">
+                <!-- Results Toolbar -->
+                <div id="results-toolbar" class="bg-white rounded-xl shadow-lg p-6 mb-6">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between">
+                        <div class="flex items-center space-x-4 mb-4 md:mb-0">
+                            <h2 id="results-count" class="text-lg font-display font-bold text-navy-900">Showing 0 of 0 vehicles</h2>
+                            <button class="flex items-center text-mango-600 hover:text-mango-700 font-medium text-sm">
+                                <i class="fa-solid fa-balance-scale mr-2"></i>
+                                Compare (0)
+                            </button>
+                        </div>
+                        <div class="flex items-center space-x-4">
+                            <div class="flex items-center space-x-2">
+                                <span class="text-sm text-navy-700">Sort by:</span>
+                                <select id="sort-select" class="px-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-mango-500 focus:border-transparent">
+                                    <option value="price_asc">Price: Low to High</option>
+                                    <option value="price_desc">Price: High to Low</option>
+                                    <option value="year_desc">Year: Newest First</option>
+                                    <option value="year_asc">Year: Oldest First</option>
+                                    <option value="mileage_asc">Mileage: Low to High</option>
+                                    <option value="mileage_desc">Mileage: High to Low</option>
+                                </select>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <button id="btn-grid-view" class="p-2 bg-mango-100 text-mango-600 rounded-lg" aria-label="Grid view">
+                                    <i class="fa-solid fa-th-large"></i>
+                                </button>
+                                <button id="btn-list-view" class="p-2 text-gray-400 hover:text-navy-600 rounded-lg" aria-label="List view">
+                                    <i class="fa-solid fa-list"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Vehicle Grid (dynamic) -->
+                <div id="vehicle-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mb-8">
+                    <!-- Cards are rendered dynamically from /public/listings -->
+                </div>
+
+                <!-- Load More / Pagination (dynamic) -->
+                <div id="pagination-section" class="bg-white rounded-xl shadow-lg p-6">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-2">
+                            <span id="pagination-summary" class="text-navy-700 font-medium">Showing 0-0 of 0 vehicles</span>
+                        </div>
+                        <div id="pagination-controls" class="flex items-center space-x-2">
+                            <!-- Pagination buttons injected here -->
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+}</section>
+
+<!-- Featured Services Section -->
+<section id="featured-services" class="py-16 bg-gradient-to-r from-navy-900 to-navy-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl font-display font-bold text-white mb-4">Why Choose MangoCar?</h2>
+            <p class="text-xl text-navy-200">Experience the premium difference in every transaction</p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div class="text-center">
+                <div class="w-16 h-16 bg-mango-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fa-solid fa-shield-check text-white text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-display font-semibold text-white mb-2">Quality Assured</h3>
+                <p class="text-navy-200">Every vehicle undergoes comprehensive 150-point inspection</p>
+            </div>
+            <div class="text-center">
+                <div class="w-16 h-16 bg-mango-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fa-solid fa-dollar-sign text-white text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-display font-semibold text-white mb-2">Best Prices</h3>
+                <p class="text-navy-200">Transparent pricing with no hidden fees or surprises</p>
+            </div>
+            <div class="text-center">
+                <div class="w-16 h-16 bg-mango-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fa-solid fa-handshake text-white text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-display font-semibold text-white mb-2">Expert Service</h3>
+                <p class="text-navy-200">Dedicated specialists to guide you through every step</p>
+            </div>
+            <div class="text-center">
+                <div class="w-16 h-16 bg-mango-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fa-solid fa-clock text-white text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-display font-semibold text-white mb-2">Quick Process</h3>
+                <p class="text-navy-200">Fast financing approval and streamlined paperwork</p>
+            </div>
+        </div>
+    </div>
+}</section>
+
+<!-- Customer Reviews Section -->
+<section id="customer-reviews" class="py-16 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center mb-8">
+            <h2 class="text-4xl font-display font-bold text-navy-900">
+                Mangocar <span class="text-mango-500">Best Reviews</span>
+            </h2>
+            <span class="flex items-center text-navy-700 hover:text-mango-600 font-medium transition-colors duration-200 cursor-pointer">
+                view more
+                <i class="fa-solid fa-arrow-right ml-2"></i>
+            </span>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div id="review-card-1" class="bg-white rounded-lg overflow-hidden">
+                <div class="w-full h-56">
+                    <img class="w-full h-full object-cover rounded-xl" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/d1914f84e4-36c248e291b30a28ab75.png" alt="White Porsche 911 being delivered">
+                </div>
+                <div class="pt-4">
+                    <h3 class="text-xl font-bold text-navy-900 mb-2">Best quality just as expected!</h3>
+                    <p class="text-navy-600 leading-relaxed text-base mb-4">
+                        My Porsche 911 arrived in Kuwait from South Korea, safe, perfect, and exactly as promised. I...
+                    </p>
+                    <div class="flex items-center space-x-2">
+                        <svg width="20" height="15" viewBox="0 0 20 15" class="w-5 h-auto">
+                            <rect width="20" height="5" fill="#007A3D"/>
+                            <rect y="5" width="20" height="5" fill="#FFFFFF"/>
+                            <rect y="10" width="20" height="5" fill="#CE1126"/>
+                            <polygon points="0,0 6,5 0,10" fill="#000000"/>
+                        </svg>
+                        <span class="text-sm font-medium text-navy-700">Kuwait</span>
+                    </div>
+                </div>
+            </div>
+            <div id="review-card-2" class="bg-white rounded-lg overflow-hidden">
+                <div class="w-full h-56">
+                    <img class="w-full h-full object-cover rounded-xl" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/07c5582bb8-270455e7ac305d3d85ef.png" alt="Happy customers signing contract">
+                </div>
+                <div class="pt-4">
+                    <h3 class="text-xl font-bold text-navy-900 mb-2">Reasonable price!</h3>
+                    <p class="text-navy-600 leading-relaxed text-base mb-4">
+                        I signed the contract on this car on March 20, 2024 and received it on April 25, 2024. The car'...
+                    </p>
+                    <div class="flex items-center space-x-2">
+                        <svg width="20" height="15" viewBox="0 0 20 15" class="w-5 h-auto">
+                            <rect width="20" height="5" fill="#CE1126"/>
+                            <rect y="5" width="20" height="5" fill="#FFFFFF"/>
+                            <rect y="10" width="20" height="5" fill="#000000"/>
+                        </svg>
+                        <span class="text-sm font-medium text-navy-700">Egypt</span>
+                    </div>
+                </div>
+            </div>
+            <div id="review-card-3" class="bg-white rounded-lg overflow-hidden">
+                <div class="w-full h-56">
+                    <img class="w-full h-full object-cover rounded-xl" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/bf916d4859-685cdcbe75236d12a5c1.png" alt="Happy customers closing a deal">
+                </div>
+                <div class="pt-4">
+                    <h3 class="text-xl font-bold text-navy-900 mb-2">Trustful MangoCar!</h3>
+                    <p class="text-navy-600 leading-relaxed text-base mb-4">
+                        I was honored to deal with MangoCar; they were with me every step of the way. The car...
+                    </p>
+                    <div class="flex items-center space-x-2">
+                        <svg width="20" height="15" viewBox="0 0 20 15" class="w-5 h-auto">
+                            <rect width="20" height="5" fill="#CE1126"/>
+                            <rect y="5" width="20" height="5" fill="#FFFFFF"/>
+                            <rect y="10" width="20" height="5" fill="#000000"/>
+                        </svg>
+                        <span class="text-sm font-medium text-navy-700">Egypt</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}</section>
+
+<!-- Newsletter Signup Section -->
+<section id="newsletter-signup" class="py-16 bg-gradient-to-r from-mango-600 to-orange-600">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <h2 class="text-3xl font-display font-bold text-white mb-4">Stay Updated on New Arrivals</h2>
+        <p class="text-xl text-orange-100 mb-8">Be the first to know about premium vehicles and exclusive deals</p>
+        <div class="flex flex-col sm:flex-row max-w-lg mx-auto">
+            <input type="email" placeholder="Enter your email address" class="flex-1 px-6 py-4 rounded-l-lg sm:rounded-r-none rounded-r-lg border-0 focus:ring-2 focus:ring-white text-lg">
+            <button class="bg-navy-900 hover:bg-navy-800 text-white px-8 py-4 rounded-r-lg sm:rounded-l-none rounded-l-lg font-semibold transition-all duration-200 mt-4 sm:mt-0">
+                Subscribe
+            </button>
+        </div>
+        <p class="text-orange-200 text-sm mt-4">No spam, unsubscribe anytime</p>
+    </div>
+}</section>
+
+<!-- Footer -->
+<footer id="footer" class="bg-navy-900 text-white py-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
+            <div>
+                <div class="flex items-center mb-6">
+                    <div class="w-12 h-12 bg-gradient-to-br from-mango-400 to-mango-600 rounded-xl flex items-center justify-center mr-3">
+                        <i class="fa-solid fa-car text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-2xl font-display font-bold">MangoCar</h1>
+                        <p class="text-xs text-navy-300">Premium Auto Dealership</p>
+                    </div>
+                </div>
+                <p class="text-navy-300 mb-4">Your trusted partner in finding the perfect pre-owned vehicle. Quality, transparency, and exceptional service since 2015.</p>
+                <div class="flex space-x-4">
+                    <span class="w-10 h-10 bg-navy-800 rounded-full flex items-center justify-center hover:bg-mango-600 transition-colors duration-200 cursor-pointer">
+                        <i class="fa-brands fa-facebook-f"></i>
+                    </span>
+                    <span class="w-10 h-10 bg-navy-800 rounded-full flex items-center justify-center hover:bg-mango-600 transition-colors duration-200 cursor-pointer">
+                        <i class="fa-brands fa-twitter"></i>
+                    </span>
+                    <span class="w-10 h-10 bg-navy-800 rounded-full flex items-center justify-center hover:bg-mango-600 transition-colors duration-200 cursor-pointer">
+                        <i class="fa-brands fa-instagram"></i>
+                    </span>
+                    <span class="w-10 h-10 bg-navy-800 rounded-full flex items-center justify-center hover:bg-mango-600 transition-colors duration-200 cursor-pointer">
+                        <i class="fa-brands fa-linkedin-in"></i>
+                    </span>
+                </div>
+            </div>
+            <div>
+                <h3 class="text-lg font-semibold mb-6">Quick Links</h3>
+                <ul class="space-y-3">
+                    <li><span class="text-navy-300 hover:text-mango-400 transition-colors duration-200 cursor-pointer">Search Inventory</span></li>
+                    <li><span class="text-navy-300 hover:text-mango-400 transition-colors duration-200 cursor-pointer">Financing Options</span></li>
+                    <li><span class="text-navy-300 hover:text-mango-400 transition-colors duration-200 cursor-pointer">Trade-In Value</span></li>
+                    <li><span class="text-navy-300 hover:text-mango-400 transition-colors duration-200 cursor-pointer">Service Center</span></li>
+                    <li><span class="text-navy-300 hover:text-mango-400 transition-colors duration-200 cursor-pointer">About Us</span></li>
+                </ul>
+            </div>
+            <div>
+                <h3 class="text-lg font-semibold mb-6">Customer Support</h3>
+                <ul class="space-y-3">
+                    <li><span class="text-navy-300 hover:text-mango-400 transition-colors duration-200 cursor-pointer">Contact Us</span></li>
+                    <li><span class="text-navy-300 hover:text-mango-400 transition-colors duration-200 cursor-pointer">FAQ</span></li>
+                    <li><span class="text-navy-300 hover:text-mango-400 transition-colors duration-200 cursor-pointer">Warranty Info</span></li>
+                    <li><span class="text-navy-300 hover:text-mango-400 transition-colors duration-200 cursor-pointer">Returns Policy</span></li>
+                    <li><span class="text-navy-300 hover:text-mango-400 transition-colors duration-200 cursor-pointer">Privacy Policy</span></li>
+                </ul>
+            </div>
+            <div>
+                <h3 class="text-lg font-semibold mb-6">Contact Info</h3>
+                <div class="space-y-4">
+                    <div class="flex items-center">
+                        <i class="fa-solid fa-phone mr-3 text-mango-400"></i>
+                        <span class="text-navy-300">(555) 123-4567</span>
+                    </div>
+                    <div class="flex items-center">
+                        <i class="fa-solid fa-envelope mr-3 text-mango-400"></i>
+                        <span class="text-navy-300">info@mangocar.com</span>
+                    </div>
+                    <div class="flex items-start">
+                        <i class="fa-solid fa-map-marker-alt mr-3 text-mango-400 mt-1"></i>
+                        <span class="text-navy-300">123 Auto Plaza Drive<br>Cartown, CT 06789</span>
+                    </div>
+                    <div class="flex items-center">
+                        <i class="fa-solid fa-clock mr-3 text-mango-400"></i>
+                        <span class="text-navy-300">Mon-Sat: 9AM-8PM<br>Sun: 11AM-6PM</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="border-t border-navy-800 pt-8">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <p class="text-navy-400 text-sm">© 2024 MangoCar. All rights reserved.</p>
+                <div class="flex space-x-6 mt-4 md:mt-0">
+                    <span class="text-navy-400 hover:text-mango-400 text-sm transition-colors duration-200 cursor-pointer">Terms of Service</span>
+                    <span class="text-navy-400 hover:text-mango-400 text-sm transition-colors duration-200 cursor-pointer">Privacy Policy</span>
+                    <span class="text-navy-400 hover:text-mango-400 text-sm transition-colors duration-200 cursor-pointer">Accessibility</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script>
+    function toggleFilter(filterId) {
+        const filterContent = document.getElementById(filterId);
+        const filterIcon = document.getElementById(filterId + '-icon');
+        if (!filterContent || !filterIcon) return;
+        const isHidden = getComputedStyle(filterContent).display === 'none';
+        filterContent.style.display = isHidden ? 'block' : 'none';
+        filterIcon.style.transform = isHidden ? 'rotate(180deg)' : 'rotate(0deg)';
+    }
+
+    window.addEventListener('scroll', function() {
+        const header = document.getElementById('header');
+        if (window.scrollY > 0) {
+            header.classList.add('shadow-xl');
+        } else {
+            header.classList.remove('shadow-xl');
+        }
+    });
+
+    // Dynamic listings rendering
+    const vehicleGrid = document.getElementById('vehicle-grid');
+    const gridViewBtn = document.getElementById('btn-grid-view');
+    const listViewBtn = document.getElementById('btn-list-view');
+    var __viewMode = 'grid';
+    const resultsCountEl = document.getElementById('results-count');
+    const paginationSummaryEl = document.getElementById('pagination-summary');
+    const paginationControlsEl = document.getElementById('pagination-controls');
+    const sortSelectEl = document.getElementById('sort-select');
+    const mangoPickGridEl = document.getElementById('mangos-pick-grid');
+    const mangoPrevBtn = document.getElementById('mango-prev');
+    const mangoNextBtn = document.getElementById('mango-next');
+    const searchInputEl = document.getElementById('search-input');
+    const searchTriggerEl = document.getElementById('search-trigger');
+    const priceMinEl = document.getElementById('price-min-input');
+    const priceMaxEl = document.getElementById('price-max-input');
+    const priceRangeRadios = document.querySelectorAll('input[name="price-range"]');
+    const yearMinEl = document.getElementById('year-min-input');
+    const yearMaxEl = document.getElementById('year-max-input');
+    const yearRangeRadios = document.querySelectorAll('input[name="year-range"]');
+    const mileageMinEl = document.getElementById('mileage-min-input');
+    const mileageMaxEl = document.getElementById('mileage-max-input');
+    const mileageRangeRadios = document.querySelectorAll('input[name="mileage-range"]');
+    const colorFilterCheckboxes = document.querySelectorAll('#colors-filter input[type="checkbox"]');
+    const fuelRadios = document.querySelectorAll('input[name="fuel-type"]');
+    const displacementRadios = document.querySelectorAll('input[name="displacement"]');
+    const transmissionRadios = document.querySelectorAll('input[name="transmission"]');
+    const driveRadios = document.querySelectorAll('input[name="drive-type"]');
+    const capacityRadios = document.querySelectorAll('input[name="capacity"]');
+
+    const sampleImages = [
+        'https://storage.googleapis.com/uxpilot-auth.appspot.com/88ea5656a2-2d2cc342c3c290aab082.png',
+        'https://storage.googleapis.com/uxpilot-auth.appspot.com/30d999e9cd-67ea7c351ef387985e76.png',
+        'https://storage.googleapis.com/uxpilot-auth.appspot.com/5aa8db54a8-24eb5dfe6b311fcea3da.png',
+        'https://storage.googleapis.com/uxpilot-auth.appspot.com/534f7a5d62-0b88df6f8c4848d3ac41.png',
+        'https://storage.googleapis.com/uxpilot-auth.appspot.com/2b8f530064-6c63a56af574840a3f86.png',
+        'https://storage.googleapis.com/uxpilot-auth.appspot.com/4b3d312a77-5444883b5e997e0cc4fb.png',
+        'https://storage.googleapis.com/uxpilot-auth.appspot.com/ce30b5bf1a-ae7fd5d2c2a369a8ec92.png',
+        'https://storage.googleapis.com/uxpilot-auth.appspot.com/eef64b4afa-daba55a1cf01a4c326ab.png'
+    ];
+
+    function formatPrice(val) {
+        const num = Number(val);
+        if (!isFinite(num)) return '$—';
+        return '$' + num.toLocaleString(undefined, { maximumFractionDigits: 0 });
+    }
+
+    // Normalize image URLs to avoid legacy localhost:3000 references
+    function normalizeImageUrl(photo) {
+        try {
+            if (!photo) return '';
+            if (typeof photo === 'string') {
+                const s = String(photo);
+                if (/^https?:\/\/localhost:3000\//.test(s)) {
+                    return window.location.origin + '/' + s.replace(/^https?:\/\/localhost:3000\//, '');
+                }
+                if (s.startsWith('http://') || s.startsWith('https://') || s.startsWith('data:')) return s;
+                if (s.startsWith('/')) return s;
+                return '/' + s.replace(/^\/+/, '');
+            }
+            if (photo.dataUrl) return photo.dataUrl;
+            if (photo.url) {
+                const u = String(photo.url);
+                if (/^https?:\/\/localhost:3000\//.test(u)) {
+                    return window.location.origin + '/' + u.replace(/^https?:\/\/localhost:3000\//, '');
+                }
+                return (u.startsWith('http://') || u.startsWith('https://')) ? u : ('/' + u.replace(/^\/+/, ''));
+            }
+            if (photo.path || photo.name || photo.src) {
+                const r = String(photo.path || photo.name || photo.src);
+                return r.startsWith('/') ? r : ('/' + r.replace(/^\/+/, ''));
+            }
+            return '';
+        } catch(_) { return ''; }
+    }
+
+    function normalizeText(s) {
+        return String(s || '').toLowerCase();
+    }
+
+    function filterByQuery(listings, query) {
+        const q = normalizeText(query).trim();
+        if (!q) return listings;
+        return listings.filter(l => {
+            const info = getInfo(l);
+            const idStr = String(l.id ?? l._id ?? '').trim();
+            const pin = String(l.product_id_number ?? l.productIdNumber ?? '').trim();
+            const fields = [info.title, info.make, info.model, l.title, l.make, l.model, idStr, pin];
+            return fields.some(v => normalizeText(v).includes(q));
+        });
+    }
+
+    function toNumber(val) {
+        if (val === null || val === undefined) return null;
+        const s = String(val).trim();
+        if (s === '') return null;
+        const num = Number(s);
+        return Number.isFinite(num) ? num : null;
+    }
+
+    function filterByPrice(listings, min, max) {
+        const hasMin = min !== null && min !== undefined;
+        const hasMax = max !== null && max !== undefined;
+        if (!hasMin && !hasMax) return listings;
+        return listings.filter(l => {
+            const price = toNumber(l.price);
+            if (price === null) return false;
+            if (hasMin && price < min) return false;
+            if (hasMax && price > max) return false;
+            return true;
+        });
+    }
+
+    function getListingYear(l) {
+        const candidates = [
+            l?.vehicle?.year,
+            l?.insuranceHistory?.year,
+            l?.year
+        ];
+        for (const c of candidates) {
+            const n = toNumber(c);
+            if (n !== null) return n;
+        }
+        return null;
+    }
+
+    function filterByYear(listings, min, max) {
+        const hasMin = min !== null && min !== undefined;
+        const hasMax = max !== null && max !== undefined;
+        if (!hasMin && !hasMax) return listings;
+        return listings.filter(l => {
+            const year = getListingYear(l);
+            if (year === null) return false;
+            if (hasMin && year < min) return false;
+            if (hasMax && year > max) return false;
+            return true;
+        });
+    }
+
+    function getListingMileage(l) {
+        const candidates = [
+            l?.vehicle?.mileageKm,
+            l?.vehicle?.mileage,
+            l?.mileageKm,
+            l?.mileage,
+            l?.insuranceHistory?.mileage,
+            l?.odometer
+        ];
+        for (const c of candidates) {
+            const n = toNumber(c);
+            if (n !== null) return n;
+        }
+        return null;
+    }
+
+    function filterByMileage(listings, min, max) {
+        const hasMin = min !== null && min !== undefined;
+        const hasMax = max !== null && max !== undefined;
+        if (!hasMin && !hasMax) return listings;
+        return listings.filter(l => {
+            const miles = getListingMileage(l);
+            if (miles === null) return false;
+            if (hasMin && miles < min) return false;
+            if (hasMax && miles > max) return false;
+            return true;
+        });
+    }
+
+    function normalizeColor(c) {
+        const s = String(c || '').trim().toLowerCase();
+        if (!s) return '';
+        // map common synonyms
+        if (s === 'grey') return 'gray';
+        return s;
+    }
+
+    function getListingColor(l) {
+        const candidates = [
+            l?.vehicle?.color,
+            l?.color,
+            l?.vehicle?.exteriorColor,
+            l?.exteriorColor,
+            l?.paintColor
+        ];
+        for (const c of candidates) {
+            const s = normalizeColor(c);
+            if (s) return s;
+        }
+        return '';
+    }
+
+    function filterByColors(listings, selectedColors) {
+        const wanted = Array.from(selectedColors || []).map(normalizeColor).filter(Boolean);
+        if (!wanted.length) return listings;
+        return listings.filter(l => {
+            const c = getListingColor(l);
+            if (!c) return false;
+            // support multi-tone like "white/black"
+            const tokens = c.split(/[\s\/\-_,&]+/).map(t => t.trim()).filter(Boolean);
+            return tokens.some(t => wanted.includes(t));
+        });
+    }
+
+    function normalizeFuel(f){
+        const s = String(f || '').trim().toLowerCase();
+        if (!s) return '';
+        if (['petrol','gas','g','gasoline'].includes(s)) return 'gasoline';
+        if (['diesel','d'].includes(s)) return 'diesel';
+        if (['electric','ev','battery'].includes(s)) return 'electric';
+        if (['hybrid','phev','plug-in hybrid','plugin hybrid'].includes(s)) return 'hybrid';
+        return s;
+    }
+
+    function getListingFuel(l){
+        const candidates = [
+            l?.vehicle?.fuel,
+            l?.fuel,
+            l?.insuranceHistory?.fuel
+        ];
+        for (const c of candidates){
+            const s = normalizeFuel(c);
+            if (s) return s;
+        }
+        return '';
+    }
+
+    function filterByFuel(listings, selectedFuel){
+        const wanted = normalizeFuel(selectedFuel);
+        if (!wanted) return listings;
+        return listings.filter(l => {
+            const f = getListingFuel(l);
+            return f && f === wanted;
+        });
+    }
+
+    // Transmission helpers
+    function normalizeTransmission(t){
+        const raw = String(t || '').trim().toLowerCase();
+        if (!raw) return '';
+        const s = raw.replace(/\s+/g, ' ');
+        // Numeric-only values often represent MT speeds (e.g., "4", "5", "6")
+        if (/^\d+$/.test(s)) return 'manual';
+        // CVT
+        if (s.includes('cvt') || s.includes('ivt') || s.includes('continuously variable')) return 'cvt';
+        // Manual synonyms
+        if (s.includes('manual') || /(^|\W)m\/t(\W|$)/.test(s) || /(^|\W)mt(\W|$)/.test(s) || /(\d+)\s*speed.*manual/.test(s) || s.includes('stick')) return 'manual';
+        // Automatic synonyms
+        if (s.includes('automatic') || /(^|\W)a\/t(\W|$)/.test(s) || s.includes('dual clutch') || s.includes('dct') || s.includes('tiptronic') || s.includes('auto')) return 'automatic';
+        return s;
+    }
+
+    function getListingTransmission(l){
+        const candidates = [
+            l?.vehicle?.transmission,
+            l?.transmission,
+            l?.insuranceHistory?.transmission
+        ];
+        for (const c of candidates){
+            const s = normalizeTransmission(c);
+            if (s) return s;
+        }
+        return '';
+    }
+
+    function filterByTransmission(listings, selected){
+        const wanted = normalizeTransmission(selected);
+        if (!wanted) return listings;
+        return listings.filter(l => {
+            const tr = getListingTransmission(l);
+            return tr && tr === wanted;
+        });
+    }
+
+    // Drive Type helpers
+    function normalizeDriveType(d){
+        const s = String(d || '').trim().toLowerCase();
+        if (!s) return '';
+        if (s.includes('fwd') || s.includes('front-wheel') || s.includes('front wheel')) return 'fwd';
+        if (s.includes('rwd') || s.includes('rear-wheel') || s.includes('rear wheel')) return 'rwd';
+        if (s.includes('awd') || s.includes('all-wheel') || s.includes('all wheel') || s.includes('4wd') || s.includes('4x4') || s.includes('four wheel')) return 'awd';
+        return s;
+    }
+
+    function getListingDriveType(l){
+        const candidates = [
+            l?.vehicle?.driveType,
+            l?.driveType,
+            l?.insuranceHistory?.driveType
+        ];
+        for (const c of candidates){
+            const s = normalizeDriveType(c);
+            if (s) return s;
+        }
+        return '';
+    }
+
+    function filterByDriveType(listings, selected){
+        const wanted = normalizeDriveType(selected);
+        if (!wanted) return listings;
+        return listings.filter(l => {
+            const dt = getListingDriveType(l);
+            return dt && dt === wanted;
+        });
+    }
+
+    // Passenger capacity helpers
+    function parsePassengerCapacity(val){
+        if (val == null) return 0;
+        if (typeof val === 'number' && !Number.isNaN(val)) return val;
+        const s = String(val).trim();
+        const nums = s.match(/\d+/g);
+        if (!nums) return 0;
+        return Number(nums[0]);
+    }
+
+    function getListingPassengerCapacity(l){
+        const candidates = [
+            l?.vehicle?.passengerCapacity,
+            l?.passengerCapacity,
+            l?.vehicle?.passengers,
+            l?.vehicle?.seatingCapacity,
+            l?.seatingCapacity
+        ];
+        for (const c of candidates){
+            const n = parsePassengerCapacity(c);
+            if (n && Number.isFinite(n)) return n;
+        }
+        return 0;
+    }
+
+    function getActiveCapacityRange(){
+        try {
+            const checked = Array.from(capacityRadios || []).find(r => r.checked);
+            if (!checked) return { min: null, max: null };
+            const min = Number(checked.dataset.min || 0) || null;
+            const max = Number(checked.dataset.max || 0) || null;
+            return { min, max };
+        } catch (_) { return { min: null, max: null }; }
+    }
+
+    function filterByCapacity(listings, min, max){
+        if (min == null && max == null) return listings;
+        return listings.filter(l => {
+            const cap = getListingPassengerCapacity(l);
+            if (!cap) return false;
+            if (min != null && cap < min) return false;
+            if (max != null && cap > max) return false;
+            return true;
+        });
+    }
+
+    // Engine Displacement helpers
+    function parseDisplacementLiters(value){
+        // Accept numbers (liters), cc values, and strings like "2.0L", "1998 cc", "2,000cc", "V6 3.5L"
+        if (value == null) return null;
+        if (typeof value === 'number') {
+            // Heuristic: numbers > 25 likely cc; <= 25 likely liters
+            if (value > 25) return value / 1000; // cc to L
+            return value; // liters
+        }
+        const s = String(value).trim().toLowerCase();
+        if (!s) return null;
+        // Extract first numeric token (supports commas and decimals)
+        const match = s.match(/([0-9]{1,3}(?:,[0-9]{3})*(?:\.[0-9]+)?|[0-9]+(?:\.[0-9]+)?)/);
+        if (!match) return null;
+        let num = parseFloat(match[1].replace(/,/g, ''));
+        if (isNaN(num)) return null;
+        if (s.includes('cc')) {
+            return num / 1000;
+        }
+        if (s.includes('l') || s.includes('liter') || s.includes('litre')) {
+            // Looks like liters
+            return num > 25 ? num / 1000 : num; // guard accidental cc
+        }
+        // No unit: apply heuristic
+        return num > 25 ? num / 1000 : num;
+    }
+
+    function getListingDisplacementL(l){
+        // Prefer canonical vehicle.displacementL; fall back to common fields
+        const candidates = [
+            l?.vehicle?.displacementL,
+            l?.vehicle?.displacement,
+            l?.vehicle?.engineSize,
+            l?.vehicle?.engine,
+            l?.displacementL,
+            l?.displacement,
+            l?.engineSize,
+            l?.engine
+        ];
+        for (const c of candidates){
+            const val = parseDisplacementLiters(c);
+            if (val != null && !isNaN(val)) return val;
+        }
+        return null;
+    }
+
+    function filterByDisplacement(listings, min, max){
+        const hasMin = typeof min === 'number' && !isNaN(min);
+        const hasMax = typeof max === 'number' && !isNaN(max);
+        if (!hasMin && !hasMax) return listings;
+        return listings.filter(l => {
+            const d = getListingDisplacementL(l);
+            if (d == null) return false; // exclude if no data when filtering
+            if (hasMin && d < min) return false;
+            if (hasMax && d > max) return false;
+            return true;
+        });
+    }
+
+    function getActiveDisplacementRange(){
+        const checked = Array.from(displacementRadios || []).find(r => r.checked);
+        if (!checked) return { min: null, max: null };
+        const min = parseFloat(checked.dataset.min || '');
+        const max = parseFloat(checked.dataset.max || '');
+        return {
+            min: isNaN(min) ? null : min,
+            max: isNaN(max) ? null : max
+        };
+    }
+
+    // Normalize category/body type labels to canonical tokens
+    function normalizeCategoryLabel(s) {
+        const t = String(s || '').toLowerCase();
+        if (!t) return '';
+        if (t.includes('suv')) return 'suv';
+        if (t.includes('sedan')) return 'sedan';
+        if (t.includes('truck')) return 'truck';
+        if (t.includes('mpv') || t.includes('van')) return 'mpv/van';
+        if (t.includes('bus') || t.includes('etc')) return 'bus/etc';
+        if (t.includes('unclassified')) return 'unclassified';
+        return t.trim();
+    }
+
+    function filterByModelCategory(listings, selectedLabel) {
+        const sel = normalizeCategoryLabel(selectedLabel);
+        if (!sel) return listings;
+        return listings.filter(l => {
+            const v = l?.vehicle || {};
+            const byModelName = normalizeCategoryLabel(v?.modelName || v?.model);
+            const byCategoryPath = normalizeCategoryLabel(l?.categoryPath);
+            // Match against either vehicle modelName/model or categoryPath
+            return (byModelName && byModelName === sel) || (byCategoryPath && byCategoryPath === sel);
+        });
+    }
+
+    async function fetchTags() {
+        const apiOrigin = window.__apiOrigin || 'http://localhost:3000';
+        const endpoints = [
+            apiOrigin + '/public/tags',
+            'backend/tags.json'
+        ];
+        for (const url of endpoints) {
+            try {
+                const res = await fetch(url, { cache: 'no-store' });
+                if (!res.ok) throw new Error('HTTP ' + res.status);
+                const data = await res.json();
+                const arr = Array.isArray(data?.tags) ? data.tags : (Array.isArray(data) ? data : []);
+                return Array.isArray(arr) ? arr : [];
+            } catch (e) {
+                console.warn('Tags endpoint failed:', url, e.message);
+            }
+        }
+        console.error('All tag endpoints failed');
+        return [];
+    }
+
+    function getPickupTagId(tags) {
+        const norm = (s) => String(s || '').trim().toLowerCase();
+        const target = tags.find(t => {
+            const name = norm(t?.name);
+            const slug = norm(t?.slug);
+            return name === 'nsm autos pickup' || slug === 'nsm-autos-pickup';
+        });
+        return target ? target.id : null;
+    }
+
+    function mangoPickCardTemplate(listing, idx) {
+        const info = getInfo(listing);
+        const firstPhoto = Array.isArray(listing.photos) && listing.photos.length ? listing.photos[0] : null;
+        const photoUrl = firstPhoto ? normalizeImageUrl(firstPhoto) : null;
+        const candidate = listing.image_url || listing.image || photoUrl;
+        const imgSrc = candidate ? normalizeImageUrl(candidate) : sampleImages[idx % sampleImages.length];
+        const mileageText = info.mileage ? (String(info.mileage).toUpperCase().includes('KM') ? info.mileage : info.mileage + 'KM') : 'N/A';
+        return `
+        <div class="flex-shrink-0 w-80 bg-white rounded-xl shadow-lg overflow-hidden group transition-all duration-300 hover:shadow-xl cursor-pointer" onclick="navigateToProductDetail('${listing.id}')">
+            <div class="relative w-full aspect-[16/9]">
+                <img class="absolute inset-0 w-full h-full object-cover rounded-none" src="${imgSrc}" alt="Vehicle image">
+                <button class="absolute top-3 right-3 w-9 h-9 bg-black/40 rounded-full flex items-center justify-center text-white hover:bg-black/60 transition-colors" data-fav="true" data-id="${listing.id}" onclick="event.stopPropagation(); toggleFavorite('${listing.id}')" aria-pressed="false">
+                    <i class="fa-regular fa-heart"></i>
+                </button>
+            </div>
+            <div class="p-4">
+                <p class="text-xs text-gray-500">${info.year || ''} ${info.make || ''}</p>
+                <h3 class="text-base md:text-lg font-semibold text-navy-900 truncate mt-1">${info.title}</h3>
+                <div class="mt-3 grid grid-cols-3 gap-y-2 text-xs text-gray-600">
+                    <div class="flex items-center"><i class="fa-solid fa-tachometer-alt w-4 mr-1.5 text-gray-400"></i>${mileageText}</div>
+                    <div class="flex items-center"><i class="fa-solid fa-gas-pump w-4 mr-1.5 text-gray-400"></i>${info.fuel}</div>
+                    <div class="flex items-center"><i class="fa-solid fa-cogs w-4 mr-1.5 text-gray-400"></i>${info.displacement}</div>
+                    <div class="flex items-center"><i class="fa-solid fa-car-side w-4 mr-1.5 text-gray-400"></i>${info.transmission}</div>
+                    <div class="flex items-center"><i class="fa-solid fa-map-marker-alt w-4 mr-1.5 text-gray-400"></i>${info.country}</div>
+                </div>
+                <div class="mt-4 space-x-2">
+                    <button class="px-3 py-1 text-xs font-medium text-navy-700 border border-gray-300 rounded-full hover:bg-gray-100">Insurance History</button>
+                    <button class="px-3 py-1 text-xs font-medium text-navy-700 border border-gray-300 rounded-full hover:bg-gray-100">Recommend</button>
+                </div>
+                <div class="mt-4 text-right">
+                    <span class="text-2xl font-bold text-mango-600">${formatPrice(listing.price)}</span>
+                </div>
+            </div>
+        </div>`;
+    }
+
+    function renderMangoPick(picks) {
+        if (!mangoPickGridEl) return;
+        mangoPickGridEl.innerHTML = picks.map((l, i) => mangoPickCardTemplate(l, i)).join('');
+        updateFavoriteIconStates();
+    }
+
+    function setupMangoSlider() {
+        if (!mangoPickGridEl) return;
+        const computeStep = () => {
+            try {
+                const card = mangoPickGridEl.querySelector('.flex-shrink-0');
+                const width = card ? card.getBoundingClientRect().width : 300;
+                // Tailwind space-x-6 ≈ 1.5rem = 24px
+                return width + 24;
+            } catch (_) {
+                return 300;
+            }
+        };
+        const stepSize = computeStep();
+        if (mangoPrevBtn) {
+            mangoPrevBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                mangoPickGridEl.scrollBy({ left: -stepSize, behavior: 'smooth' });
+            });
+        }
+        if (mangoNextBtn) {
+            mangoNextBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                mangoPickGridEl.scrollBy({ left: stepSize, behavior: 'smooth' });
+            });
+        }
+    }
+
+    function getInfo(listing) {
+        const v = listing.vehicle || {};
+        const year = v.year || listing.year || '';
+        const make = v.make || listing.make || '';
+        const model = v.model || listing.model || '';
+        const mileage = v.mileageKm || v.mileage || listing.mileage || null;
+        const fuel = v.fuel || listing.fuel || 'N/A';
+        const displacement = v.displacementL ? (v.displacementL + 'cc') : (listing.engine || 'N/A');
+        const tRaw = v.transmission || listing.transmission || '';
+        const tNorm = normalizeTransmission(tRaw);
+        const transmission = tNorm
+            ? (tNorm === 'cvt' ? 'CVT' : (tNorm.charAt(0).toUpperCase() + tNorm.slice(1)))
+            : (tRaw || 'N/A');
+        const country = v.location || listing.country || 'N/A';
+        const title = listing.title || [year, make, model].filter(Boolean).join(' ');
+        return { year, make, model, mileage, fuel, displacement, transmission, country, title };
+    }
+
+    function cardTemplate(listing, idx) {
+        const info = getInfo(listing);
+        const firstPhoto = Array.isArray(listing.photos) && listing.photos.length ? listing.photos[0] : null;
+        const photoUrl = firstPhoto ? normalizeImageUrl(firstPhoto) : null;
+        const candidate = listing.image_url || listing.image || photoUrl;
+        const imgSrc = candidate ? normalizeImageUrl(candidate) : sampleImages[idx % sampleImages.length];
+        const mileageText = info.mileage ? (String(info.mileage).toUpperCase().includes('KM') ? info.mileage : info.mileage + 'KM') : 'N/A';
+        const listingId = (listing.id != null ? listing.id : listing._id);
+        return `
+        <div class="bg-white rounded-xl shadow-md overflow-hidden group transition-all duration-300 hover:shadow-xl ${listingId ? 'cursor-pointer' : 'cursor-not-allowed opacity-70'}" ${listingId ? `onclick="navigateToProductDetail('${listingId}')"` : ''}>
+            <div class="relative w-full aspect-[16/9]">
+                <img class="absolute inset-0 w-full h-full object-cover rounded-none" src="${imgSrc}" alt="Vehicle image">
+                <button class="absolute top-3 right-3 w-8 h-8 bg-black/20 rounded-full flex items-center justify-center text-white hover:bg-black/40 transition-colors" data-fav="true" data-id="${listingId || ''}" onclick="event.stopPropagation(); ${listingId ? `toggleFavorite('${listingId}')` : ''}" aria-pressed="false">
+                    <i class="fa-regular fa-heart"></i>
+                </button>
+            </div>
+            <div class="p-4">
+                <p class="text-xs text-gray-500">${info.year || ''} ${info.make || ''}</p>
+                <h3 class="text-base md:text-lg font-semibold text-navy-900 truncate mt-1">${info.title}</h3>
+                <div class="mt-3 grid grid-cols-3 gap-y-2 text-xs text-gray-600">
+                    <div class="flex items-center"><i class="fa-solid fa-road w-4 mr-1.5 text-gray-400"></i>${mileageText}</div>
+                    <div class="flex items-center"><i class="fa-solid fa-gas-pump w-4 mr-1.5 text-gray-400"></i>${info.fuel}</div>
+                    <div class="flex items-center"><i class="fa-solid fa-cogs w-4 mr-1.5 text-gray-400"></i>${info.displacement}</div>
+                    <div class="flex items-center"><i class="fa-solid fa-car-side w-4 mr-1.5 text-gray-400"></i>${info.transmission}</div>
+                    <div class="flex items-center"><i class="fa-solid fa-map-marker-alt w-4 mr-1.5 text-gray-400"></i>${info.country}</div>
+                </div>
+                <div class="mt-4">
+                    <button class="px-3 py-1 text-xs font-medium text-gray-700 border border-gray-300 rounded-full hover:bg-gray-100 hover:border-gray-400 transition" onclick="event.stopPropagation(); showInsuranceHistory('${listingId}')">Insurance History</button>
+                </div>
+                <div class="mt-4 text-right">
+                    <span class="text-2xl font-bold text-navy-900">${formatPrice(listing.price)}</span>
+                </div>
+            </div>
+        </div>`;
+    }
+
+    function listItemTemplate(listing, idx) {
+        const info = getInfo(listing);
+        const firstPhoto = Array.isArray(listing.photos) && listing.photos.length ? listing.photos[0] : null;
+        const photoUrl = firstPhoto ? (firstPhoto.url || firstPhoto.dataUrl || firstPhoto.path) : null;
+        const imgSrc = listing.image_url || listing.image || photoUrl || sampleImages[idx % sampleImages.length];
+        const mileageText = info.mileage ? (String(info.mileage).toUpperCase().includes('KM') ? info.mileage : info.mileage + 'KM') : 'N/A';
+        const listingId = (listing.id != null ? listing.id : listing._id);
+        return `
+        <div class="bg-white rounded-lg shadow-md overflow-hidden group transition-all duration-300 hover:shadow-lg ${listingId ? 'cursor-pointer' : 'cursor-not-allowed opacity-70'}" ${listingId ? `onclick="navigateToProductDetail('${listingId}')"` : ''}>
+            <div class="flex">
+                <img class="w-44 h-32 md:w-48 md:h-36 object-cover flex-shrink-0" src="${imgSrc}" alt="Vehicle image">
+                <div class="p-4 flex-1">
+                    <div class="flex items-center justify-between">
+                        <h3 class="text-sm md:text-base font-bold text-navy-900 truncate">${info.title}</h3>
+                        <span class="text-xl font-bold text-navy-900">${formatPrice(listing.price)}</span>
+                    </div>
+                    <p class="text-[11px] text-gray-500 mt-0.5">${info.year || ''} ${info.make || ''}</p>
+                    <div class="mt-3 grid grid-cols-2 gap-y-1 text-[11px] text-gray-600">
+                        <div class="flex items-center"><i class="fa-solid fa-road w-4 mr-1.5 text-gray-400"></i>${mileageText}</div>
+                        <div class="flex items-center"><i class="fa-solid fa-gas-pump w-4 mr-1.5 text-gray-400"></i>${info.fuel}</div>
+                        <div class="flex items-center"><i class="fa-solid fa-cogs w-4 mr-1.5 text-gray-400"></i>${info.displacement}</div>
+                        <div class="flex items-center"><i class="fa-solid fa-car-side w-4 mr-1.5 text-gray-400"></i>${info.transmission}</div>
+                    </div>
+                </div>
+            </div>
+        </div>`;
+    }
+
+    function applyObserver() {
+        const cards = document.querySelectorAll('#vehicle-grid > div');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        });
+        cards.forEach((card) => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(card);
+        });
+    }
+
+    function sortListings(list, key) {
+        const sorted = [...list];
+        switch (key) {
+            case 'price_asc':
+                sorted.sort((a,b) => Number(a.price||0) - Number(b.price||0));
+                break;
+            case 'price_desc':
+                sorted.sort((a,b) => Number(b.price||0) - Number(a.price||0));
+                break;
+            case 'year_desc':
+                sorted.sort((a,b) => (b?.vehicle?.year||0) - (a?.vehicle?.year||0));
+                break;
+            case 'year_asc':
+                sorted.sort((a,b) => (a?.vehicle?.year||0) - (b?.vehicle?.year||0));
+                break;
+            case 'mileage_asc':
+                sorted.sort((a,b) => (a?.vehicle?.mileageKm||Infinity) - (b?.vehicle?.mileageKm||Infinity));
+                break;
+            case 'mileage_desc':
+                sorted.sort((a,b) => (b?.vehicle?.mileageKm||0) - (a?.vehicle?.mileageKm||0));
+                break;
+        }
+        return sorted;
+    }
+
+    function renderPagination(total, page, pageSize) {
+        const totalPages = Math.max(1, Math.ceil(total / pageSize));
+        const start = total === 0 ? 0 : ((page - 1) * pageSize + 1);
+        const end = Math.min(total, page * pageSize);
+        paginationSummaryEl.textContent = `Showing ${start}-${end} of ${total} vehicles`;
+
+        const prevDisabled = page <= 1 ? 'disabled' : '';
+        const nextDisabled = page >= totalPages ? 'disabled' : '';
+        let html = `
+            <button id="btn-prev" class="px-4 py-2 border border-gray-300 rounded-lg text-navy-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200" ${prevDisabled}>
+                <i class="fa-solid fa-chevron-left mr-2"></i>Previous
+            </button>`;
+
+        const maxButtons = Math.min(totalPages, 7);
+        const startPage = Math.max(1, Math.min(page - 3, totalPages - maxButtons + 1));
+        for (let p = startPage; p < startPage + maxButtons; p++) {
+            const isCurrent = p === page;
+            html += `
+            <button data-page="${p}" class="px-4 py-2 ${isCurrent ? 'bg-mango-600 text-white' : 'border border-gray-300 text-navy-700 hover:bg-gray-50 hover:border-mango-300'} rounded-lg font-medium transition-all duration-200">${p}</button>`;
+        }
+        html += `
+            <button id="btn-next" class="px-4 py-2 border border-gray-300 rounded-lg text-navy-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200" ${nextDisabled}>
+                Next<i class="fa-solid fa-chevron-right ml-2"></i>
+            </button>`;
+
+        paginationControlsEl.innerHTML = html;
+    }
+
+    function renderGrid(listings, page = 1, pageSize = 12) {
+        vehicleGrid.className = 'grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mb-8';
+        const total = listings.length;
+        resultsCountEl.textContent = `Showing ${Math.min(pageSize, total)} of ${total} vehicles`;
+
+        const startIdx = (page - 1) * pageSize;
+        const endIdx = Math.min(total, startIdx + pageSize);
+        const slice = listings.slice(startIdx, endIdx);
+        vehicleGrid.innerHTML = slice.map((l, i) => cardTemplate(l, startIdx + i)).join('');
+        applyObserver();
+        updateFavoriteIconStates();
+        renderPagination(total, page, pageSize);
+
+        // Wire pagination actions
+        const prevBtn = document.getElementById('btn-prev');
+        const nextBtn = document.getElementById('btn-next');
+        if (prevBtn) prevBtn.onclick = () => {
+            if (page > 1) renderCurrentView(window.__listingsSorted || window.__listings, page - 1, pageSize);
+        };
+        if (nextBtn) nextBtn.onclick = () => {
+            const totalPages = Math.max(1, Math.ceil(total / pageSize));
+            if (page < totalPages) renderCurrentView(window.__listingsSorted || window.__listings, page + 1, pageSize);
+        };
+        paginationControlsEl.querySelectorAll('button[data-page]').forEach(btn => {
+            btn.onclick = () => {
+                const target = Number(btn.getAttribute('data-page'));
+                renderCurrentView(window.__listingsSorted || window.__listings, target, pageSize);
+            };
+        });
+    }
+
+    function renderList(listings, page = 1, pageSize = 12) {
+        vehicleGrid.className = 'space-y-4 mb-8';
+        const total = listings.length;
+        resultsCountEl.textContent = `Showing ${Math.min(pageSize, total)} of ${total} vehicles`;
+
+        const startIdx = (page - 1) * pageSize;
+        const endIdx = Math.min(total, startIdx + pageSize);
+        const slice = listings.slice(startIdx, endIdx);
+        vehicleGrid.innerHTML = slice.map((l, i) => listItemTemplate(l, startIdx + i)).join('');
+        applyObserver();
+        updateFavoriteIconStates();
+        renderPagination(total, page, pageSize);
+
+        // Wire pagination actions to current view
+        const prevBtn = document.getElementById('btn-prev');
+        const nextBtn = document.getElementById('btn-next');
+        if (prevBtn) prevBtn.onclick = () => {
+            if (page > 1) renderCurrentView(window.__listingsSorted || window.__listings, page - 1, pageSize);
+        };
+        if (nextBtn) nextBtn.onclick = () => {
+            const totalPages = Math.max(1, Math.ceil(total / pageSize));
+            if (page < totalPages) renderCurrentView(window.__listingsSorted || window.__listings, page + 1, pageSize);
+        };
+        paginationControlsEl.querySelectorAll('button[data-page]').forEach(btn => {
+            btn.onclick = () => {
+                const target = Number(btn.getAttribute('data-page'));
+                renderCurrentView(window.__listingsSorted || window.__listings, target, pageSize);
+            };
+        });
+    }
+
+    function renderCurrentView(listings, page = 1, pageSize = 12) {
+        if (__viewMode === 'list') return renderList(listings, page, pageSize);
+        return renderGrid(listings, page, pageSize);
+    }
+
+    function updateViewButtons(){
+        if (!gridViewBtn || !listViewBtn) return;
+        const gridActive = __viewMode === 'grid';
+        const listActive = __viewMode === 'list';
+        gridViewBtn.classList.toggle('bg-mango-100', gridActive);
+        gridViewBtn.classList.toggle('text-mango-600', gridActive);
+        gridViewBtn.classList.toggle('text-gray-400', !gridActive);
+        listViewBtn.classList.toggle('bg-mango-100', listActive);
+        listViewBtn.classList.toggle('text-mango-600', listActive);
+        listViewBtn.classList.toggle('text-gray-400', !listActive);
+    }
+
+    async function fetchApprovedListings() {
+        // Prefer backend on 3000, then JSON fallback
+        const apiOrigin = window.__apiOrigin || 'http://localhost:3000';
+        const endpoints = [
+            apiOrigin + '/public/listings',
+            'backend/listings.json'
+        ];
+        for (const url of endpoints) {
+            try {
+                const res = await fetch(url, { cache: 'no-store' });
+                if (!res.ok) throw new Error('HTTP ' + res.status);
+                const data = await res.json();
+                const arr = Array.isArray(data?.listings) ? data.listings : (Array.isArray(data) ? data : []);
+                const approved = (Array.isArray(arr) ? arr : []).filter(l => String(l.status || '').toLowerCase() === 'approved');
+                return approved.length ? approved : (Array.isArray(arr) ? arr : []);
+            } catch (e) {
+                console.warn('Listings endpoint failed:', url, e.message);
+            }
+        }
+        console.error('All listing endpoints failed');
+        return [];
+    }
+
+    document.addEventListener('DOMContentLoaded', async () => {
+        const [listings, tags] = await Promise.all([fetchApprovedListings(), fetchTags()]);
+        window.__listings = listings;
+        window.__tags = tags;
+        // Initialize search from query parameter if present
+        try {
+            const params = new URLSearchParams(window.location.search);
+            const qParam = params.get('q');
+            if (qParam && searchInputEl) {
+                searchInputEl.value = qParam;
+            }
+            // Initialize car model from query parameter if present
+            const modelParam = params.get('model');
+            if (modelParam) {
+                const radios = document.querySelectorAll('input[name="car-model"]');
+                const targetNorm = normalizeCategoryLabel(modelParam);
+                Array.from(radios).forEach(r => {
+                    const rawVal = r.value || r.parentElement?.querySelector('span')?.textContent || '';
+                    if (normalizeCategoryLabel(rawVal) === targetNorm) {
+                        r.checked = true;
+                    }
+                });
+            }
+            // Initialize price range from query parameters if present
+            const pMinParam = params.get('priceMin');
+            const pMaxParam = params.get('priceMax');
+            if (pMinParam !== null || pMaxParam !== null) {
+                // Clear any pre-selected price radios to respect explicit params
+                Array.from(priceRangeRadios || []).forEach(r => { r.checked = false; });
+                if (priceMinEl) priceMinEl.value = (pMinParam ?? '');
+                if (priceMaxEl) priceMaxEl.value = (pMaxParam ?? '');
+            }
+        } catch (_) {}
+
+        function getActivePriceRange() {
+            let selMin = null, selMax = null;
+            const checked = Array.from(priceRangeRadios || []).find(r => r.checked);
+            if (checked) {
+                selMin = toNumber(checked?.dataset?.min);
+                selMax = toNumber(checked?.dataset?.max);
+            } else {
+                selMin = priceMinEl ? toNumber(priceMinEl.value) : null;
+                selMax = priceMaxEl ? toNumber(priceMaxEl.value) : null;
+            }
+            if (selMin !== null && selMax !== null && selMin > selMax) {
+                const tmp = selMin; selMin = selMax; selMax = tmp;
+            }
+            return { min: selMin, max: selMax };
+        }
+
+        function getActiveYearRange() {
+            let yMin = null, yMax = null;
+            const checked = Array.from(yearRangeRadios || []).find(r => r.checked);
+            if (checked) {
+                yMin = toNumber(checked?.dataset?.min);
+                yMax = toNumber(checked?.dataset?.max);
+            } else {
+                yMin = yearMinEl ? toNumber(yearMinEl.value) : null;
+                yMax = yearMaxEl ? toNumber(yearMaxEl.value) : null;
+            }
+            if (yMin !== null && yMax !== null && yMin > yMax) {
+                const tmp = yMin; yMin = yMax; yMax = tmp;
+            }
+            return { min: yMin, max: yMax };
+        }
+
+        function getActiveMileageRange() {
+            let mMin = null, mMax = null;
+            const checked = Array.from(mileageRangeRadios || []).find(r => r.checked);
+            if (checked) {
+                mMin = toNumber(checked?.dataset?.min);
+                mMax = toNumber(checked?.dataset?.max);
+            } else {
+                mMin = mileageMinEl ? toNumber(mileageMinEl.value) : null;
+                mMax = mileageMaxEl ? toNumber(mileageMaxEl.value) : null;
+            }
+            if (mMin !== null && mMax !== null && mMin > mMax) {
+                const tmp = mMin; mMin = mMax; mMax = tmp;
+            }
+            return { min: mMin, max: mMax };
+        }
+
+        // Helper to read the selected car model radio value
+        function getSelectedCarModelLabel() {
+            try {
+                const radios = document.querySelectorAll('input[name="car-model"]');
+                const checked = Array.from(radios).find(r => r.checked);
+                if (!checked) return '';
+                const val = checked.value;
+                if (val) return val;
+                const lbl = checked.parentElement?.querySelector('span')?.textContent || '';
+                return lbl.trim();
+            } catch (_) { return ''; }
+        }
+
+        function updateResults() {
+            const query = searchInputEl ? searchInputEl.value : '';
+            const { min, max } = getActivePriceRange();
+            const { min: yMin, max: yMax } = getActiveYearRange();
+            const { min: mMin, max: mMax } = getActiveMileageRange();
+            const { min: dMin, max: dMax } = getActiveDisplacementRange();
+            const selectedColors = getSelectedColors();
+            const selectedFuel = getSelectedFuel();
+            const selectedTransmission = getSelectedTransmission();
+            const selectedDriveType = getSelectedDriveType();
+            const { min: cMin, max: cMax } = getActiveCapacityRange();
+            let filtered = filterByQuery(window.__listings, query);
+            filtered = filterByModelCategory(filtered, getSelectedCarModelLabel());
+            // Apply hierarchical category selection (manufacturer/model/variant) if present
+            filtered = filterBySelectedCategoryTree(filtered);
+            filtered = filterByPrice(filtered, min, max);
+            filtered = filterByYear(filtered, yMin, yMax);
+            filtered = filterByMileage(filtered, mMin, mMax);
+            filtered = filterByCapacity(filtered, cMin, cMax);
+            filtered = filterByDisplacement(filtered, dMin, dMax);
+            filtered = filterByColors(filtered, selectedColors);
+            filtered = filterByFuel(filtered, selectedFuel);
+            filtered = filterByTransmission(filtered, selectedTransmission);
+            filtered = filterByDriveType(filtered, selectedDriveType);
+            window.__listingsSorted = sortListings(filtered, sortSelectEl.value);
+            renderCurrentView(window.__listingsSorted, 1, 12);
+        }
+
+        // Initial render
+        updateResults();
+
+        // View toggle buttons
+        if (gridViewBtn) {
+            gridViewBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                __viewMode = 'grid';
+                updateViewButtons();
+                renderCurrentView(window.__listingsSorted || window.__listings, 1, 12);
+            });
+        }
+        if (listViewBtn) {
+            listViewBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                __viewMode = 'list';
+                updateViewButtons();
+                renderCurrentView(window.__listingsSorted || window.__listings, 1, 12);
+            });
+        }
+        updateViewButtons();
+
+        // Render Mango's Pick: only listings tagged 'nsm autos pickup'
+        const pickupTagId = getPickupTagId(tags);
+        const picks = pickupTagId ? listings.filter(l => Array.isArray(l.tag_ids) && l.tag_ids.includes(pickupTagId)) : [];
+        renderMangoPick(picks);
+        setupMangoSlider();
+
+        // Wire sort change to re-run pipeline
+        sortSelectEl.addEventListener('change', updateResults);
+
+        // Wire search input with debounce and Enter key
+        let _searchDebounce;
+        if (searchInputEl) {
+            searchInputEl.addEventListener('input', () => {
+                clearTimeout(_searchDebounce);
+                _searchDebounce = setTimeout(updateResults, 300);
+            });
+            searchInputEl.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') updateResults();
+            });
+        }
+        if (searchTriggerEl) {
+            searchTriggerEl.addEventListener('click', updateResults);
+        }
+
+        // Price inputs debounce
+        let _priceDebounce;
+        if (priceMinEl) {
+            priceMinEl.addEventListener('input', () => {
+                clearTimeout(_priceDebounce);
+                _priceDebounce = setTimeout(updateResults, 300);
+            });
+        }
+        if (priceMaxEl) {
+            priceMaxEl.addEventListener('input', () => {
+                clearTimeout(_priceDebounce);
+                _priceDebounce = setTimeout(updateResults, 300);
+            });
+        }
+        // Radio changes populate inputs and update results
+        Array.from(priceRangeRadios || []).forEach(radio => {
+            radio.addEventListener('change', () => {
+                const min = toNumber(radio?.dataset?.min);
+                const max = toNumber(radio?.dataset?.max);
+                if (priceMinEl) priceMinEl.value = (min ?? '');
+                if (priceMaxEl) priceMaxEl.value = (max ?? '');
+                updateResults();
+            });
+        });
+
+        // Year inputs debounce
+        let _yearDebounce;
+        if (yearMinEl) {
+            yearMinEl.addEventListener('input', () => {
+                clearTimeout(_yearDebounce);
+                _yearDebounce = setTimeout(updateResults, 300);
+            });
+        }
+        if (yearMaxEl) {
+            yearMaxEl.addEventListener('input', () => {
+                clearTimeout(_yearDebounce);
+                _yearDebounce = setTimeout(updateResults, 300);
+            });
+        }
+        // Year radios populate inputs and update results
+        Array.from(yearRangeRadios || []).forEach(radio => {
+            radio.addEventListener('change', () => {
+                const yMin = toNumber(radio?.dataset?.min);
+                const yMax = toNumber(radio?.dataset?.max);
+                if (yearMinEl) yearMinEl.value = (yMin ?? '');
+                if (yearMaxEl) yearMaxEl.value = (yMax ?? '');
+                updateResults();
+            });
+        });
+
+        // Mileage inputs debounce
+        let _mileageDebounce;
+        if (mileageMinEl) {
+            mileageMinEl.addEventListener('input', () => {
+                clearTimeout(_mileageDebounce);
+                _mileageDebounce = setTimeout(updateResults, 300);
+            });
+        }
+        if (mileageMaxEl) {
+            mileageMaxEl.addEventListener('input', () => {
+                clearTimeout(_mileageDebounce);
+                _mileageDebounce = setTimeout(updateResults, 300);
+            });
+        }
+        // Mileage radios populate inputs and update results
+        Array.from(mileageRangeRadios || []).forEach(radio => {
+            radio.addEventListener('change', () => {
+                const mMin = toNumber(radio?.dataset?.min);
+                const mMax = toNumber(radio?.dataset?.max);
+                if (mileageMinEl) mileageMinEl.value = (mMin ?? '');
+                if (mileageMaxEl) mileageMaxEl.value = (mMax ?? '');
+                updateResults();
+            });
+        });
+
+        // Colors checkboxes update results
+        function getSelectedColors(){
+            try {
+                return Array.from(colorFilterCheckboxes || [])
+                    .filter(cb => cb.checked)
+                    .map(cb => cb.value || cb.dataset.color || cb.parentElement?.querySelector('span')?.textContent || '')
+                    .map(s => s.trim())
+                    .filter(Boolean);
+            } catch(_) { return []; }
+        }
+        Array.from(colorFilterCheckboxes || []).forEach(cb => {
+            cb.addEventListener('change', updateResults);
+        });
+
+        // Fuel radios update results
+        function getSelectedFuel(){
+            try {
+                const checked = Array.from(fuelRadios || []).find(r => r.checked);
+                if (!checked) return '';
+                const raw = checked.value || checked.dataset.fuel || checked.parentElement?.querySelector('span')?.textContent || '';
+                return raw.trim();
+            } catch(_) { return ''; }
+        }
+        Array.from(fuelRadios || []).forEach(r => {
+            r.addEventListener('change', updateResults);
+        });
+
+        // Displacement radios update results
+        Array.from(displacementRadios || []).forEach(r => {
+            r.addEventListener('change', updateResults);
+        });
+
+        // Transmission radios update results
+        function getSelectedTransmission(){
+            try {
+                const checked = Array.from(transmissionRadios || []).find(r => r.checked);
+                if (!checked) return '';
+                const raw = checked.value || checked.dataset.trans || checked.parentElement?.querySelector('span')?.textContent || '';
+                return raw.trim();
+            } catch(_) { return ''; }
+        }
+        Array.from(transmissionRadios || []).forEach(r => {
+            r.addEventListener('change', updateResults);
+        });
+
+        // Drive Type radios update results
+        function getSelectedDriveType(){
+            try {
+                const checked = Array.from(driveRadios || []).find(r => r.checked);
+                if (!checked) return '';
+                const raw = checked.value || checked.dataset.drive || checked.parentElement?.querySelector('span')?.textContent || '';
+                return raw.trim();
+            } catch(_) { return ''; }
+        }
+        Array.from(driveRadios || []).forEach(r => {
+            r.addEventListener('change', updateResults);
+        });
+
+        // Passenger Capacity radios update results
+        Array.from(capacityRadios || []).forEach(r => {
+            r.addEventListener('change', updateResults);
+        });
+
+        // Wire car-model radios to filter by vehicle model/category
+        try {
+            const modelRadios = document.querySelectorAll('input[name="car-model"]');
+            Array.from(modelRadios || []).forEach(r => {
+                r.addEventListener('change', updateResults);
+            });
+        } catch (_) { /* noop */ }
+
+        // =============================
+        // Nested Category Filter (Manufacturer → Model → Variant)
+        // =============================
+        var __categories = [];
+        var __catById = {};
+        var __childrenById = {};
+        var __parentById = {};
+        var __pathById = {};
+        var __byNameLower = {};
+        var __selectedCategoryId = null;
+        // Alias mapping to accommodate admin-entered names and common typos
+        var __nameAliases = {
+            'mercedes-benz': ['mercdes-benz', 'mercedes benz', 'mercedes', 'mercedesbenz'],
+            'mercdes-benz': ['mercedes-benz', 'mercedes benz', 'mercedes', 'mercedesbenz']
+        };
+
+        async function fetchCategoriesForFilters() {
+            // Prefer backend (3000), then fallback to 3001, then JSON file
+            const origins = [window.__apiOrigin || 'http://localhost:3000', 'http://localhost:3001'];
+            const endpoints = origins.map(o => o + '/public/categories').concat(['backend/categories.json']);
+            for (const url of endpoints) {
+                try {
+                    const res = await fetch(url, { cache: 'no-store' });
+                    if (!res.ok) throw new Error('HTTP ' + res.status);
+                    const data = await res.json();
+                    const arr = Array.isArray(data?.categories) ? data.categories : (Array.isArray(data) ? data : []);
+                    return Array.isArray(arr) ? arr : [];
+                } catch (e) {
+                    console.warn('Categories endpoint failed:', url, e.message);
+                }
+            }
+            console.error('All category endpoints failed');
+            return [];
+        }
+
+        function buildCategoryIndices(items) {
+            __categories = Array.isArray(items) ? items : [];
+            // reset
+            for (const k of Object.keys(__catById)) delete __catById[k];
+            for (const k of Object.keys(__childrenById)) delete __childrenById[k];
+            for (const k of Object.keys(__parentById)) delete __parentById[k];
+            for (const k of Object.keys(__pathById)) delete __pathById[k];
+            for (const k of Object.keys(__byNameLower)) delete __byNameLower[k];
+
+            __categories.forEach(c => {
+                const id = Number(c.id);
+                __catById[id] = { id, name: String(c.name || '').trim(), parent_id: c.parent_id != null ? Number(c.parent_id) : null, image_url: c.image_url ? String(c.image_url) : null };
+                __parentById[id] = c.parent_id != null ? Number(c.parent_id) : null;
+                __childrenById[id] = __childrenById[id] || [];
+                const key = String(c.name || '').trim().toLowerCase();
+                if (key) {
+                    if (!__byNameLower[key]) __byNameLower[key] = [];
+                    __byNameLower[key].push(id);
+                }
+            });
+            __categories.forEach(c => {
+                const id = Number(c.id);
+                const pid = c.parent_id != null ? Number(c.parent_id) : null;
+                if (pid != null) {
+                    __childrenById[pid] = __childrenById[pid] || [];
+                    __childrenById[pid].push(id);
+                }
+            });
+            // compute path strings
+            function computePath(id) {
+                const names = [];
+                let cur = id;
+                const guard = new Set();
+                while (cur != null && !guard.has(cur)) {
+                    guard.add(cur);
+                    const node = __catById[cur];
+                    if (!node) break;
+                    names.unshift(node.name);
+                    cur = __parentById[cur];
+                }
+                return names.join(' / ');
+            }
+            Object.keys(__catById).forEach(k => {
+                __pathById[k] = computePath(Number(k));
+            });
+        }
+
+        function hasChildren(id) {
+            const arr = __childrenById[id] || [];
+            return arr.length > 0;
+        }
+
+        function isDescendantOrEqual(childId, ancestorId) {
+            if (childId == null || ancestorId == null) return false;
+            if (Number(childId) === Number(ancestorId)) return true;
+            let cur = Number(childId);
+            const guard = new Set();
+            while (cur != null && !guard.has(cur)) {
+                guard.add(cur);
+                cur = __parentById[cur];
+                if (cur != null && Number(cur) === Number(ancestorId)) return true;
+            }
+            return false;
+        }
+
+        function findCategoryIdByName(name) {
+            const key = String(name || '').trim().toLowerCase();
+            let ids = __byNameLower[key] || [];
+            // Try alias mapping when exact key not found
+            if (!ids.length) {
+                const aliases = __nameAliases[key] || [];
+                for (let i = 0; i < aliases.length && !ids.length; i++) {
+                    const aKey = aliases[i];
+                    ids = __byNameLower[aKey] || [];
+                }
+                // As a loose fallback: compare normalized alphanumerics
+                if (!ids.length) {
+                    const norm = key.replace(/[^a-z0-9]/g, '');
+                    const candidateKey = Object.keys(__byNameLower).find(k => k.replace(/[^a-z0-9]/g, '') === norm);
+                    if (candidateKey) ids = __byNameLower[candidateKey] || [];
+                }
+            }
+            // Prefer a top-level match if multiple
+            const top = ids.find(id => __parentById[id] == null);
+            return top != null ? top : (ids[0] || null);
+        }
+
+        function ensureContainerAfterLabel(labelEl) {
+            const existing = labelEl.nextElementSibling;
+            // If the next sibling is NOT our nested container, insert one
+            if (!existing || !existing.classList || !existing.classList.contains('nested-container')) {
+                const ctr = document.createElement('div');
+                ctr.className = 'nested-container mt-2 ml-8 space-y-2';
+                labelEl.parentElement.insertBefore(ctr, labelEl.nextSibling);
+                return ctr;
+            }
+            return existing;
+        }
+
+        function removeNestedContainerAfter(labelEl){
+            const existing = labelEl.nextElementSibling;
+            if (existing && existing.classList && existing.classList.contains('nested-container')) {
+                existing.remove();
+            }
+        }
+
+        function createChildLabel(cat){
+            const label = document.createElement('label');
+            label.className = 'flex items-center cursor-pointer';
+            // mimic top-level text style without adding new inputs
+            const wrap = document.createElement('div');
+            wrap.className = 'ml-2 flex items-center';
+            const span = document.createElement('span');
+            span.className = 'text-sm text-navy-700';
+            span.textContent = cat.name;
+            wrap.appendChild(span);
+            label.appendChild(wrap);
+            // expansion icon only if children
+            if (hasChildren(cat.id)) {
+                const icon = document.createElement('i');
+                icon.className = 'fa-solid fa-angle-right text-gray-400 nested-expander ml-2';
+                wrap.appendChild(icon);
+            }
+            // click behavior
+            label.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                // Toggle selection: clicking again unselects
+                if (__selectedCategoryId === cat.id) {
+                    __selectedCategoryId = null;
+                    removeNestedContainerAfter(label);
+                    updateResults();
+                    return;
+                }
+                __selectedCategoryId = cat.id;
+                // Always update results when selecting a parent or child
+                updateResults();
+                if (hasChildren(cat.id)) {
+                    const ctr = ensureContainerAfterLabel(label);
+                    // Render children directly beneath without any placeholder
+                    renderChildrenList(ctr, cat.id);
+                }
+            });
+            return label;
+        }
+
+        function renderChildrenList(containerEl, parentId){
+            const kids = (__childrenById[parentId] || []).map(id => __catById[id]).filter(Boolean);
+            containerEl.innerHTML = '';
+            if (!kids.length) return; // conditional expansion
+            kids.forEach(child => {
+                const childLabel = createChildLabel(child);
+                containerEl.appendChild(childLabel);
+                if (hasChildren(child.id)) {
+                    // Prepare a nested container for deeper levels; create on demand via ensureContainerAfterLabel
+                    const ctr = document.createElement('div');
+                    ctr.className = 'nested-container mt-2 ml-8 space-y-2';
+                    containerEl.appendChild(ctr);
+                }
+            });
+        }
+
+        function attachExpansionIcon(labelEl) {
+            // Insert a subtle chevron to indicate expandability
+            const textWrap = labelEl.querySelector('.ml-2');
+            if (!textWrap) return;
+            const already = textWrap.querySelector('.nested-expander');
+            if (already) return;
+            const icon = document.createElement('i');
+            icon.className = 'fa-solid fa-angle-right text-gray-400 nested-expander ml-2';
+            textWrap.appendChild(icon);
+        }
+
+        function initNestedCategoryFilters() {
+            fetchCategoriesForFilters().then(items => {
+                buildCategoryIndices(items);
+
+                // Dynamically render ALL top-level (parent) categories into the Manufacturer filter
+                try {
+                    const container = document.querySelector('#manufacturer-filter .space-y-2');
+                    if (container) {
+                        container.innerHTML = '';
+                        const roots = (__categories || []).filter(c => c.parent_id == null);
+
+                        // Map known logos to keep visuals consistent; fallback to placeholder when unknown
+                        const logoMap = {
+                            'bmw': 'uploads/bmw.svg',
+                            'audi': 'uploads/audi.png',
+                            'mercedes-benz': 'uploads/mercdies.png',
+                            'mercdes-benz': 'uploads/mercdies.png',
+                            'toyota': 'uploads/placeholder-car.svg',
+                            'honda': 'uploads/placeholder-car.svg',
+                            'hyundai': 'uploads/placeholder-car.svg',
+                            'kia': 'uploads/kia.png',
+                            'genesis': 'uploads/genesis.png',
+                            'chevrolet': 'uploads/chevrolet.png',
+                            'kg mobility': 'uploads/kg mobility.png',
+                            'renault korea': 'uploads/renault korea.png',
+                            'mini': 'uploads/mini.png'
+                        };
+                        const getLogoSrc = (name) => {
+                            const key = String(name || '').trim().toLowerCase();
+                            return logoMap[key] || 'placeholder-car.svg';
+                        };
+
+                        roots.forEach(root => {
+                            const label = document.createElement('label');
+                            label.className = 'flex items-center';
+
+                            const input = document.createElement('input');
+                            input.type = 'radio';
+                            input.name = 'manufacturer';
+                            input.className = 'rounded-full border-gray-300 text-mango-600 focus:ring-mango-500';
+                            label.appendChild(input);
+
+                            const wrap = document.createElement('div');
+                            wrap.className = 'ml-2 flex items-center';
+
+                            const avatar = document.createElement('div');
+                            avatar.className = 'w-6 h-6 mr-2 rounded-full overflow-hidden flex items-center justify-center bg-gray-100';
+                            const img = document.createElement('img');
+                            img.className = 'w-4 h-4 object-contain';
+                            img.src = (function(){
+                                var src = null;
+                                try { src = root.image_url ? normalizeImageUrl(root.image_url) : null; } catch(_) {}
+                                return src || getLogoSrc(root.name);
+                            })();
+                            img.alt = `${root.name} logo`;
+                            avatar.appendChild(img);
+                            wrap.appendChild(avatar);
+
+                            const span = document.createElement('span');
+                            span.className = 'text-sm text-navy-700';
+                            span.textContent = root.name;
+                            wrap.appendChild(span);
+
+                            label.appendChild(wrap);
+                            container.appendChild(label);
+                        });
+                    }
+                } catch(_) { /* noop: keep UI stable */ }
+
+                const labels = document.querySelectorAll('#manufacturer-filter .space-y-2 label');
+                Array.from(labels || []).forEach(label => {
+                    const name = label.querySelector('span')?.textContent?.trim() || '';
+                    if (!name) return;
+                    const rootId = findCategoryIdByName(name);
+                    if (!rootId) return; // no category match
+                    if (hasChildren(rootId)) {
+                        attachExpansionIcon(label);
+                        // clicking the label expands children beneath it and syncs radio state
+                        label.addEventListener('click', (e) => {
+                            // Toggle parent selection (filter immediately), then expand children
+                            e.preventDefault(); e.stopPropagation();
+                            const radio = label.querySelector('input[type="radio"][name="manufacturer"]');
+                            const all = document.querySelectorAll('input[name="manufacturer"]');
+                            if (__selectedCategoryId === rootId) {
+                                __selectedCategoryId = null;
+                                removeNestedContainerAfter(label);
+                                // Uncheck all manufacturer radios when unselecting
+                                Array.from(all).forEach(r => { r.checked = false; });
+                                updateResults();
+                                return;
+                            }
+                            __selectedCategoryId = rootId;
+                            // Check only this radio, uncheck others
+                            Array.from(all).forEach(r => { r.checked = (r === radio); });
+                            updateResults();
+                            const ctr = ensureContainerAfterLabel(label);
+                            renderChildrenList(ctr, rootId);
+                        });
+                    } else {
+                        // No children: clicking selects filter to this category only and syncs radio state
+                        label.addEventListener('click', (e) => {
+                            e.preventDefault(); e.stopPropagation();
+                            const radio = label.querySelector('input[type="radio"][name="manufacturer"]');
+                            const all = document.querySelectorAll('input[name="manufacturer"]');
+                            if (__selectedCategoryId === rootId) {
+                                __selectedCategoryId = null;
+                                Array.from(all).forEach(r => { r.checked = false; });
+                                updateResults();
+                                return;
+                            }
+                            __selectedCategoryId = rootId;
+                            Array.from(all).forEach(r => { r.checked = (r === radio); });
+                            updateResults();
+                        });
+                    }
+                });
+                // If a manufacturer is specified in query, preselect it
+                try {
+                    const params = new URLSearchParams(window.location.search);
+                    const makeParam = params.get('make');
+                    if (makeParam) {
+                        const rootId = findCategoryIdByName(makeParam);
+                        if (rootId) {
+                            __selectedCategoryId = rootId;
+                            const all = document.querySelectorAll('input[name="manufacturer"]');
+                            // Attempt to check the matching radio by comparing label text
+                            const matchLabel = Array.from(labels || []).find(l => {
+                                const name = l.querySelector('span')?.textContent?.trim() || '';
+                                return normalizeCategoryLabel(name) === normalizeCategoryLabel(makeParam);
+                            });
+                            if (matchLabel) {
+                                const radio = matchLabel.querySelector('input[type="radio"][name="manufacturer"]');
+                                Array.from(all).forEach(r => { r.checked = (r === radio); });
+                            } else {
+                                // No matching label found; just uncheck all to avoid misleading UI
+                                Array.from(all).forEach(r => { r.checked = false; });
+                            }
+                            // Apply filter immediately
+                            updateResults();
+                        }
+                    }
+                } catch (_) { /* noop */ }
+            }).catch(() => { /* silent */ });
+        }
+
+        function filterBySelectedCategoryTree(listings){
+            const selId = __selectedCategoryId;
+            if (!selId) return listings;
+            return listings.filter(l => {
+                const cid = (l?.categoryId != null ? Number(l.categoryId) : (l?.category_id != null ? Number(l.category_id) : null));
+                if (cid != null) return isDescendantOrEqual(cid, selId);
+                const path = String(l?.categoryPath || '').trim().toLowerCase();
+                if (!path) return false;
+                const name = (__catById[selId]?.name || '').toLowerCase();
+                return name && path.includes(name);
+            });
+        }
+
+        // Initialize nested filters once data is ready
+        initNestedCategoryFilters();
+    });
+
+    // Navigation and interaction functions
+    function navigateToProductDetail(listingId) {
+        window.location.href = `product-detail.html?id=${listingId}`;
+    }
+
+    // Favorites: storage and UI state helpers
+    function readJson(key){ try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : null; } catch(e){ return null; } }
+    function writeJson(key, obj){ try { localStorage.setItem(key, JSON.stringify(obj)); } catch(e){} }
+    function getFavorites(){
+        const keys = ['wishlist','favorites','savedListings','savedCars'];
+        for (let i=0;i<keys.length;i++){ const v = readJson(keys[i]); if (Array.isArray(v)) return { key: keys[i], items: v }; }
+        return { key: 'wishlist', items: [] };
+    }
+    function setFavorites(key, items){ writeJson(key || 'wishlist', items); }
+    function isFavorite(id){ const { items } = getFavorites(); return items.some(it => String(it.id||it.listingId||it) === String(id)); }
+    function resolveImageForListing(listing){
+        try {
+            const firstPhoto = Array.isArray(listing?.photos) && listing.photos.length ? listing.photos[0] : null;
+            const photoUrl = firstPhoto ? normalizeImageUrl(firstPhoto) : null;
+            const candidate = listing?.image_url || listing?.image || photoUrl;
+            return candidate ? normalizeImageUrl(candidate) : 'placeholder-car.svg';
+        } catch(e){ return 'placeholder-car.svg'; }
+    }
+    function toFavItem(listing){
+        const info = getInfo(listing || {});
+        return {
+            id: listing?.id || listing?._id || info.title || Math.random().toString(36).slice(2),
+            title: info.title,
+            price: Number(listing?.price || 0),
+            image: resolveImageForListing(listing)
+        };
+    }
+    function updateFavoriteIconStates(){
+        try {
+            const favButtons = document.querySelectorAll('button[data-fav][data-id]');
+            favButtons.forEach(btn => {
+                const id = btn.getAttribute('data-id');
+                const saved = isFavorite(id);
+                const icon = btn.querySelector('i');
+                btn.setAttribute('aria-pressed', saved ? 'true' : 'false');
+                if (icon) {
+                    icon.classList.toggle('fa-solid', saved);
+                    icon.classList.toggle('fa-regular', !saved);
+                    icon.classList.toggle('text-red-500', saved);
+                }
+            });
+        } catch(e) { /* noop */ }
+    }
+    function toggleFavorite(listingId) {
+        try {
+            const fav = getFavorites();
+            const idx = fav.items.findIndex(it => String(it.id||it.listingId||it) === String(listingId));
+            if (idx >= 0) {
+                fav.items.splice(idx, 1);
+            } else {
+                const listing = (window.__listings || []).find(l => String(l.id||l._id) === String(listingId)) || null;
+                fav.items.push(listing ? toFavItem(listing) : { id: listingId, title: 'Saved Vehicle', price: 0, image: 'placeholder-car.svg' });
+            }
+            setFavorites(fav.key, fav.items);
+            updateFavoriteIconStates();
+        } catch (e) {
+            console.error('Failed to toggle favorite:', e);
+            alert('Unable to save favorite.');
+        }
+    }
+
+    function showInsuranceHistory(listingId) {
+        // Placeholder for insurance history functionality
+        console.log('Show insurance history for listing:', listingId);
+        // You can implement insurance history modal here
+    }
+</script>
+
+<script src="scripts/language.js"></script>
+
+</body>
+</html>

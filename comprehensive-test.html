@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comprehensive Auth Test - NSM Autos</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 p-8">
+    <div class="max-w-6xl mx-auto">
+        <h1 class="text-3xl font-bold mb-6">Comprehensive Authentication Test</h1>
+        
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- Authentication Status -->
+            <div class="bg-white rounded-lg shadow p-6">
+                <h2 class="text-xl font-semibold mb-4">Authentication Status</h2>
+                <div id="auth-status" class="space-y-2 text-sm"></div>
+                <button id="refresh-auth" class="mt-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                    Refresh Status
+                </button>
+            </div>
+
+            <!-- Test Results -->
+            <div class="bg-white rounded-lg shadow p-6">
+                <h2 class="text-xl font-semibold mb-4">Test Results</h2>
+                <div id="test-results" class="space-y-2 text-sm max-h-96 overflow-y-auto"></div>
+                <button id="clear-results" class="mt-4 bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">
+                    Clear Results
+                </button>
+            </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="bg-white rounded-lg shadow p-6 mt-6">
+            <h2 class="text-xl font-semibold mb-4">Actions</h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <button id="fresh-login" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
+                    Fresh Login
+                </button>
+                <button id="test-my-listings" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                    Test /my-listings
+                </button>
+                <button id="clear-auth" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">
+                    Clear Auth
+                </button>
+                <button id="go-to-listings" class="bg-purple-500 text-white px-4 py-2 rounded hover:bg-purple-600">
+                    Go to My Listings
+                </button>
+            </div>
+        </div>
+
+        <!-- Raw Token Display -->
+        <div class="bg-white rounded-lg shadow p-6 mt-6">
+            <h2 class="text-xl font-semibold mb-4">Raw Token Data</h2>
+            <div id="raw-token" class="bg-gray-100 p-4 rounded text-xs font-mono break-all"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:3001';
+        
+        function log(message, type = 'info') {
+            const results = document.getElementById('test-results');
+            const timestamp = new Date().toLocaleTimeString();
+            const color = type === 'error' ? 'text-red-600' : type === 'success' ? 'text-green-600' : 'text-blue-600';
+            results.innerHTML += `<div class="${color}">[${timestamp}] ${message}</div>`;
+            results.scrollTop = results.scrollHeight;
+        }
+
+        function updateAuthStatus() {
+            const token = localStorage.getItem('token');
+            const role = localStorage.getItem('userRole') || localStorage.getItem('role');
+            const user = localStorage.getItem('user');
+            
+            const statusDiv = document.getElementById('auth-status');
+            const rawTokenDiv = document.getElementById('raw-token');
+            
+            statusDiv.innerHTML = `
+                <div><strong>Token Present:</strong> ${token ? 'Yes' : 'No'}</div>
+                <div><strong>Token Length:</strong> ${token ? token.length + ' characters' : 'N/A'}</div>
+                <div><strong>Role:</strong> ${role || 'Not set'}</div>
+                <div><strong>User Data:</strong> ${user ? 'Present' : 'Not set'}</div>
+                <div><strong>Token Preview:</strong> ${token ? token.substring(0, 50) + '...' : 'None'}</div>
+            `;
+            
+            rawTokenDiv.textContent = token || 'No token found';
+        }
+
+        async function performFreshLogin() {
+            log('Starting fresh login process...');
+            
+            // Clear existing auth
+            localStorage.removeItem('token');
+            localStorage.removeItem('userRole');
+            localStorage.removeItem('role');
+            localStorage.removeItem('user');
+            log('Cleared existing authentication data');
+            
+            try {
+                const response = await fetch(`${API_BASE}/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        email: 'testseller@example.com',
+                        password: 'secret'
+                    })
+                });
+
+                const data = await response.json();
+                log(`Login response status: ${response.status}`);
+                
+                if (response.ok) {
+                    localStorage.setItem('token', data.token);
+                    localStorage.setItem('userRole', data.user.role);
+                    localStorage.setItem('role', data.user.role);
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                    
+                    log(`Login successful! User: ${data.user.email}, Role: ${data.user.role}`, 'success');
+                    updateAuthStatus();
+                } else {
+                    log(`Login failed: ${data.error || 'Unknown error'}`, 'error');
+                }
+            } catch (error) {
+                log(`Login network error: ${error.message}`, 'error');
+            }
+        }
+
+        async function testMyListings() {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                log('No token found - cannot test /my-listings', 'error');
+                return;
+            }
+
+            log('Testing /my-listings endpoint...');
+            log(`Using token: ${token.substring(0, 20)}...`);
+
+            try {
+                const response = await fetch(`${API_BASE}/my-listings`, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                log(`Response status: ${response.status}`);
+                const data = await response.json();
+                
+                if (response.ok) {
+                    log(`Success! Found ${data.listings ? data.listings.length : 0} listings`, 'success');
+                    if (data.listings && data.listings.length > 0) {
+                        log(`First listing: ${JSON.stringify(data.listings[0], null, 2)}`);
+                    }
+                } else {
+                    log(`API Error ${response.status}: ${data.error || 'Unknown error'}`, 'error');
+                    if (response.status === 401) {
+                        log('Token appears to be invalid or expired', 'error');
+                    }
+                }
+            } catch (error) {
+                log(`Network error: ${error.message}`, 'error');
+            }
+        }
+
+        // Event listeners
+        document.getElementById('refresh-auth').addEventListener('click', updateAuthStatus);
+        document.getElementById('fresh-login').addEventListener('click', performFreshLogin);
+        document.getElementById('test-my-listings').addEventListener('click', testMyListings);
+        
+        document.getElementById('clear-auth').addEventListener('click', () => {
+            localStorage.removeItem('token');
+            localStorage.removeItem('userRole');
+            localStorage.removeItem('role');
+            localStorage.removeItem('user');
+            log('Authentication cleared');
+            updateAuthStatus();
+        });
+
+        document.getElementById('clear-results').addEventListener('click', () => {
+            document.getElementById('test-results').innerHTML = '';
+        });
+
+        document.getElementById('go-to-listings').addEventListener('click', () => {
+            window.location.href = 'my-listings.html';
+        });
+
+        // Initialize
+        updateAuthStatus();
+        log('Comprehensive test tool loaded');
+        
+        // Auto-run fresh login and test
+        setTimeout(async () => {
+            log('Auto-running fresh login and test...');
+            await performFreshLogin();
+            setTimeout(testMyListings, 1000);
+        }, 1000);
+    </script>
+</body>
+</html>

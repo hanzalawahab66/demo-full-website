@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Direct Token Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .result { margin: 10px 0; padding: 10px; border-radius: 5px; }
+        .success { background-color: #d4edda; color: #155724; }
+        .error { background-color: #f8d7da; color: #721c24; }
+        .info { background-color: #d1ecf1; color: #0c5460; }
+        button { margin: 5px; padding: 10px 15px; }
+        textarea { width: 100%; height: 100px; margin: 10px 0; }
+    </style>
+</head>
+<body>
+    <h1>Direct Token Test</h1>
+    
+    <div>
+        <button onclick="generateToken()">1. Generate Valid Token</button>
+        <button onclick="testMyListings()">2. Test My Listings API</button>
+        <button onclick="testWithStoredToken()">3. Test with Stored Token</button>
+        <button onclick="clearResults()">Clear Results</button>
+    </div>
+    
+    <div>
+        <h3>Generated Token:</h3>
+        <textarea id="tokenDisplay" readonly placeholder="Token will appear here..."></textarea>
+    </div>
+    
+    <div id="results"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/jsonwebtoken@9.0.2/index.js"></script>
+    <script>
+        let currentToken = null;
+
+        function addResult(message, type = 'info') {
+            const results = document.getElementById('results');
+            const div = document.createElement('div');
+            div.className = `result ${type}`;
+            div.innerHTML = `<strong>${new Date().toLocaleTimeString()}</strong>: ${message}`;
+            results.appendChild(div);
+            results.scrollTop = results.scrollHeight;
+        }
+
+        function clearResults() {
+            document.getElementById('results').innerHTML = '';
+        }
+
+        // Simple HMAC-SHA256 implementation for JWT
+        async function createJWT(payload, secret) {
+            const header = {
+                "alg": "HS256",
+                "typ": "JWT"
+            };
+
+            const encodedHeader = btoa(JSON.stringify(header)).replace(/[=]/g, '').replace(/\+/g, '-').replace(/\//g, '_');
+            const encodedPayload = btoa(JSON.stringify(payload)).replace(/[=]/g, '').replace(/\+/g, '-').replace(/\//g, '_');
+            
+            const data = encodedHeader + '.' + encodedPayload;
+            
+            // Create signature using Web Crypto API
+            const encoder = new TextEncoder();
+            const key = await crypto.subtle.importKey(
+                'raw',
+                encoder.encode(secret),
+                { name: 'HMAC', hash: 'SHA-256' },
+                false,
+                ['sign']
+            );
+            
+            const signature = await crypto.subtle.sign('HMAC', key, encoder.encode(data));
+            const encodedSignature = btoa(String.fromCharCode(...new Uint8Array(signature)))
+                .replace(/[=]/g, '').replace(/\+/g, '-').replace(/\//g, '_');
+            
+            return data + '.' + encodedSignature;
+        }
+
+        async function generateToken() {
+             const payload = {
+                 "id": 9999999999999,
+                 "email": "testseller@example.com",
+                 "role": "seller",
+                 "iat": Math.floor(Date.now() / 1000),
+                 "exp": Math.floor(Date.now() / 1000) + (24 * 60 * 60) // 24 hours
+             };
+
+            try {
+                // Use the same secret as the backend
+                const JWT_SECRET = 'dev-secret-change-me';
+                currentToken = await createJWT(payload, JWT_SECRET);
+                
+                document.getElementById('tokenDisplay').value = currentToken;
+                addResult('✅ Valid JWT token generated with proper signature!', 'success');
+                addResult(`Token payload: ${JSON.stringify(payload, null, 2)}`, 'info');
+            } catch (error) {
+                addResult(`❌ Error generating token: ${error.message}`, 'error');
+            }
+        }
+
+        async function testMyListings() {
+            if (!currentToken) {
+                addResult('❌ Please generate a token first', 'error');
+                return;
+            }
+
+            addResult('Testing /my-listings endpoint with generated token...', 'info');
+            
+            try {
+                const response = await fetch('http://localhost:3001/my-listings', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${currentToken}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    addResult(`✅ My Listings API successful! Found ${data.listings ? data.listings.length : 0} listings`, 'success');
+                    if (data.listings && data.listings.length > 0) {
+                        addResult(`First listing: ${JSON.stringify(data.listings[0], null, 2)}`, 'info');
+                    }
+                } else {
+                    addResult(`❌ My Listings API failed: ${data.error || 'Unknown error'} (Status: ${response.status})`, 'error');
+                }
+            } catch (error) {
+                addResult(`❌ Network error: ${error.message}`, 'error');
+            }
+        }
+
+        async function testWithStoredToken() {
+            const storedToken = localStorage.getItem('token');
+            if (!storedToken) {
+                addResult('❌ No token found in localStorage', 'error');
+                return;
+            }
+
+            addResult('Testing /my-listings endpoint with stored token...', 'info');
+            
+            try {
+                const response = await fetch('http://localhost:3001/my-listings', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${storedToken}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    addResult(`✅ My Listings API with stored token successful! Found ${data.listings ? data.listings.length : 0} listings`, 'success');
+                } else {
+                    addResult(`❌ My Listings API with stored token failed: ${data.error || 'Unknown error'} (Status: ${response.status})`, 'error');
+                }
+            } catch (error) {
+                addResult(`❌ Network error: ${error.message}`, 'error');
+            }
+        }
+
+        // Auto-run on load
+        window.addEventListener('load', () => {
+            addResult('Ready to test direct token access. Click "Generate Valid Token" to start.', 'info');
+            
+            // Check if there's a stored token
+            const storedToken = localStorage.getItem('token');
+            if (storedToken) {
+                addResult(`Found stored token: ${storedToken.substring(0, 50)}...`, 'info');
+            }
+        });
+    </script>
+</body>
+</html>

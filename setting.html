@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Super Admin Panel — Setting</title>
+  <!-- Page Protection: only superadmin can access -->
+  <script>
+    (function(){
+      try {
+        var role = localStorage.getItem('userRole') || localStorage.getItem('role');
+        var token = localStorage.getItem('token');
+        if (role !== 'superadmin' || !token) {
+          window.location.href = 'signin.html';
+        }
+      } catch (e) {
+        window.location.href = 'signin.html';
+      }
+    })();
+  </script>
+  <style>
+    :root { --bg:#f6f7fb; --text:#0f172a; --muted:#64748b; --primary:#2563eb; --primary-hover:#1d4ed8; --topbar-bg:#ffffff; --topbar-border:#e5e7eb; --sidebar-bg:#0b1220; --sidebar-border:#1f2937; --sidebar-text:#cbd5e1; --sidebar-hover-bg:#111827; --sidebar-active-bg:#1f2937; --card-bg:#ffffff; --card-border:#e5e7eb; }
+    *{box-sizing:border-box} html,body{height:100%} body{margin:0;background:var(--bg);color:var(--text);font-family:Inter, Segoe UI, Roboto, Helvetica, Arial, system-ui, -apple-system, sans-serif}
+    .admin-layout{display:grid;grid-template-columns:260px 1fr;grid-template-rows:64px auto;grid-template-areas:"topbar topbar" "sidebar content";height:100vh;width:100%}
+    .topbar{grid-area:topbar;display:flex;align-items:center;justify-content:space-between;padding:0 16px;background:var(--topbar-bg);border-bottom:1px solid var(--topbar-border);position:sticky;top:0;z-index:10}
+    .brand{display:flex;align-items:center;gap:12px;font-weight:600} .brand-logo{width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg, var(--primary), #9333ea)} .top-actions{display:flex;align-items:center;gap:12px}
+    .admin-name{color:var(--muted);font-weight:500} .btn-logout{border:none;background:var(--primary);color:#fff;padding:8px 12px;border-radius:8px;cursor:pointer;font-weight:600} .btn-logout:hover{background:var(--primary-hover)}
+    .sidebar{grid-area:sidebar;background:var(--sidebar-bg);border-right:1px solid var(--sidebar-border);color:#fff;padding:16px 12px;overflow-y:auto}
+    .sidebar-header{font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--sidebar-text);margin-bottom:12px;opacity:.9}
+    .menu{display:flex;flex-direction:column;gap:6px} .menu a{display:flex;align-items:center;gap:10px;padding:10px 12px;text-decoration:none;color:var(--sidebar-text);border-radius:10px;transition:background 160ms ease,color 160ms ease;font-weight:500}
+    .menu a:hover{background:var(--sidebar-hover-bg);color:#fff} .menu a.active{background:var(--sidebar-active-bg);color:#fff} .menu .icon{width:18px;height:18px;border-radius:4px;background:#334155;flex-shrink:0}
+    .content{grid-area:content;padding:20px;overflow-y:auto} .content h1{margin:0 0 12px;font-size:24px} .content .muted{color:var(--muted)}
+    .section{margin-top:24px} .card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:12px;padding:16px}
+    .form-row{display:flex;gap:12px;margin-bottom:12px;flex-wrap:wrap}
+    .input,.select{padding:8px 10px;border:1px solid var(--card-border);border-radius:8px;font-size:14px} .input{min-width:220px}
+    .btn{display:inline-flex;align-items:center;gap:6px;padding:8px 10px;font-size:12px;font-weight:600;border-radius:8px;border:1px solid var(--card-border);background:#fff;color:var(--text);cursor:pointer} .btn:hover{background:#f9fafb}
+    .btn-primary{background:var(--primary);color:#fff;border-color:var(--primary)} .btn-primary:hover{background:var(--primary-hover)}
+    .footer{margin-top:24px;padding-top:12px;border-top:1px solid var(--card-border);color:var(--muted);font-size:12px}
+  </style>
+</head>
+<body>
+  <div class="admin-layout">
+    <header class="topbar" role="banner">
+      <div class="brand" aria-label="Admin brand"><div class="brand-logo" aria-hidden="true"></div><span>Super Admin Panel</span></div>
+      <div class="top-actions"><span class="admin-name">Signed in as <strong>Super Admin</strong></span><button class="btn-logout" onclick="location.href='signin.html'">Logout</button></div>
+    </header>
+    <aside class="sidebar" role="navigation" aria-label="Admin sidebar">
+      <div class="sidebar-header">Main Menu</div>
+      <nav class="menu">
+        <a href="admin.html" title="Dashboard"><span class="icon"></span> Dashboard</a>
+        <a href="user-management.html" title="User Management"><span class="icon"></span> User Management</a>
+        <a href="listing-approval.html" title="Listing Approvals"><span class="icon"></span> Listing Approvals</a>
+        <a href="create-listing.html" title="Create New Listing"><span class="icon"></span> Create New Listing</a>
+        <a href="category-management.html" title="Category Management"><span class="icon"></span> Category Management</a>
+        <a href="tag-management.html" title="Tag Management"><span class="icon"></span> Tag Management</a>
+        <a href="blog-management.html" title="Blog Management"><span class="icon"></span> Blog Management</a>
+        <a href="role-management.html" title="Role Management"><span class="icon"></span> Role Management</a>
+        <a href="setting.html" title="Setting"><span class="icon"></span> Setting</a>
+      </nav>
+    </aside>
+    <main class="content" role="main">
+      <h1>Setting</h1>
+      <p class="muted">Global admin settings are stored in your browser for demo purposes.</p>
+      <section class="section card">
+        <h3 style="margin-top:0">General Settings</h3>
+        <div class="form-row">
+          <input id="site-name" class="input" type="text" placeholder="Site name" />
+          <input id="contact-email" class="input" type="email" placeholder="Contact email" />
+        </div>
+        <div class="form-row">
+          <input id="items-per-page" class="input" type="number" placeholder="Items per page" min="1" />
+          <select id="theme" class="select">
+            <option value="light">Light Theme</option>
+            <option value="dark">Dark Theme</option>
+          </select>
+          <select id="currency" class="select">
+            <option value="USD">USD</option>
+            <option value="GBP">GBP</option>
+            <option value="EUR">EUR</option>
+            <option value="NGN">NGN</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <button id="save-settings" class="btn-primary btn">Save Settings</button>
+          <button id="reset-settings" class="btn">Reset</button>
+        </div>
+      </section>
+      <footer class="footer">© 2024 NSM Autos Admin</footer>
+    </main>
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        var links = document.querySelectorAll('.sidebar .menu a');
+        var current = location.pathname.split('/').pop().toLowerCase();
+        links.forEach(function (link) { var href = (link.getAttribute('href') || '').split('/').pop().toLowerCase(); if (href === current) link.classList.add('active'); else link.classList.remove('active'); });
+      });
+      (function () {
+        var key = 'admin.settings';
+        function load() {
+          var s = {}; try { s = JSON.parse(localStorage.getItem(key) || '{}') || {}; } catch (e) {}
+          document.getElementById('site-name').value = s.siteName || 'NSM Autos';
+          document.getElementById('contact-email').value = s.contactEmail || 'admin@nsm-autos.local';
+          document.getElementById('items-per-page').value = s.itemsPerPage || 20;
+          document.getElementById('theme').value = s.theme || 'light';
+          document.getElementById('currency').value = s.currency || 'USD';
+        }
+        function save() {
+          var s = {
+            siteName: document.getElementById('site-name').value || 'NSM Autos',
+            contactEmail: document.getElementById('contact-email').value || 'admin@nsm-autos.local',
+            itemsPerPage: parseInt(document.getElementById('items-per-page').value || '20', 10),
+            theme: document.getElementById('theme').value,
+            currency: document.getElementById('currency').value
+          };
+          localStorage.setItem(key, JSON.stringify(s));
+          alert('Settings saved (demo).');
+        }
+        document.getElementById('save-settings').addEventListener('click', save);
+        document.getElementById('reset-settings').addEventListener('click', load);
+        load();
+      })();
+    </script>
+  </div>
+</body>
+</html>

@@ -1,0 +1,492 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Super Admin Panel — User Management</title>
+  <!-- Page Protection: allow superadmin and user_manager -->
+  <script>
+    (function(){
+      try {
+        var role = (localStorage.getItem('userRole') || localStorage.getItem('role') || '').toLowerCase();
+        var token = localStorage.getItem('token');
+        var allowed = ['superadmin','user_manager'];
+        if (!token || allowed.indexOf(role) === -1) {
+          window.location.href = 'signin.html';
+        }
+      } catch (e) {
+        window.location.href = 'signin.html';
+      }
+    })();
+  </script>
+  <style>
+    :root {
+      --bg: #f6f7fb;
+      --text: #0f172a;
+      --muted: #64748b;
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --topbar-bg: #ffffff;
+      --topbar-border: #e5e7eb;
+      --sidebar-bg: #0b1220;
+      --sidebar-border: #1f2937;
+      --sidebar-text: #cbd5e1;
+      --sidebar-hover-bg: #111827;
+      --sidebar-active-bg: #1f2937;
+      --card-bg: #ffffff;
+      --card-border: #e5e7eb;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body { margin: 0; background: var(--bg); color: var(--text); font-family: Inter, Segoe UI, Roboto, Helvetica, Arial, system-ui, -apple-system, sans-serif; }
+
+    .admin-layout { display: grid; grid-template-columns: 260px 1fr; grid-template-rows: 64px auto; grid-template-areas: "topbar topbar" "sidebar content"; height: 100vh; width: 100%; }
+    .topbar { grid-area: topbar; display: flex; align-items: center; justify-content: space-between; padding: 0 16px; background: var(--topbar-bg); border-bottom: 1px solid var(--topbar-border); position: sticky; top: 0; z-index: 10; }
+    .brand { display: flex; align-items: center; gap: 12px; font-weight: 600; }
+    .brand-logo { width: 28px; height: 28px; border-radius: 8px; background: linear-gradient(135deg, var(--primary), #9333ea); }
+    .top-actions { display: flex; align-items: center; gap: 12px; }
+    .admin-name { color: var(--muted); font-weight: 500; }
+    .btn-logout { border: none; background: var(--primary); color: #fff; padding: 8px 12px; border-radius: 8px; cursor: pointer; font-weight: 600; }
+    .btn-logout:hover { background: var(--primary-hover); }
+
+    .sidebar { grid-area: sidebar; background: var(--sidebar-bg); border-right: 1px solid var(--sidebar-border); color: #fff; padding: 16px 12px; overflow-y: auto; }
+    .sidebar-header { font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--sidebar-text); margin-bottom: 12px; opacity: 0.9; }
+    .menu { display: flex; flex-direction: column; gap: 6px; }
+    .menu a { display: flex; align-items: center; gap: 10px; padding: 10px 12px; text-decoration: none; color: var(--sidebar-text); border-radius: 10px; transition: background 160ms ease, color 160ms ease; font-weight: 500; }
+    .menu a:hover { background: var(--sidebar-hover-bg); color: #fff; }
+    .menu a.active { background: var(--sidebar-active-bg); color: #fff; }
+    .menu .icon { width: 18px; height: 18px; border-radius: 4px; background: #334155; flex-shrink: 0; }
+
+    .content { grid-area: content; padding: 20px; overflow-y: auto; }
+    .content h1 { margin: 0 0 12px; font-size: 24px; }
+    .content .muted { color: var(--muted); }
+
+    .section { margin-top: 24px; }
+    .card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 16px; }
+    .table-title { display: flex; align-items: center; justify-content: space-between; margin: 0 0 8px; }
+    .table-title h3 { margin: 0; font-size: 16px; }
+    .toolbar { display: flex; align-items: center; gap: 8px; }
+    .input { width: 240px; padding: 8px 10px; border: 1px solid var(--card-border); border-radius: 8px; font-size: 14px; }
+    .btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 10px; font-size: 12px; font-weight: 600; border-radius: 8px; border: 1px solid var(--card-border); background: #fff; color: var(--text); cursor: pointer; }
+    .btn:hover { background: #f9fafb; }
+    .btn-primary { background: var(--primary); color: #fff; border-color: var(--primary); }
+    .btn-primary:hover { background: var(--primary-hover); }
+    .btn[disabled] { opacity: 0.55; cursor: not-allowed; }
+    .footer { margin-top: 24px; padding-top: 12px; border-top: 1px solid var(--card-border); color: var(--muted); font-size: 12px; }
+
+    .table-responsive { overflow-x: auto; }
+    .table { width: 100%; border-collapse: collapse; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; overflow: hidden; }
+    .table thead th { text-align: left; padding: 12px 14px; font-size: 12px; color: var(--muted); background: #f9fafb; border-bottom: 1px solid var(--card-border); }
+    .table tbody td { padding: 12px 14px; border-bottom: 1px solid var(--card-border); }
+    .table tbody tr:last-child td { border-bottom: none; }
+    .actions { display: flex; gap: 8px; }
+  </style>
+</head>
+<body>
+  <div class="admin-layout">
+    <header class="topbar" role="banner">
+      <div class="brand" aria-label="Admin brand">
+        <div class="brand-logo" aria-hidden="true"></div>
+        <span>Super Admin Panel</span>
+      </div>
+      <div class="top-actions">
+        <span class="admin-name">Signed in as <strong>Super Admin</strong></span>
+        <button class="btn-logout" onclick="location.href='signin.html'">Logout</button>
+      </div>
+    </header>
+
+    <aside class="sidebar" role="navigation" aria-label="Admin sidebar">
+      <div class="sidebar-header">Main Menu</div>
+      <nav class="menu">
+        <a href="admin.html" title="Dashboard"><span class="icon"></span> Dashboard</a>
+        <a href="user-management.html" title="User Management"><span class="icon"></span> User Management</a>
+        <a href="listing-approval.html" title="Listing Approvals"><span class="icon"></span> Listing Approvals</a>
+        <a href="create-listing.html" title="Create New Listing"><span class="icon"></span> Create New Listing</a>
+        <a href="category-management.html" title="Category Management"><span class="icon"></span> Category Management</a>
+        <a href="tag-management.html" title="Tag Management"><span class="icon"></span> Tag Management</a>
+        <a href="blog-management.html" title="Blog Management"><span class="icon"></span> Blog Management</a>
+        <a href="role-management.html" title="Role Management"><span class="icon"></span> Role Management</a>
+        <a href="setting.html" title="Setting"><span class="icon"></span> Setting</a>
+      </nav>
+    </aside>
+
+    <main class="content" role="main">
+      <h1>User Management</h1>
+      <p class="muted">View and manage buyers and sellers. Search, refresh, and perform quick actions.</p>
+
+      <!-- Buyers -->
+      <section class="section">
+        <div class="table-title">
+          <h3>Buyers</h3>
+          <div class="toolbar">
+            <input id="buyer-search" class="input" type="search" placeholder="Search buyers by name or email" />
+            <button id="buyer-refresh" class="btn">Refresh</button>
+          </div>
+        </div>
+        <div class="table-responsive">
+          <table class="table" aria-label="Buyers table">
+            <thead>
+              <tr>
+                <th style="width: 10%">User ID</th>
+                <th style="width: 20%">Name</th>
+                <th style="width: 24%">Email</th>
+                <th style="width: 18%">Company Name (English)</th>
+                <th style="width: 12%">Country</th>
+                <th style="width: 12%">Phone Number</th>
+                <th style="width: 10%">Role</th>
+                <th style="width: 10%">Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="buyers-tbody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Sellers -->
+      <section class="section">
+        <div class="table-title">
+          <h3>Sellers</h3>
+          <div class="toolbar">
+            <input id="seller-search" class="input" type="search" placeholder="Search sellers by name or email" />
+            <button id="seller-refresh" class="btn">Refresh</button>
+          </div>
+        </div>
+        <div class="table-responsive">
+          <table class="table" aria-label="Sellers table">
+            <thead>
+              <tr>
+                <th style="width: 10%">User ID</th>
+                <th style="width: 20%">Name</th>
+                <th style="width: 24%">Email</th>
+                <th style="width: 18%">Company Name (English)</th>
+                <th style="width: 12%">Country</th>
+                <th style="width: 12%">Phone Number</th>
+                <th style="width: 10%">Role</th>
+                <th style="width: 10%">Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="sellers-tbody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <footer class="footer">© 2024 NSM Autos Admin</footer>
+    </main>
+
+    <!-- Details Modal -->
+    <div id="details-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.4); align-items:center; justify-content:center; z-index:1000;">
+      <div style="width: 720px; max-width: 92vw; background:#fff; border-radius:12px; box-shadow:0 10px 24px rgba(0,0,0,0.2);">
+        <div style="padding:12px 16px; border-bottom:1px solid #e5e7eb; display:flex; align-items:center; justify-content:space-between;">
+          <h3 style="margin:0; font-size:16px">User Details</h3>
+          <button id="details-close" class="btn">Close</button>
+        </div>
+        <div id="details-content" style="padding:16px; max-height:60vh; overflow:auto;">
+          <!-- populated dynamically -->
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Auto-highlight the active link in the Master Sidebar (works identically on all pages)
+      document.addEventListener('DOMContentLoaded', function () {
+        var links = document.querySelectorAll('.sidebar .menu a');
+        var current = location.pathname.split('/').pop().toLowerCase();
+        links.forEach(function (link) {
+          var href = (link.getAttribute('href') || '').split('/').pop().toLowerCase();
+          if (href === current) link.classList.add('active'); else link.classList.remove('active');
+        });
+      });
+
+      // Demo data loader for users
+      (function () {
+        var state = { users: [], buyers: [], sellers: [] };
+        var token = localStorage.getItem('token') || '';
+        // Prefer detected API base, else try 3001 then 3000 automatically
+        var API_BASE = (window.API_BASE || localStorage.getItem('apiBase') || '');
+
+        function authHeaders(withJson){
+          var h = { 'Accept':'application/json', 'Authorization':'Bearer ' + token };
+          if (withJson) h['Content-Type'] = 'application/json';
+          return h;
+        }
+
+        function handleAuthError(){
+          try { localStorage.removeItem('token'); localStorage.removeItem('role'); localStorage.removeItem('userRole'); } catch(e){}
+          alert('Your session is invalid or expired. Please sign in again.');
+          window.location.href = 'signin.html';
+        }
+
+        function normalizeUser(u, idx) {
+          return {
+            id: u.id != null ? u.id : (u.userId != null ? u.userId : idx + 1),
+            name: u.name || u.fullName || 'Unknown',
+            email: u.email || 'no-email@example.com',
+            company_name_english: u.company_name_english || '-',
+            country: u.country || '-',
+            phone_number: u.phone_number || '-',
+            role: (u.role || '').toLowerCase(),
+            status: (u.status || 'pending').toLowerCase(),
+            // keep the raw object for details modal
+            raw: u
+          };
+        }
+
+        function resolveFileUrl(v) {
+          if (!v) return null;
+          var s = String(v);
+          // If already an absolute or rooted URL, return as-is
+          if (/^(https?:\/\/|\/)/i.test(s)) return s;
+          // Otherwise, treat as uploaded filename stored under /uploads
+          return '/uploads/' + encodeURIComponent(s);
+        }
+
+        async function resolveApiBases() {
+          // Build candidate bases: stored API_BASE first, then 3001, then 3000
+          var candidates = [];
+          var stored = (window.API_BASE || localStorage.getItem('apiBase') || '').trim();
+          if (stored) candidates.push(stored);
+          // Avoid duplicates
+          ['http://localhost:3001', 'http://localhost:3000'].forEach(function (b) {
+            if (!candidates.some(function (x) { return x === b; })) candidates.push(b);
+          });
+          return candidates;
+        }
+
+        async function tryFetchUsersFrom(base) {
+          try {
+            var res = await fetch(base + '/admin/users', {
+              cache: 'no-store',
+              headers: { 'Accept': 'application/json', 'Authorization': 'Bearer ' + token }
+            });
+            var data = null; try { data = await res.json(); } catch(e){}
+            if (res.status === 401 || res.status === 403) { handleAuthError(); return null; }
+            if (!res.ok) return null;
+            var arr = Array.isArray(data && data.users) ? data.users : [];
+            if (arr.length >= 0) {
+              try { localStorage.setItem('apiBase', base); } catch(e){}
+            }
+            return arr;
+          } catch (err) {
+            return null;
+          }
+        }
+
+        async function loadUsers() {
+          var usersArr = null;
+          // Try API bases sequentially
+          var bases = await resolveApiBases();
+          for (var i = 0; i < bases.length; i++) {
+            var arr = await tryFetchUsersFrom(bases[i]);
+            if (arr) { usersArr = arr; API_BASE = bases[i]; break; }
+          }
+          if (!usersArr) {
+            // Fallback to real JSON store to show actual signups when backend is unavailable
+            try {
+              var res = await fetch('backend/users.json', { cache: 'no-store' });
+              var json = res.ok ? await res.json() : [];
+              usersArr = Array.isArray(json) ? json : [];
+            } catch (e) {
+              usersArr = [];
+            }
+          }
+          state.users = usersArr.map(function(u, idx){ return normalizeUser(u, idx); });
+          splitRoles();
+          renderAll();
+        }
+
+        function splitRoles() {
+          state.buyers = state.users.filter(function (u) { return u.role === 'buyer'; });
+          state.sellers = state.users.filter(function (u) { return u.role === 'seller'; });
+        }
+
+        function openDetailsModal(user) {
+          var wrap = document.getElementById('details-modal');
+          var box = document.getElementById('details-content');
+          var u = user.raw || user;
+          function fmt(v) { return (v == null || v === '') ? '-' : v; }
+          function link(v){ var url = resolveFileUrl(v); return url ? ('<a href="' + url + '" target="_blank">' + v + '</a>') : '-'; }
+          var html = '';
+          html += '<div style="display:grid; grid-template-columns: 1fr 2fr; gap:8px;">';
+          html += '<div class="muted">ID</div><div>' + fmt(u.id) + '</div>';
+          html += '<div class="muted">Name</div><div>' + fmt(u.name) + '</div>';
+          html += '<div class="muted">Email</div><div>' + fmt(u.email) + '</div>';
+          html += '<div class="muted">Role</div><div>' + fmt(u.role) + '</div>';
+          html += '<div class="muted">Status</div><div>' + fmt(u.status) + '</div>';
+          html += '<div class="muted">Country</div><div>' + fmt(u.country) + '</div>';
+          html += '<div class="muted">Phone Number</div><div>' + fmt(u.phone_number) + '</div>';
+          html += '<div class="muted">Company Name (English)</div><div>' + fmt(u.company_name_english) + '</div>';
+          html += '<div class="muted">Company Name (Korean)</div><div>' + fmt(u.company_name_korean) + '</div>';
+          html += '<div class="muted">Export Items</div><div>' + fmt(u.export_items) + '</div>';
+          html += '<div class="muted">Available Languages</div><div>' + fmt(u.available_languages) + '</div>';
+          html += '<div class="muted">Representative Name</div><div>' + fmt(u.representative_name) + '</div>';
+          html += '<div class="muted">Company Tel</div><div>' + fmt(u.company_tel) + '</div>';
+          html += '<div class="muted">Company Logo URL</div><div>' + link(u.company_logo_url) + '</div>';
+          html += '<div class="muted">Company Address</div><div>' + fmt(u.company_address) + '</div>';
+          html += '<div class="muted">Detailed Address</div><div>' + fmt(u.detailed_address) + '</div>';
+          html += '<div class="muted">Establishment Date</div><div>' + fmt(u.establishment_date) + '</div>';
+          html += '<div class="muted">Business Registration URL</div><div>' + link(u.business_registration_url) + '</div>';
+          html += '<div class="muted">Business Registration Document</div><div>' + link(u.business_registration_document) + '</div>';
+          html += '<div class="muted">Company Introduction</div><div>' + fmt(u.company_introduction) + '</div>';
+          html += '<div class="muted">Bank Name</div><div>' + fmt(u.bank_name) + '</div>';
+          html += '<div class="muted">Account Number</div><div>' + fmt(u.account_number) + '</div>';
+          html += '<div class="muted">Account Holder Name</div><div>' + fmt(u.account_holder_name) + '</div>';
+          html += '</div>';
+          box.innerHTML = html;
+          wrap.style.display = 'flex';
+        }
+
+        document.getElementById('details-close').addEventListener('click', function(){
+          document.getElementById('details-modal').style.display = 'none';
+        });
+
+        function renderTable(rows, tbody) {
+          tbody.innerHTML = '';
+          rows.forEach(function (u) {
+            var tr = document.createElement('tr');
+            var tdId = document.createElement('td'); tdId.textContent = u.id;
+            var tdName = document.createElement('td'); tdName.textContent = u.name;
+            var tdEmail = document.createElement('td'); tdEmail.textContent = u.email;
+            var tdCompanyEn = document.createElement('td'); tdCompanyEn.textContent = u.company_name_english || '-';
+            var tdCountry = document.createElement('td'); tdCountry.textContent = u.country || '-';
+            var tdPhone = document.createElement('td'); tdPhone.textContent = u.phone_number || '-';
+            var tdRole = document.createElement('td'); tdRole.textContent = u.role || '-';
+            var tdStatus = document.createElement('td'); tdStatus.textContent = u.status || 'pending';
+            var tdActions = document.createElement('td');
+            var actions = document.createElement('div'); actions.className = 'actions';
+
+            var btnView = document.createElement('button'); btnView.className = 'btn'; btnView.textContent = 'View Details';
+            btnView.addEventListener('click', function () { openDetailsModal(u); });
+
+            // Action buttons by role/status
+            var st = String(u.status || '').toLowerCase();
+            var role = String(u.role || '').toLowerCase();
+            if (role === 'buyer') {
+              // View + Suspend
+              var btnSuspend = document.createElement('button'); btnSuspend.className = 'btn'; btnSuspend.textContent = 'Suspend';
+              btnSuspend.addEventListener('click', async function(){
+                try{
+                  var res = await fetch(API_BASE + '/admin/suspend/' + encodeURIComponent(u.id), {
+                    method: 'PUT', headers: { 'Accept':'application/json','Authorization':'Bearer ' + token }
+                  });
+                  var data = await res.json();
+                  if(!res.ok){ alert(data && data.error ? data.error : ('Suspend failed (HTTP '+res.status+')')); return; }
+                  u.status = 'suspended'; tdStatus.textContent = 'suspended';
+                }catch(err){ console.error('Suspend error:', err); alert('Network error. Is backend running?'); }
+              });
+              actions.appendChild(btnView);
+              actions.appendChild(btnSuspend);
+            } else if (role === 'seller') {
+              // Always show Approve and Reject next to seller rows
+              var btnApprove = document.createElement('button'); btnApprove.className = 'btn btn-primary'; btnApprove.textContent = 'Approve';
+              var btnReject = document.createElement('button'); btnReject.className = 'btn'; btnReject.textContent = 'Reject';
+
+              var isPending = (st === 'pending');
+              if (!isPending) {
+                btnApprove.disabled = true;
+                btnReject.disabled = true;
+                btnApprove.title = 'Only pending sellers can be approved';
+                btnReject.title = 'Only pending sellers can be rejected';
+              }
+
+              btnApprove.addEventListener('click', async function(){
+                if (btnApprove.disabled) return;
+                // Pre-disable to avoid double clicks
+                btnApprove.disabled = true; btnReject.disabled = true;
+                try{
+                  var res = await fetch(API_BASE + '/admin/approve/' + encodeURIComponent(u.id), {
+                    method: 'PUT', headers: authHeaders(true), body: JSON.stringify({})
+                  });
+                  var data = null; try { data = await res.json(); } catch(e){}
+                  if (res.status === 401 || res.status === 403) { handleAuthError(); return; }
+                  if(!res.ok){ alert(data && data.error ? data.error : ('Approve failed (HTTP '+res.status+')')); btnApprove.disabled = false; btnReject.disabled = false; return; }
+                  // Update UI and hide buttons
+                  u.status = 'approved'; tdStatus.textContent = 'approved';
+                  btnApprove.style.display = 'none'; btnReject.style.display = 'none';
+                  try { await loadUsers(); } catch(e){}
+                }catch(err){ console.error('Approve error:', err); alert('Network error approving user. Is backend running?'); btnApprove.disabled = false; btnReject.disabled = false; }
+              });
+
+              btnReject.addEventListener('click', async function(){
+                if (btnReject.disabled) return;
+                btnApprove.disabled = true; btnReject.disabled = true;
+                try{
+                  var res = await fetch(API_BASE + '/admin/reject/' + encodeURIComponent(u.id), {
+                    method: 'PUT', headers: authHeaders(true), body: JSON.stringify({})
+                  });
+                  var data = null; try { data = await res.json(); } catch(e){}
+                  if (res.status === 401 || res.status === 403) { handleAuthError(); return; }
+                  if(!res.ok){ alert(data && data.error ? data.error : ('Reject failed (HTTP '+res.status+')')); btnApprove.disabled = false; btnReject.disabled = false; return; }
+                  // Update UI and hide buttons
+                  u.status = 'rejected'; tdStatus.textContent = 'rejected';
+                  btnApprove.style.display = 'none'; btnReject.style.display = 'none';
+                  try { await loadUsers(); } catch(e){}
+                }catch(err){ console.error('Reject error:', err); alert('Network error rejecting user. Is backend running?'); btnApprove.disabled = false; btnReject.disabled = false; }
+              });
+
+              actions.appendChild(btnView);
+              actions.appendChild(btnApprove);
+              actions.appendChild(btnReject);
+
+              // Keep Suspend for approved sellers
+              if (st === 'approved') {
+                var btnSuspend2 = document.createElement('button'); btnSuspend2.className = 'btn'; btnSuspend2.textContent = 'Suspend';
+                btnSuspend2.addEventListener('click', async function(){
+                  try{
+                    var res = await fetch(API_BASE + '/admin/suspend/' + encodeURIComponent(u.id), {
+                      method: 'PUT', headers: authHeaders(true), body: JSON.stringify({})
+                    });
+                    var data = await res.json();
+                    if(!res.ok){ alert(data && data.error ? data.error : ('Suspend failed (HTTP '+res.status+')')); return; }
+                    u.status = 'suspended'; tdStatus.textContent = 'suspended';
+                  }catch(err){ console.error('Suspend error:', err); alert('Network error. Is backend running?'); }
+                });
+                actions.appendChild(btnSuspend2);
+              }
+            } else {
+              actions.appendChild(btnView);
+            }
+
+            tdActions.appendChild(actions);
+
+            tr.appendChild(tdId);
+            tr.appendChild(tdName);
+            tr.appendChild(tdEmail);
+            tr.appendChild(tdCompanyEn);
+            tr.appendChild(tdCountry);
+            tr.appendChild(tdPhone);
+            tr.appendChild(tdRole);
+            tr.appendChild(tdStatus);
+            tr.appendChild(tdActions);
+            tbody.appendChild(tr);
+          });
+        }
+
+        function renderAll() {
+          var buyerFilter = (document.getElementById('buyer-search').value || '').toLowerCase();
+          var sellerFilter = (document.getElementById('seller-search').value || '').toLowerCase();
+
+          var buyers = state.buyers.filter(function (u) {
+            return !buyerFilter || (u.name.toLowerCase().includes(buyerFilter) || u.email.toLowerCase().includes(buyerFilter));
+          });
+          var sellers = state.sellers.filter(function (u) {
+            return !sellerFilter || (u.name.toLowerCase().includes(sellerFilter) || u.email.toLowerCase().includes(sellerFilter));
+          });
+
+          renderTable(buyers, document.getElementById('buyers-tbody'));
+          renderTable(sellers, document.getElementById('sellers-tbody'));
+        }
+
+        document.getElementById('buyer-search').addEventListener('input', renderAll);
+        document.getElementById('seller-search').addEventListener('input', renderAll);
+        document.getElementById('buyer-refresh').addEventListener('click', loadUsers);
+        document.getElementById('seller-refresh').addEventListener('click', loadUsers);
+
+        loadUsers();
+      })();
+    </script>
+  </div>
+</body>
+</html>

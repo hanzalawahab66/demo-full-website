@@ -1,0 +1,31 @@
+# OS-specific junk
+Thumbs.db
+.DS_Store
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment secrets
+backend/.env
+
+# Dependencies
+backend/node_modules/
+
+# Build output (if any)
+dist/
+build/
+
+# Large uploads and generated assets
+uploads/
+
+# Local databases or temp files
+*.sqlite
+backend/*.sqlite
+.tmp/
+.temp/
+
+# Editor settings
+.vscode/

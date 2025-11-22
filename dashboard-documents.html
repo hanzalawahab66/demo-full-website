@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Buyer Dashboard - My Documents</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>window.FontAwesomeConfig = {autoReplaceSvg: 'nest'};</script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <style>
+    ::-webkit-scrollbar { display: none; }
+    * { font-family: 'Inter', sans-serif; }
+    .card-hover { transition: all 0.3s ease; }
+    .card-hover:hover { transform: translateY(-4px); box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
+    .sticky-column { position: sticky; top: 6rem; }
+  </style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body class="bg-gray-50">
+
+  <!-- Language Selector (from home.html) -->
+  <div class="bg-gray-100 border-b border-gray-200">
+    <div class="container mx-auto px-8 py-2">
+      <div class="flex justify-end items-center space-x-4">
+        <div class="relative">
+          <button id="languageToggle" class="flex items-center space-x-2 text-gray-600 hover:text-orange-500 transition-colors">
+            <i class="fa-solid fa-globe text-sm"></i>
+            <span class="text-sm font-medium">English</span>
+            <i class="fa-solid fa-chevron-down text-xs"></i>
+          </button>
+          <div id="languageDropdown" class="absolute right-0 top-full mt-1 bg-white rounded-lg shadow-xl border border-gray-200 py-2 min-w-[160px] hidden z-50">
+            <button class="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 hover:text-orange-500 transition-colors flex items-center space-x-2" data-lang="en">
+              <img src="https://flagcdn.com/w20/us.png" alt="English" class="w-4 h-3">
+              <span>English</span>
+            </button>
+            <button class="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 hover:text-orange-500 transition-colors flex items-center space-x-2" data-lang="ko">
+              <img src="https://flagcdn.com/w20/kr.png" alt="한국어" class="w-4 h-3">
+              <span>한국어</span>
+            </button>
+            <button class="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 hover:text-orange-500 transition-colors flex items-center space-x-2" data-lang="ar">
+              <img src="https://flagcdn.com/w20/sa.png" alt="العربية" class="w-4 h-3">
+              <span>العربية</span>
+            </button>
+            <button class="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 hover:text-orange-500 transition-colors flex items-center space-x-2" data-lang="fr">
+              <img src="https://flagcdn.com/w20/fr.png" alt="Français" class="w-4 h-3">
+              <span>Français</span>
+            </button>
+          </div>
+        </div>
+        <div class="text-gray-400">|</div>
+        <div class="flex items-center space-x-4">
+          <a href="signin.html" class="bg-transparent border-2 border-gray-300 text-gray-700 hover:border-orange-500 hover:text-orange-500 px-6 py-2 rounded-lg font-semibold transition-all" data-text="sign-in">Sign In</a>
+          <a href="signup.html" class="bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-lg font-semibold transition-all transform hover:scale-105" data-text="sign-up">Sign Up</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Header (from home.html) -->
+  <header id="header" class="bg-white shadow-sm sticky top-0 z-50 transition-all duration-300">
+    <div class="container mx-auto px-8 py-6">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center space-x-12">
+          <div class="flex items-center space-x-4">
+            <div class="flex items-center">
+              <div class="relative">
+                <span class="text-3xl font-black text-gray-900 tracking-tight">MANG</span>
+                <div class="inline-block relative mx-1">
+                  <span class="text-3xl font-black text-gray-900">O</span>
+                  <div class="absolute inset-0 w-8 h-8 bg-gradient-to-br from-orange-400 to-orange-600 rounded-full opacity-80 -top-1"></div>
+                </div>
+                <span class="text-3xl font-black text-gray-900 tracking-tight">CAR</span>
+              </div>
+            </div>
+            <div class="flex items-center">
+              <div class="relative w-12 h-12">
+                <div class="absolute inset-0 w-8 h-8 bg-blue-500 rounded-full opacity-80"></div>
+                <div class="absolute top-2 right-0 w-8 h-8 bg-orange-500 rounded-full opacity-80"></div>
+                <div class="absolute inset-0 flex items-center justify-center">
+                  <span class="text-white font-bold text-sm z-10">CG</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="flex-1 max-w-2xl mx-12">
+          <div class="relative">
+            <div class="flex items-center bg-gray-50 rounded-full border-2 border-gray-200 focus-within:border-orange-500 transition-colors">
+              <input type="text" data-text="search-placeholder" placeholder="Identification Number / Product Number" class="flex-1 px-6 py-4 bg-transparent text-gray-700 placeholder-gray-500 focus:outline-none rounded-l-full">
+              <a href="inventory.html" class="bg-orange-500 hover:bg-orange-600 text-white px-8 py-4 rounded-full font-bold flex items-center space-x-2 transition-all transform hover:scale-105">
+                <i class="fa-solid fa-search"></i>
+                <span data-text="offers-count">Search Inventory</span>
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="flex items-center space-x-8">
+          <div class="flex items-center space-x-6">
+            <i class="fa-solid fa-ship text-gray-700 text-xl hover:text-orange-500 transition-colors cursor-pointer"></i>
+            <i class="fa-solid fa-globe text-gray-700 text-xl hover:text-orange-500 transition-colors cursor-pointer"></i>
+          </div>
+        </div>
+      </div>
+      <nav class="flex items-center justify-center space-x-12 mt-6 pt-4 border-t border-gray-100">
+        <a href="home.html" class="text-gray-700 hover:text-orange-500 font-medium transition-colors cursor-pointer">Home</a>
+        <a href="inventory.html" class="text-gray-700 hover:text-orange-500 font-medium transition-colors cursor-pointer">Inventory</a>
+        <a href="blog.html" class="text-gray-700 hover:text-orange-500 font-medium transition-colors cursor-pointer">Blog</a>
+        <a href="about-us.html" class="text-gray-700 hover:text-orange-500 font-medium transition-colors cursor-pointer">About Us</a>
+        <a href="contact-us.html" class="text-gray-700 hover:text-orange-500 font-medium transition-colors cursor-pointer">Contact Us</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Dashboard Content -->
+  <main class="container mx-auto px-6 py-10">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+      <!-- Sidebar -->
+      <aside class="lg:col-span-3">
+        <div class="sticky-column bg-white rounded-2xl shadow-lg p-6 border border-gray-200">
+          <h2 class="text-xl font-bold text-gray-900 mb-4">Buyer Dashboard</h2>
+          <nav class="space-y-2">
+            <a href="buyer-dashboard.html" class="flex items-center justify-between px-4 py-3 rounded-lg border text-gray-700 border-gray-200 hover:bg-gray-50 transition-all">
+              <span class="flex items-center space-x-3">
+                <i class="fa-solid fa-gauge-high text-gray-500"></i>
+                <span>Dashboard</span>
+              </span>
+              <i class="fa-solid fa-chevron-right text-gray-400"></i>
+            </a>
+            <a href="dashboard-saved.html" class="flex items-center justify-between px-4 py-3 rounded-lg border text-gray-700 border-gray-200 hover:bg-gray-50 transition-all">
+              <span class="flex items-center space-x-3">
+                <i class="fa-regular fa-heart text-gray-500"></i>
+                <span>Saved Cars</span>
+              </span>
+              <i class="fa-solid fa-chevron-right text-gray-400"></i>
+            </a>
+
+            <a href="dashboard-compare.html" class="flex items-center justify-between px-4 py-3 rounded-lg border text-gray-700 border-gray-200 hover:bg-gray-50 transition-all">
+              <span class="flex items-center space-x-3">
+                <i class="fa-solid fa-code-compare text-gray-500"></i>
+                <span>Compare Cars</span>
+              </span>
+              <i class="fa-solid fa-chevron-right text-gray-400"></i>
+            </a>
+            <a href="dashboard-messages.html" class="flex items-center justify-between px-4 py-3 rounded-lg border text-gray-700 border-gray-200 hover:bg-gray-50 transition-all">
+              <span class="flex items-center space-x-3">
+                <i class="fa-regular fa-envelope text-gray-500"></i>
+                <span>My Messages</span>
+              </span>
+              <i class="fa-solid fa-chevron-right text-gray-400"></i>
+            </a>
+            <a href="dashboard-purchases.html" class="flex items-center justify-between px-4 py-3 rounded-lg border text-gray-700 border-gray-200 hover:bg-gray-50 transition-all">
+              <span class="flex items-center space-x-3">
+                <i class="fa-solid fa-cart-shopping text-gray-500"></i>
+                <span>My Purchases</span>
+              </span>
+              <i class="fa-solid fa-chevron-right text-gray-400"></i>
+            </a>
+            <a href="dashboard-documents.html" class="flex items-center justify-between px-4 py-3 rounded-lg border text-gray-900 bg-orange-50 border-orange-200 hover:bg-orange-100 transition-all">
+              <span class="flex items-center space-x-3">
+                <i class="fa-regular fa-file-lines text-orange-500"></i>
+                <span>My Documents</span>
+              </span>
+              <i class="fa-solid fa-chevron-right text-gray-400"></i>
+            </a>
+            <a href="dashboard-notifications.html" class="flex items-center justify-between px-4 py-3 rounded-lg border text-gray-700 border-gray-200 hover:bg-gray-50 transition-all">
+              <span class="flex items-center space-x-3">
+                <i class="fa-regular fa-bell text-gray-500"></i>
+                <span>Notifications</span>
+              </span>
+              <i class="fa-solid fa-chevron-right text-gray-400"></i>
+            </a>
+            <a href="dashboard-profile.html" class="flex items-center justify-between px-4 py-3 rounded-lg border text-gray-700 border-gray-200 hover:bg-gray-50 transition-all">
+              <span class="flex items-center space-x-3">
+                <i class="fa-regular fa-user text-gray-500"></i>
+                <span>My Profile & KYC</span>
+              </span>
+              <i class="fa-solid fa-chevron-right text-gray-400"></i>
+            </a>
+          </nav>
+        </div>
+      </aside>
+
+      <!-- Main: My Documents -->
+      <section class="lg:col-span-9">
+        <div class="bg-white rounded-2xl shadow-lg p-6 border border-gray-200 mb-6">
+          <div class="flex items-center justify-between">
+            <div>
+              <h1 class="text-2xl font-bold text-gray-900">My Documents</h1>
+              <p class="text-gray-600">Invoices, receipts, and related files.</p>
+            </div>
+            <a href="buyerordersandpayments.html" class="text-sm text-blue-600 hover:text-blue-700 underline">Billing & Payments</a>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-lg p-6 border border-gray-200">
+          <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+              <thead class="bg-gray-50">
+                <tr>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Document</th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                </tr>
+              </thead>
+              <tbody class="bg-white divide-y divide-gray-200" id="docs-body"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <!-- Footer (from home.html) -->
+  <footer id="footer" class="bg-gray-900 text-white py-16">
+    <div class="container mx-auto px-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 mb-12">
+        <div class="lg:col-span-2">
+          <div class="flex items-center mb-6">
+            <div class="w-12 h-12 bg-gradient-to-br from-orange-400 to-orange-600 rounded-xl flex items-center justify-center">
+              <i class="fa-solid fa-car text-white text-xl"></i>
+            </div>
+            <span class="ml-3 text-2xl font-bold">MangoCar</span>
+          </div>
+          <p class="text-gray-300 mb-6 max-w-md">Your trusted partner in finding the perfect pre-owned vehicle. Quality, transparency, and exceptional service are our commitments to you.</p>
+          <div class="flex items-center space-x-4"><i class="fa-solid fa-phone text-orange-500"></i><span class="font-semibold">(555) 123-CARS</span></div>
+          <div class="flex items-center space-x-4 mt-2"><i class="fa-solid fa-envelope text-orange-500"></i><span>info@mangocar.com</span></div>
+          <div class="flex items-center space-x-4 mt-2"><i class="fa-solid fa-location-dot text-orange-500"></i><span>123 Auto Plaza, Car City, CC 12345</span></div>
+        </div>
+        <div>
+          <h3 class="text-lg font-bold mb-4">Inventory</h3>
+          <ul class="space-y-2 text-gray-300">
+            <li><span class="hover:text-orange-500 transition-colors cursor-pointer">All Vehicles</span></li>
+            <li><span class="hover:text-orange-500 transition-colors cursor-pointer">SUVs</span></li>
+            <li><span class="hover:text-orange-500 transition-colors cursor-pointer">Sedans</span></li>
+            <li><span class="hover:text-orange-500 transition-colors cursor-pointer">Trucks</span></li>
+            <li><span class="hover:text-orange-500 transition-colors cursor-pointer">Luxury Cars</span></li>
+            <li><span class="hover:text-orange-500 transition-colors cursor-pointer">Under $15K</span></li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="text-lg font-bold mb-4">Services</h3>
+          <ul class="space-y-2 text-gray-300">
+            <li><span class="hover:text-orange-500 transition-colors cursor-pointer">Financing</span></li>
+            <li><span class="hover:text-orange-500 transition-colors cursor-pointer">Trade-In</span></li>
+            <li><span class="hover:text-orange-500 transition-colors cursor-pointer">Extended Warranty</span></li>
+            <li><span class="hover:text-orange-500 transition-colors cursor-pointer">Vehicle History</span></li>
+            <li><span class="hover:text-orange-500 transition-colors cursor-pointer">Inspection</span></li>
+            <li><span class="hover:text-orange-500 transition-colors cursor-pointer">Delivery</span></li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="text-lg font-bold mb-4">Company</h3>
+          <ul class="space-y-2 text-gray-300">
+            <li><span class="hover:text-orange-500 transition-colors cursor-pointer">About Us</span></li>
+            <li><span class="hover:text-orange-500 transition-colors cursor-pointer">Our Team</span></li>
+            <li><span class="hover:text-orange-500 transition-colors cursor-pointer">Careers</span></li>
+            <li><span class="hover:text-orange-500 transition-colors cursor-pointer">Reviews</span></li>
+            <li><span class="hover:text-orange-500 transition-colors cursor-pointer">Contact</span></li>
+            <li><span class="hover:text-orange-500 transition-colors cursor-pointer">Blog</span></li>
+          </ul>
+        </div>
+      </div>
+      <div class="border-t border-gray-800 pt-8">
+        <div class="flex flex-col md:flex-row justify-between items-center">
+          <div class="text-gray-400 mb-4 md:mb-0">© 2024 MangoCar. All rights reserved.</div>
+          <div class="flex items-center space-x-6">
+            <span class="text-gray-400 hover:text-orange-500 transition-colors cursor-pointer">Privacy Policy</span>
+            <span class="text-gray-400 hover:text-orange-500 transition-colors cursor-pointer">Terms of Service</span>
+            <div class="flex items-center space-x-4 ml-8">
+              <span class="text-gray-400 hover:text-orange-500 transition-colors cursor-pointer"><i class="fa-brands fa-facebook text-xl"></i></span>
+              <span class="text-gray-400 hover:text-orange-500 transition-colors cursor-pointer"><i class="fa-brands fa-twitter text-xl"></i></span>
+              <span class="text-gray-400 hover:text-orange-500 transition-colors cursor-pointer"><i class="fa-brands fa-instagram text-xl"></i></span>
+              <span class="text-gray-400 hover:text-orange-500 transition-colors cursor-pointer"><i class="fa-brands fa-youtube text-xl"></i></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script>
+    // Language dropdown toggle
+    (function(){
+      var toggle = document.getElementById('languageToggle');
+      var dropdown = document.getElementById('languageDropdown');
+      if (toggle && dropdown) {
+        toggle.addEventListener('click', function(){ dropdown.classList.toggle('hidden'); });
+        document.addEventListener('click', function(e){ if (!dropdown.contains(e.target) && !toggle.contains(e.target)) dropdown.classList.add('hidden'); });
+      }
+    })();
+
+    // Invoices list with live status and notifications
+    (function(){
+      var prevStatusMap = {};
+      function readToken(){ return localStorage.getItem('token') || ''; }
+      function formatDate(iso){
+        var d = iso ? new Date(iso) : new Date();
+        if (isNaN(d.getTime())) d = new Date();
+        var y = d.getFullYear(); var m = String(d.getMonth()+1).padStart(2,'0'); var day = String(d.getDate()).padStart(2,'0');
+        return y+'-'+m+'-'+day;
+      }
+      function normalizeStatus(s){
+        s = String(s||'').toLowerCase();
+        if (s === 'pending' || s === 'requested') return 'requested';
+        if (s === 'in_progress' || s === 'progress') return 'in_progress';
+        if (s === 'completed' || s === 'done') return 'completed';
+        return 'requested';
+      }
+      function badgeHTML(status){
+        var s = normalizeStatus(status);
+        var cfg = s === 'completed' ? ['Completed','bg-green-100 text-green-700 border-green-200'] : (s === 'in_progress' ? ['In Progress','bg-yellow-100 text-yellow-700 border-yellow-200'] : ['Requested','bg-gray-100 text-gray-700 border-gray-200']);
+        return '<span class="inline-block px-2.5 py-1 rounded-full text-xs font-semibold border '+cfg[1]+'">'+cfg[0]+'</span>';
+      }
+      async function fetchMyOrders(){
+        var token = readToken();
+        try {
+          var res = await fetch('http://localhost:3000/buyer/orders', {
+            headers: { 'Authorization': token ? ('Bearer '+token) : '' }
+          });
+          if (!res.ok) throw new Error('Failed to load orders');
+          return await res.json();
+        } catch (e) { return []; }
+      }
+      function latestByListingId(orders){
+        var map = {};
+        (orders||[]).forEach(function(o){
+          var lid = String(o.listingId||''); if (!lid) return;
+          var prev = map[lid];
+          var prevTime = prev ? new Date(prev.updated_at||prev.created_at||0).getTime() : -1;
+          var curTime = new Date(o.updated_at||o.created_at||0).getTime();
+          if (!prev || curTime >= prevTime) map[lid] = o;
+        });
+        return map;
+      }
+      function pushNotification(notif){
+        try {
+          var arr = JSON.parse(localStorage.getItem('notifications')||'[]');
+          arr.push(notif);
+          localStorage.setItem('notifications', JSON.stringify(arr));
+        } catch(e){}
+      }
+      function maybeNotifyCompletion(items){
+        items.forEach(function(it){
+          var lid = String(it.listingId||it.id||''); if (!lid) return;
+          var prev = prevStatusMap[lid];
+          var cur = normalizeStatus(it._status||it.status);
+          if (prev !== 'completed' && cur === 'completed'){
+            var title = it._title || it.title || (it.listing && it.listing.title) || 'Vehicle';
+            pushNotification({
+              id: 'notif-'+lid+'-'+Date.now(),
+              type: 'invoice',
+              title: 'Invoice Completed',
+              message: 'Your invoice for '+title+' is completed.',
+              listingId: it.listingId || it.id || null,
+              created_at: new Date().toISOString(),
+              read: false
+            });
+          }
+          prevStatusMap[lid] = cur;
+        });
+      }
+      async function render(){
+        var tbody = document.getElementById('docs-body'); if (!tbody) return;
+        var tokenPresent = !!readToken();
+        if (!tokenPresent){
+          tbody.innerHTML = '<tr><td colspan="4" class="px-6 py-8 text-center text-orange-700 bg-orange-50 border border-orange-200 rounded">Sign in to view completed invoices. <a href="signin.html" class="underline">Sign in</a></td></tr>';
+          return;
+        }
+        var orders = await fetchMyOrders();
+        if (!Array.isArray(orders) || orders.length === 0){
+          tbody.innerHTML = '<tr><td colspan="4" class="px-6 py-8 text-center text-gray-500">No documents yet.</td></tr>';
+          return;
+        }
+        // Only show completed
+        var completed = orders.filter(function(o){ return normalizeStatus(o.status) === 'completed'; });
+        if (completed.length === 0){
+          tbody.innerHTML = '<tr><td colspan="4" class="px-6 py-8 text-center text-gray-500">No completed invoices yet.</td></tr>';
+          return;
+        }
+        // Sort most recent by invoice_at/updated_at
+        completed.sort(function(a,b){ return new Date(b.invoice_at||b.updated_at||b.created_at||0) - new Date(a.invoice_at||a.updated_at||a.created_at||0); });
+        tbody.innerHTML = completed.map(function(o){
+          var title = (o.listing && o.listing.title) || 'Vehicle';
+          var price = (o.listing && typeof o.listing.price !== 'undefined' && o.listing.price !== null) ? ('<div class="text-xs text-gray-500">$'+o.listing.price+'</div>') : '';
+          var date = formatDate(o.invoice_at || o.updated_at || o.created_at);
+          return (
+            '<tr>'+
+              '<td class="px-6 py-4 whitespace-nowrap">'+
+                '<div class="text-sm font-semibold text-gray-900">Invoice - '+title+'</div>'+
+                '<div class="text-sm text-gray-500">Order #'+String(o.id)+'</div>'+
+                price+
+              '</td>'+
+              '<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">'+date+'</td>'+
+              '<td class="px-6 py-4 whitespace-nowrap">'+badgeHTML(o.status)+'</td>'+
+              '<td class="px-6 py-4 whitespace-nowrap flex items-center gap-2">'+
+                '<button type="button" class="btn-view-invoice inline-flex items-center bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-all" data-order-id="'+String(o.id)+'">'+
+                  '<i class="fa-solid fa-file-invoice mr-2"></i> View Invoice'+
+                '</button>'+
+                '<a href="product-detail.html?id='+encodeURIComponent(o.listingId)+'" class="inline-flex items-center bg-gray-100 hover:bg-gray-200 text-gray-800 px-4 py-2 rounded-lg text-sm font-semibold transition-all">'+
+                  '<i class="fa-solid fa-receipt mr-2"></i> View Order'+
+                '</a>'+
+              '</td>'+
+            '</tr>'
+          );
+        }).join('');
+
+        maybeNotifyCompletion(orders);
+      }
+      function attachHandlers(){
+        var tbody = document.getElementById('docs-body'); if (!tbody) return;
+        tbody.addEventListener('click', function(e){
+          var btn = e.target.closest('.btn-view-invoice'); if (!btn) return;
+          var id = btn.getAttribute('data-order-id'); if (!id) return;
+          // Always navigate to relative path to avoid cross-port issues
+          var targetUrl = 'buyer-invoice.html?orderId=' + encodeURIComponent(String(id));
+          window.location.href = targetUrl;
+        });
+      }
+      document.addEventListener('DOMContentLoaded', function(){ render(); attachHandlers(); });
+      // Periodic auto-refresh for live updates
+      // Periodic auto-refresh for live updates
+      setInterval(function(){ render(); }, 15000);
+    })();
+  </script>
+
+  <!-- Header role-based replacement: show Dashboard link when signed in -->
+  <script>
+    (function(){
+      try {
+        var role = (localStorage.getItem('role') || localStorage.getItem('userRole') || '').toLowerCase();
+        if (!role || (role !== 'buyer' && role !== 'seller')) return;
+        var signInEl = document.querySelector('[data-text="sign-in"]');
+        var signUpEl = document.querySelector('[data-text="sign-up"]');
+        var container = (signInEl && signInEl.parentElement) || (signUpEl && signUpEl.parentElement);
+        if (!container) return;
+        if (signInEl) signInEl.remove();
+        if (signUpEl) signUpEl.remove();
+        var link = document.createElement('a');
+        link.textContent = role === 'buyer' ? 'Buyer Dashboard' : 'Seller Dashboard';
+        link.href = role === 'buyer' ? 'buyer-dashboard.html' : 'seller-dashboard.html';
+        link.className = 'bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-lg font-semibold transition-all transform hover:scale-105';
+        container.appendChild(link);
+      } catch(e) { /* no-op */ }
+    })();
+  </script>
+  <script src="scripts/language.js"></script>
+  </body>
+  </html>

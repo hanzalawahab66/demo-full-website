@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Manual Invoice — NAWISAJAD MUMAND CO., LTD</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: { extend: { fontFamily: { sans: ['Inter','system-ui','Segoe UI','Roboto','Helvetica Neue','Arial','sans-serif'] } } }
+    };
+  </script>
+  <style>
+    @media print { .no-print { display: none !important; } body { background: white; } main { box-shadow: none; border: none; } }
+  </style>
+  <script>
+    // Static company letterhead
+    const COMPANY = {
+      name: 'NAWISAJAD MUMAND CO., LTD',
+      logo: 'placeholder-car.svg',
+      phone: '010-9199-9687',
+      email: 'khaialzamin@nsm-koreacars.com',
+      address: '306 # 37 OKRYEON RO YEONSU-GU INCHEON SOUTH KOREA',
+      website: 'http://autonsm.com',
+      fax: '032-833-9687'
+    };
+    // Shipper / Exporter block (as specified)
+    const SHIPPER = {
+      name: 'NAWISAJAD MUMAND,LTD',
+      address: '306 # 37 OKRYEON RO YEONSU-GU INCHEON SOUTH KOREA',
+      email: 'khaialzamin@nsm-koreacars.com',
+      phone: '010-9199-9687',
+      website: 'http://autonsm.com',
+      fax: '032-833-9687'
+    };
+    // Bank details
+    const BANK = {
+      beneficiary: 'NAWISAJAD MUMAND CO., LTD',
+      bank: 'IBK INDUSTRIAL BANK OF KOREA',
+      account: '338-064901-56-00017',
+      branch: 'SONGDO',
+      swift: 'IBKOKRSE'
+    };
+
+    function qs(key){ try { return new URLSearchParams(location.search).get(key); } catch(e){ return null; } }
+    function readJson(key){ try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : null; } catch(e){ return null; } }
+    function formatMoney(n){ const num = (typeof n === 'number') ? n : Number(n||0) || 0; return '$ ' + num.toLocaleString(); }
+    function safe(v){ return v==null || v==='' ? '—' : String(v); }
+    function computeInvoiceNo(order){
+      const baseDate = new Date(order?.created_at || order?.createdAt || Date.now());
+      const y = String(baseDate.getFullYear()).slice(2);
+      const m = String(baseDate.getMonth()+1).padStart(2,'0');
+      const d = String(baseDate.getDate()).padStart(2,'0');
+      const suffix = String(order?.id ?? Math.floor(Math.random()*1e8)).slice(-8).padStart(8,'0');
+      return `INV_${y}${m}${d}_${suffix}`;
+    }
+    async function fetchOrders(){
+      const token = localStorage.getItem('token');
+      try {
+        if (token) {
+          const r = await fetch('http://localhost:3000/admin/orders', { headers: { 'Authorization': 'Bearer '+token }, cache: 'no-store' });
+          if (r.ok) return await r.json();
+        }
+      } catch(e){}
+      try { const r2 = await fetch('backend/orders.json', { cache: 'no-store' }); return r2.ok ? await r2.json() : []; } catch(e){ return []; }
+    }
+    async function fetchListing(listingId){
+      if (!listingId) return null;
+      try { const r = await fetch('backend/listings.json', { cache: 'no-store' }); if (!r.ok) return null; const list = await r.json(); const idStr = String(listingId); return Array.isArray(list) ? list.find(l => String(l.id) === idStr) : null; } catch(e){ return null; }
+    }
+    async function fetchUser(buyerId){
+      if (!buyerId) return null;
+      try { const r = await fetch('backend/users.json', { cache: 'no-store' }); if (!r.ok) return null; const users = await r.json(); return Array.isArray(users) ? users.find(u => String(u.id) === String(buyerId)) : null; } catch(e){ return null; }
+    }
+    function carTitle(listing){
+      if (!listing) return '';
+      if (listing.title) return listing.title;
+      const maker=(listing.insuranceHistory&&listing.insuranceHistory.manufacturer)||'';
+      const model=(listing.insuranceHistory&&listing.insuranceHistory.model)||'';
+      const year=(listing.vehicle&&listing.vehicle.year)||(listing.insuranceHistory&&listing.insuranceHistory.year)||'';
+      return [year,maker,model].filter(Boolean).join(' ');
+    }
+    function chassis(listing){
+      return (listing && (listing.product_id_number || listing.vin || (listing.vehicle&&listing.vehicle.vin))) || '—';
+    }
+    function summarize(listing){
+      try {
+        const year = listing?.vehicle?.year || listing?.insuranceHistory?.year;
+        const maker = listing?.insuranceHistory?.manufacturer;
+        const model = listing?.insuranceHistory?.model;
+        const fuel = listing?.vehicle?.fuelType || listing?.vehicle?.fuel || listing?.fuelType;
+        const trans = listing?.vehicle?.transmission || listing?.transmission;
+        const mileage = listing?.vehicle?.mileage || listing?.mileage;
+        const color = listing?.vehicle?.color || listing?.color;
+        const vin = chassis(listing);
+        const parts = [];
+        if (year || maker || model) parts.push([year, maker, model].filter(Boolean).join(' '));
+        if (mileage) parts.push(`${mileage} km`);
+        if (trans) parts.push(trans);
+        if (fuel) parts.push(fuel);
+        if (color) parts.push(color);
+        const main = parts.filter(Boolean).join(', ');
+        return `A ${main || 'quality vehicle'} featuring VIN ${vin}. Professionally inspected with a clean presentation and ready for export. This unit offers reliable performance and practical features for everyday use.`;
+      } catch(e){ return 'A professionally presented vehicle suitable for export, offering reliable performance and practical features.'; }
+    }
+    function deriveBuyer(order, user){
+      const selection = order?.selection || {};
+      const byBusiness = selection.consignee || selection.payer || {};
+      return {
+        name: user?.name || byBusiness.name || selection.name || '—',
+        email: user?.email || byBusiness.email || '—',
+        phone: byBusiness.tel || [selection.telCode||'', selection.tel||''].filter(Boolean).join(' ').trim() || '—',
+        country: order?.country || '—'
+      };
+    }
+    async function init(){
+      const orderId = qs('orderId');
+      if (!orderId) { alert('Missing orderId'); return; }
+      const orders = await fetchOrders();
+      const order = Array.isArray(orders) ? orders.find(o => String(o.id) === String(orderId)) : null;
+      if (!order) { alert('Order not found'); return; }
+      const listing = await fetchListing(order.listingId);
+      const user = await fetchUser(order.buyer_id);
+      const buyer = deriveBuyer(order, user);
+      const invNo = computeInvoiceNo(order);
+      const invDate = new Date(order?.created_at || order?.createdAt || Date.now()).toISOString().slice(0,10);
+      const title = carTitle(listing) || 'Vehicle Purchase';
+      const desc = summarize(listing);
+      const price = (listing && (listing.price ?? listing.sellingPrice ?? listing.listedPrice ?? listing.reservePrice)) ?? order?.price ?? 0;
+      const chs = chassis(listing);
+
+      // Company letterhead
+      document.getElementById('co-name').textContent = COMPANY.name;
+      document.getElementById('co-address').textContent = COMPANY.address;
+      document.getElementById('co-phone').textContent = COMPANY.phone;
+      document.getElementById('co-email').textContent = COMPANY.email;
+      document.getElementById('co-website').textContent = COMPANY.website;
+      document.getElementById('co-fax').textContent = COMPANY.fax;
+      const logoEl = document.getElementById('co-logo'); if (logoEl) logoEl.src = COMPANY.logo;
+
+      // Invoice meta
+      document.getElementById('inv-date').textContent = invDate;
+      document.getElementById('inv-no').textContent = invNo;
+      document.getElementById('order-no').textContent = order?.id;
+      document.getElementById('chassis-no').textContent = safe(chs);
+      document.getElementById('product-title').textContent = safe(title);
+      document.getElementById('product-desc').textContent = safe(desc);
+
+      // Buyer
+      document.getElementById('buyer-name').textContent = safe(buyer.name);
+      document.getElementById('buyer-email').textContent = safe(buyer.email);
+      document.getElementById('buyer-phone').textContent = safe(buyer.phone);
+      document.getElementById('buyer-country').textContent = safe(buyer.country);
+
+      // Shipper
+      document.getElementById('shipper-name').textContent = SHIPPER.name;
+      document.getElementById('shipper-address').textContent = SHIPPER.address;
+      document.getElementById('shipper-email').textContent = SHIPPER.email;
+      document.getElementById('shipper-phone').textContent = SHIPPER.phone;
+      document.getElementById('shipper-website').textContent = SHIPPER.website;
+      document.getElementById('shipper-fax').textContent = SHIPPER.fax;
+
+      // Bank
+      document.getElementById('bank-beneficiary').textContent = BANK.beneficiary;
+      document.getElementById('bank-name').textContent = BANK.bank;
+      document.getElementById('bank-account').textContent = BANK.account;
+      document.getElementById('bank-branch').textContent = BANK.branch;
+      document.getElementById('bank-swift').textContent = BANK.swift;
+
+      // Total
+      document.getElementById('total-price').textContent = formatMoney(price);
+
+      // Actions
+      const btnPrint = document.getElementById('btn-print'); if (btnPrint) btnPrint.onclick = () => window.print();
+      const btnBack = document.getElementById('btn-back'); if (btnBack) btnBack.onclick = () => window.location.href = 'invoice-intake.html';
+    }
+    document.addEventListener('DOMContentLoaded', init);
+  </script>
+</head>
+<body class="bg-gray-100">
+  <main class="max-w-4xl mx-auto bg-white shadow-sm border border-gray-200 rounded-xl my-6">
+    <!-- Letterhead -->
+    <header class="flex items-start justify-between p-6 border-b">
+      <div>
+        <h1 id="co-name" class="text-2xl font-extrabold text-gray-900">NAWISAJAD MUMAND CO., LTD</h1>
+        <div class="mt-2 text-sm text-gray-700 space-y-1">
+          <div><span class="font-semibold">Address:</span> <span id="co-address">—</span></div>
+          <div><span class="font-semibold">Phone:</span> <span id="co-phone">—</span></div>
+          <div><span class="font-semibold">Email:</span> <span id="co-email">—</span></div>
+          <div><span class="font-semibold">Website:</span> <span id="co-website">http://autonsm.com</span></div>
+          <div><span class="font-semibold">Fax:</span> <span id="co-fax">—</span></div>
+        </div>
+      </div>
+      <img id="co-logo" src="placeholder-car.svg" alt="Company Logo" class="w-24 h-24 object-contain" />
+    </header>
+
+    <!-- Invoice Metadata -->
+    <section class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6 border-b">
+      <div class="space-y-2">
+        <div class="text-sm text-gray-500">Invoice Date</div>
+        <div id="inv-date" class="text-lg font-semibold">—</div>
+        <div class="text-sm text-gray-500 mt-3">Invoice No</div>
+        <div id="inv-no" class="text-lg font-semibold">—</div>
+        <div class="text-sm text-gray-500 mt-3">Order No</div>
+        <div id="order-no" class="text-lg font-semibold">—</div>
+      </div>
+      <div class="space-y-2">
+        <div class="text-sm text-gray-500">Chassis No</div>
+        <div id="chassis-no" class="text-lg font-semibold">—</div>
+        <div class="text-sm text-gray-500 mt-3">Product Title</div>
+        <div id="product-title" class="text-lg font-semibold">—</div>
+      </div>
+    </section>
+
+    <!-- Buyer & Shipper -->
+    <section class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6 border-b">
+      <div>
+        <h2 class="font-bold text-gray-900">Buyer</h2>
+        <div class="mt-2 text-sm text-gray-700 space-y-1">
+          <div><span class="font-semibold">Name:</span> <span id="buyer-name">—</span></div>
+          <div><span class="font-semibold">Email:</span> <span id="buyer-email">—</span></div>
+          <div><span class="font-semibold">Phone:</span> <span id="buyer-phone">—</span></div>
+          <div><span class="font-semibold">Country:</span> <span id="buyer-country">—</span></div>
+        </div>
+      </div>
+      <div>
+        <h2 class="font-bold text-gray-900">Shipper / Exporter</h2>
+        <div class="mt-2 text-sm text-gray-700 space-y-1">
+          <div><span class="font-semibold">Name:</span> <span id="shipper-name">NAWISAJAD MUMAND,LTD</span></div>
+          <div><span class="font-semibold">Address:</span> <span id="shipper-address">—</span></div>
+          <div><span class="font-semibold">Email:</span> <span id="shipper-email">—</span></div>
+          <div><span class="font-semibold">Phone:</span> <span id="shipper-phone">—</span></div>
+          <div><span class="font-semibold">Website:</span> <span id="shipper-website">http://autonsm.com</span></div>
+          <div><span class="font-semibold">Fax:</span> <span id="shipper-fax">—</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Product Description -->
+    <section class="p-6 border-b">
+      <h2 class="font-bold text-gray-900">Product Description</h2>
+      <p id="product-desc" class="mt-2 text-sm text-gray-700">—</p>
+    </section>
+
+    <!-- Bank Information -->
+    <section class="p-6 border-b">
+      <h2 class="font-bold text-gray-900">Bank Information</h2>
+      <div class="mt-2 text-sm text-gray-700 grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div><span class="font-semibold">Beneficiary:</span> <span id="bank-beneficiary">NAWISAJAD MUMAND CO., LTD</span></div>
+        <div><span class="font-semibold">Bank Name:</span> <span id="bank-name">IBK INDUSTRIAL BANK OF KOREA</span></div>
+        <div><span class="font-semibold">Account No:</span> <span id="bank-account">338-064901-56-00017</span></div>
+        <div><span class="font-semibold">Branch:</span> <span id="bank-branch">SONGDO</span></div>
+        <div><span class="font-semibold">Swift Code:</span> <span id="bank-swift">IBKOKRSE</span></div>
+      </div>
+    </section>
+
+    <!-- Totals and Actions -->
+    <section class="p-6 flex items-start justify-between">
+      <div>
+        <div class="text-sm text-gray-500">Total Price</div>
+        <div id="total-price" class="text-2xl font-extrabold text-orange-600">$ 0</div>
+      </div>
+      <div class="no-print space-x-2">
+        <button id="btn-back" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-lg text-sm font-semibold">Back to Admin</button>
+        <button id="btn-print" class="px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-lg text-sm font-semibold">Download PDF</button>
+      </div>
+    </section>
+
+    <footer class="px-6 py-4 border-t text-xs text-gray-500">© 2024 NAWISAJAD MUMAND CO., LTD — All rights reserved.</footer>
+  </main>
+
+  <script src="scripts/language.js"></script>
+</body>
+</html>

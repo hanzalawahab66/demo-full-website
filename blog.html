@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MangoCar — Blog</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            mango: '#FF8C42',
+            navy: '#1B2951',
+            charcoal: '#2D3748',
+          },
+          fontFamily: {
+            heading: ['Inter', 'sans-serif'],
+            body: ['Inter', 'sans-serif'],
+          },
+        },
+      },
+    };
+  </script>
+  <script>window.FontAwesomeConfig = {autoReplaceSvg: 'nest'};</script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <style>
+    ::-webkit-scrollbar { display: none; }
+    * { font-family: 'Inter', sans-serif; }
+  </style>
+</head>
+<body class="bg-gray-50">
+
+  <!-- Topbar (language + auth) -->
+  <div class="bg-gray-100 shadow-sm font-body">
+    <div class="container mx-auto px-6 py-2">
+      <div class="flex justify-end items-center space-x-4">
+        <div class="relative">
+          <button id="languageToggle" class="flex items-center space-x-2 text-gray-700 hover:text-orange-500 font-medium transition-colors">
+            <i class="fa-solid fa-globe text-base"></i>
+            <span class="text-sm md:text-base">English</span>
+            <i class="fa-solid fa-chevron-down text-xs"></i>
+          </button>
+        </div>
+        <div class="text-gray-300">|</div>
+        <div class="flex items-center space-x-4">
+          <button class="bg-transparent border border-gray-300 text-gray-700 hover:border-orange-500 hover:text-orange-500 px-6 py-2 rounded-lg font-medium transition-all" onclick="window.location.href='signin.html'">Sign In</button>
+          <button class="bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-lg font-semibold transition-all transform hover:scale-105" onclick="window.location.href='signup.html'">Sign Up</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header id="header" class="bg-white shadow-sm">
+    <div class="container mx-auto px-6 py-4">
+      <div class="flex items-center justify-between">
+        <a href="home.html" class="flex items-center space-x-2">
+          <span class="text-3xl font-heading font-extrabold text-navy tracking-wide">NSM</span>
+          <span class="text-3xl font-heading font-extrabold text-mango">Autos</span>
+        </a>
+        <div class="hidden md:flex flex-1 mx-8 max-w-xl">
+          <div class="flex items-center bg-gray-50 rounded-full border-2 border-gray-200 focus-within:border-orange-500 transition-colors w-full">
+            <input type="text" placeholder="Search blog posts" class="flex-1 px-6 py-3 bg-transparent text-gray-700 placeholder-gray-500 focus:outline-none rounded-l-full" />
+            <button class="bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-full font-bold flex items-center space-x-2 transition-all">
+              <i class="fa-solid fa-search"></i>
+              <span>Search</span>
+            </button>
+          </div>
+        </div>
+        <div class="hidden md:flex items-center space-x-6">
+          <a href="dashboard-saved.html" class="text-gray-700 hover:text-orange-500 font-medium transition-colors cursor-pointer flex items-center space-x-2">
+            <i class="fa-regular fa-heart text-xl"></i>
+            <span>Favourite</span>
+          </a>
+          <a href="dashboard-compare.html" class="text-gray-700 hover:text-orange-500 font-medium transition-colors cursor-pointer flex items-center space-x-2">
+            <i class="fa-solid fa-code-compare text-xl"></i>
+            <span>Add to Compare</span>
+          </a>
+        </div>
+      </div>
+      <nav class="flex items-center justify-center space-x-10 mt-4 pt-4 border-t border-gray-100">
+        <a href="home.html" class="text-gray-700 hover:text-orange-500 font-medium transition-colors">Home</a>
+        <a href="inventory.html" class="text-gray-700 hover:text-orange-500 font-medium transition-colors">Inventory</a>
+        <a href="blog.html" class="text-gray-700 hover:text-orange-500 font-medium transition-colors">Blog</a>
+        <a href="about-us.html" class="text-gray-700 hover:text-orange-500 font-medium transition-colors">About Us</a>
+        <a href="contact-us.html" class="text-gray-700 hover:text-orange-500 font-medium transition-colors">Contact Us</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Blog Listing -->
+  <main class="container mx-auto px-6 py-10">
+    <div class="flex items-center justify-between mb-6">
+      <h1 class="text-3xl font-heading font-extrabold text-navy">Blog</h1>
+      <p class="text-gray-500">Latest updates, tips, and news</p>
+    </div>
+    <div id="blog-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
+    <div id="blog-empty" class="text-gray-500"></div>
+  </main>
+
+  <script>
+    (function(){
+      function stripHtml(html){ var tmp = document.createElement('div'); tmp.innerHTML = html || ''; return (tmp.textContent || tmp.innerText || '').trim(); }
+      function excerpt(text, max){ if(!text) return ''; text = text.trim(); return text.length > max ? (text.slice(0, max).trim() + '…') : text; }
+      function toCard(b){
+        var img = b.featured_image_url || '';
+        var title = b.title || '';
+        var desc = excerpt(stripHtml(b.description_html || ''), 160);
+        var date = b.created_at ? new Date(b.created_at).toLocaleDateString() : '';
+        var hero = img
+          ? ('<img src="' + img + '" alt="' + title.replace(/"/g,'') + '" class="w-full h-40 object-cover" onerror="this.style.display=\'none\'; this.nextElementSibling.style.display=\'block\'" />' +
+             '<div class="w-full h-40 bg-gray-200 hidden"></div>')
+          : '<div class="w-full h-40 bg-gray-200"></div>';
+        return (
+          '<a href="blog-post.html?id=' + (b.id || '') + '" class="block">' +
+            '<article class="bg-white rounded-xl shadow hover:shadow-lg transition-all overflow-hidden">' +
+              hero +
+              '<div class="p-4">' +
+                '<h3 class="text-lg font-bold text-gray-800">' + title + '</h3>' +
+                '<p class="text-sm text-gray-500 mb-2">' + date + '</p>' +
+                '<p class="text-gray-700">' + desc + '</p>' +
+              '</div>' +
+            '</article>' +
+          '</a>'
+        );
+      }
+
+      async function load(){
+        try {
+          var res = await fetch('http://localhost:3000/public/blogs', { headers: { 'Accept': 'application/json' } });
+          if(!res.ok) throw new Error('HTTP ' + res.status);
+          var data = await res.json();
+          var blogs = Array.isArray(data && data.blogs) ? data.blogs : (Array.isArray(data) ? data : []);
+          var grid = document.getElementById('blog-grid');
+          var empty = document.getElementById('blog-empty');
+          if(!blogs.length){ empty.textContent = 'No blogs published yet.'; grid.innerHTML = ''; return; }
+          grid.innerHTML = blogs.map(toCard).join('');
+          empty.textContent = '';
+        } catch(err){
+          document.getElementById('blog-empty').textContent = 'Unable to load blogs right now.';
+        }
+      }
+      load();
+    })();
+  </script>
+
+</body>
+</html>

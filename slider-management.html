@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Super Admin Panel — Slider Management</title>
+  <!-- Page Protection: allow superadmin and listing_editor -->
+  <script>
+    (function(){
+      try {
+        var role = (localStorage.getItem('userRole') || localStorage.getItem('role') || '').toLowerCase();
+        var token = localStorage.getItem('token');
+        var allowed = ['superadmin','listing_editor'];
+        if (!token || allowed.indexOf(role) === -1) {
+          window.location.href = 'signin.html';
+        }
+      } catch (e) {
+        window.location.href = 'signin.html';
+      }
+    })();
+  </script>
+  <style>
+    :root {
+      --bg: #f6f7fb; --text: #0f172a; --muted: #64748b; --primary: #2563eb; --primary-hover: #1d4ed8;
+      --topbar-bg: #ffffff; --topbar-border: #e5e7eb; --sidebar-bg: #0b1220; --sidebar-border: #1f2937;
+      --sidebar-text: #cbd5e1; --sidebar-hover-bg: #111827; --sidebar-active-bg: #1f2937; --card-bg: #ffffff; --card-border: #e5e7eb;
+      --danger: #ef4444; --success: #22c55e; --warning: #f59e0b;
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body { margin: 0; background: var(--bg); color: var(--text); font-family: Inter, Segoe UI, Roboto, Helvetica, Arial, system-ui, -apple-system, sans-serif; }
+
+    .admin-layout { display: grid; grid-template-columns: 260px 1fr; grid-template-rows: 64px auto; grid-template-areas: "topbar topbar" "sidebar content"; height: 100vh; width: 100%; }
+    .topbar { grid-area: topbar; display: flex; align-items: center; justify-content: space-between; padding: 0 16px; background: var(--topbar-bg); border-bottom: 1px solid var(--topbar-border); position: sticky; top: 0; z-index: 10; }
+    .brand { display: flex; align-items: center; gap: 12px; font-weight: 600; }
+    .brand-logo { width: 28px; height: 28px; border-radius: 8px; background: linear-gradient(135deg, var(--primary), #9333ea); }
+    .top-actions { display: flex; align-items: center; gap: 8px; }
+    .btn { border: 1px solid var(--card-border); background: #fff; color: var(--text); padding: 8px 12px; border-radius: 8px; cursor: pointer; font-weight: 600; }
+    .btn:hover { background: #f9fafb; }
+    .btn-primary { background: var(--primary); color: #fff; border-color: var(--primary); }
+    .btn-primary:hover { background: var(--primary-hover); }
+    .btn-danger { background: var(--danger); color: #fff; border-color: var(--danger); }
+    .btn-warning { background: var(--warning); color: #fff; border-color: var(--warning); }
+    .admin-name { color: var(--muted); font-weight: 500; }
+
+    .sidebar { grid-area: sidebar; background: var(--sidebar-bg); border-right: 1px solid var(--sidebar-border); color: #fff; padding: 16px 12px; overflow-y: auto; }
+    .sidebar-header { font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--sidebar-text); margin-bottom: 12px; opacity: 0.9; }
+    .menu { display: flex; flex-direction: column; gap: 6px; }
+    .menu a { display: flex; align-items: center; gap: 10px; padding: 10px 12px; text-decoration: none; color: var(--sidebar-text); border-radius: 10px; transition: background 160ms ease, color 160ms ease; font-weight: 500; }
+    .menu a:hover { background: var(--sidebar-hover-bg); color: #fff; }
+    .menu a.active { background: var(--sidebar-active-bg); color: #fff; }
+    .menu .icon { width: 18px; height: 18px; border-radius: 4px; background: #334155; flex-shrink: 0; }
+
+    .content { grid-area: content; overflow: auto; padding: 16px; }
+    .muted { color: var(--muted); }
+    .section { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 16px; margin-bottom: 16px; }
+    .section h3 { margin: 0 0 8px; }
+    .input { width: 100%; padding: 10px 12px; border: 1px solid var(--card-border); border-radius: 8px; font: inherit; }
+    .row { display: grid; grid-template-columns: repeat(12, 1fr); gap: 12px; }
+    .col-3 { grid-column: span 3; }
+    .col-4 { grid-column: span 4; }
+    .col-5 { grid-column: span 5; }
+    .col-6 { grid-column: span 6; }
+    .col-12 { grid-column: span 12; }
+    .table-responsive { overflow: auto; border-radius: 12px; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { text-align: left; padding: 12px; border-bottom: 1px solid var(--card-border); vertical-align: middle; }
+    thead th { background: #f9fafb; font-weight: 600; }
+    tbody tr:last-child td { border-bottom: none; }
+    .preview { width: 120px; height: 64px; background: #f3f4f6; border: 1px solid var(--card-border); border-radius: 8px; display:flex; align-items:center; justify-content:center; overflow:hidden; }
+    .preview img { width: 100%; height: 100%; object-fit: cover; }
+    .actions { display: inline-flex; gap: 6px; }
+    .footer { margin-top: 12px; color: var(--muted); }
+  </style>
+</head>
+<body>
+  <div class="admin-layout">
+    <header class="topbar" role="banner">
+      <div class="brand" aria-label="Admin brand">
+        <div class="brand-logo" aria-hidden="true"></div>
+        <span>Super Admin Panel</span>
+      </div>
+      <div class="top-actions">
+        <button class="btn" onclick="location.href='home.html'">Back to Site</button>
+        <span class="admin-name">Signed in as <strong>Super Admin</strong></span>
+        <button class="btn-primary" onclick="localStorage.removeItem('token'); localStorage.removeItem('role'); localStorage.removeItem('user'); location.href='signin.html'">Logout</button>
+      </div>
+    </header>
+
+    <aside class="sidebar" role="navigation" aria-label="Admin sidebar">
+      <div class="sidebar-header">Main Menu</div>
+      <nav class="menu">
+        <a href="admin.html" title="Dashboard"><span class="icon"></span> Dashboard</a>
+        <a href="user-management.html" title="User Management"><span class="icon"></span> User Management</a>
+        <a href="listing-approval.html" title="Listing Approvals"><span class="icon"></span> Listing Approvals</a>
+        <a href="create-listing.html" title="Create New Listing"><span class="icon"></span> Create New Listing</a>
+        <a href="manage-all-listings.html" title="Manage All Listings"><span class="icon"></span> Manage All Listings</a>
+        <a href="category-management.html" title="Category Management"><span class="icon"></span> Category Management</a>
+        <a href="tag-management.html" title="Tag Management"><span class="icon"></span> Tag Management</a>
+        <a href="model-management.html" title="Model Management"><span class="icon"></span> Model Management</a>
+        <a href="role-management.html" title="Role Management"><span class="icon"></span> Role Management</a>
+        <a href="slider-management.html" title="Slider Management" class="active"><span class="icon"></span> Slider Management</a>
+        <a href="blog-management.html" title="Blog Management"><span class="icon"></span> Blog Management</a>
+        <a href="setting.html" title="Setting"><span class="icon"></span> Setting</a>
+      </nav>
+    </aside>
+
+    <main class="content" role="main">
+      <h1>Slider Management</h1>
+      <p class="muted">Manage the images for the Home Secondary Banner (1920×750 desktop). You can reorder, add, remove, or upload new images.</p>
+
+      <section class="section" aria-label="Home secondary slider">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+          <h3 style="margin:0">Home Secondary Slider</h3>
+          <div class="actions">
+            <button id="add-slide" class="btn">Add Slide</button>
+            <button id="save-slides" class="btn btn-primary">Save Changes</button>
+          </div>
+        </div>
+
+        <div class="table-responsive" style="margin-top:8px">
+          <table class="table" aria-label="Slider items">
+            <thead>
+              <tr>
+                <th style="width:14%">Preview</th>
+                <th style="width:40%">Image URL</th>
+                <th style="width:26%">Alt Text</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="slides-tbody"></tbody>
+          </table>
+        </div>
+        <p class="muted" style="margin-top:6px">Tip: Use Upload to add a new image, or paste an existing `/uploads/...` URL.</p>
+      </section>
+
+      <footer class="footer">© 2024 NSM Autos Admin</footer>
+    </main>
+
+    <script>
+      // Highlight active page in sidebar
+      (function () {
+        var links = document.querySelectorAll('.sidebar .menu a');
+        var current = location.pathname.split('/').pop().toLowerCase();
+        links.forEach(function (link) {
+          var href = (link.getAttribute('href') || '').split('/').pop().toLowerCase();
+          if (href === current) link.classList.add('active'); else link.classList.remove('active');
+        });
+      })();
+
+      (function(){
+        var tbody = document.getElementById('slides-tbody');
+        var addBtn = document.getElementById('add-slide');
+        var saveBtn = document.getElementById('save-slides');
+        var state = { slides: [] };
+
+        function getTokenOrRedirect(){
+          var token = localStorage.getItem('token');
+          if(!token){ alert('Please sign in to manage sliders.'); window.location.href='signin.html'; return null; }
+          return token;
+        }
+
+        function render(){
+          tbody.innerHTML = state.slides.map(function(s, idx){
+            var safeSrc = String(s.src || '');
+            var safeAlt = String(s.alt || '');
+            var id = 'row-'+idx;
+            return (
+              '<tr data-idx="'+idx+'">'
+              + '<td><div class="preview">'+ (safeSrc ? ('<img src="'+escapeHtml(safeSrc)+'" alt="preview"/>') : '<span class="muted">No image</span>') +'</div></td>'
+              + '<td>'
+                + '<input class="input" type="text" placeholder="/uploads/your-image.png" value="'+escapeHtml(safeSrc)+'" data-field="src" />'
+                + '<div style="margin-top:6px">'
+                  + '<input type="file" accept="image/*" data-action="upload" />'
+                  + '<button class="btn" data-action="do-upload" style="margin-left:6px">Upload</button>'
+                + '</div>'
+              + '</td>'
+              + '<td><input class="input" type="text" placeholder="Alt text" value="'+escapeHtml(safeAlt)+'" data-field="alt" /></td>'
+              + '<td class="actions">'
+                + '<button class="btn" data-action="up">Up</button>'
+                + '<button class="btn" data-action="down">Down</button>'
+                + '<button class="btn btn-danger" data-action="remove">Remove</button>'
+              + '</td>'
+            + '</tr>'
+            );
+          }).join('');
+        }
+
+        function escapeHtml(str){ var map={ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;' }; return String(str||'').replace(/[&<>"']/g,function(m){return map[m]||m;}); }
+
+        function load(){
+          var endpoints = [
+            'http://localhost:3000/public/sliders/home-secondary',
+            'backend/secondary-slider.json'
+          ];
+          var tried = 0;
+          function next(){
+            if(tried >= endpoints.length){ state.slides = []; render(); return; }
+            var url = endpoints[tried++];
+            fetch(url, { cache: 'no-store', mode: 'cors' })
+              .then(function(res){ return res.ok ? res.json() : Promise.reject(new Error('HTTP '+res.status)); })
+              .then(function(data){ state.slides = Array.isArray(data) ? data : []; render(); })
+              .catch(function(){ next(); });
+          }
+          next();
+        }
+
+        function save(){
+          var token = getTokenOrRedirect(); if(!token) return;
+          fetch('http://localhost:3000/admin/sliders/home-secondary', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+            body: JSON.stringify(state.slides.map(function(s){ return { src: String(s.src||'').trim(), alt: String(s.alt||'').trim() }; }))
+          }).then(function(res){
+              if(!res.ok){ throw new Error('Save failed (HTTP '+res.status+'). Please check your admin role and token.'); }
+              return res.json();
+            })
+            .then(function(json){
+              if(Array.isArray(json)) { state.slides = json; }
+              alert('Slider updated successfully.');
+              // Re-load from backend to ensure persistence
+              load();
+            })
+            .catch(function(err){ alert('Failed to save: '+ (err && err.message ? err.message : 'unknown error')); });
+        }
+
+        function add(){ state.slides.push({ src: '', alt: '' }); render(); }
+
+        function removeAt(idx){ state.slides.splice(idx, 1); render(); }
+        function moveUp(idx){ if(idx <= 0) return; var tmp = state.slides[idx-1]; state.slides[idx-1] = state.slides[idx]; state.slides[idx] = tmp; render(); }
+        function moveDown(idx){ if(idx >= state.slides.length-1) return; var tmp = state.slides[idx+1]; state.slides[idx+1] = state.slides[idx]; state.slides[idx] = tmp; render(); }
+
+        tbody.addEventListener('input', function(e){
+          var tr = e.target.closest('tr'); if(!tr) return; var idx = Number(tr.getAttribute('data-idx'));
+          var field = e.target.getAttribute('data-field'); if(!field) return;
+          state.slides[idx][field] = e.target.value;
+          var img = tr.querySelector('.preview img'); if(img && field === 'src'){ img.src = e.target.value; }
+        });
+
+        tbody.addEventListener('click', function(e){
+          var btn = e.target.closest('button'); if(!btn) return;
+          var tr = e.target.closest('tr'); if(!tr) return; var idx = Number(tr.getAttribute('data-idx'));
+          var action = btn.getAttribute('data-action');
+          if(action === 'remove') removeAt(idx);
+          else if(action === 'up') moveUp(idx);
+          else if(action === 'down') moveDown(idx);
+          else if(action === 'do-upload') {
+            var fileInput = tr.querySelector('input[type=file][data-action=upload]');
+            if(!fileInput || !fileInput.files || !fileInput.files[0]) { alert('Choose a file first.'); return; }
+            var file = fileInput.files[0];
+            var reader = new FileReader();
+            reader.onload = function(){
+              var dataUrl = reader.result;
+              var token = getTokenOrRedirect(); if(!token) return;
+              fetch('http://localhost:3000/upload', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+                body: JSON.stringify({ filename: file.name, dataUrl: dataUrl })
+              }).then(function(res){ return res.json(); })
+                .then(function(json){ if(json && json.url){ state.slides[idx].src = json.url; render(); } else { alert('Upload failed.'); } })
+                .catch(function(err){ alert('Upload error: ' + (err && err.message ? err.message : 'unknown')); });
+            };
+            reader.readAsDataURL(file);
+          }
+        });
+
+        addBtn.addEventListener('click', add);
+        saveBtn.addEventListener('click', save);
+        load();
+      })();
+    </script>
+  </div>
+</body>
+</html>

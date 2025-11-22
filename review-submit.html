@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Submit Product Review</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    body { margin:0; font-family: Inter, Segoe UI, Roboto, Helvetica, Arial, system-ui, -apple-system, sans-serif; background:#f6f7fb; color:#0f172a; }
+    .container { max-width: 1100px; margin: 0 auto; padding: 24px; }
+    .card { background:#fff; border:1px solid #e5e7eb; border-radius: 16px; padding: 20px; box-shadow: 0 4px 16px rgba(0,0,0,0.04); }
+    .title { font-size: 22px; font-weight: 800; margin: 0 0 6px; }
+    .muted { color:#64748b; }
+    .field { margin: 14px 0; }
+    .label { display:block; font-weight: 700; margin-bottom: 6px; }
+    .input, .textarea, .select { width: 100%; padding: 10px 12px; border:1px solid #e5e7eb; border-radius: 10px; background:#fff; color:#0f172a; }
+    .textarea { min-height: 120px; resize: vertical; }
+    .actions { display:flex; gap:12px; margin-top: 16px; }
+    .btn { border:1px solid #e5e7eb; background:#fff; color:#0f172a; padding: 10px 14px; border-radius: 10px; font-weight: 700; cursor:pointer; }
+    .btn-primary { background:#2563eb; color:#fff; border-color:#2563eb; }
+    .btn-primary:hover { background:#1d4ed8; }
+    .rating { display:flex; gap:8px; align-items:center; }
+    .star { font-size: 22px; color:#cbd5e1; cursor:pointer; }
+    .star.active { color:#f59e0b; }
+    .preview { display:flex; gap:12px; align-items:center; }
+    .preview img { max-height: 90px; border-radius: 8px; border:1px solid #e5e7eb; }
+    header.nav { background:#ffffff; border-bottom:1px solid #e5e7eb; }
+    header.nav .wrap { display:flex; align-items:center; justify-content:space-between; padding: 16px; max-width: 1100px; margin:0 auto; }
+    .navlinks { display:flex; gap: 24px; }
+    .navlinks a { color:#0f172a; font-weight:600; text-decoration:none; }
+    .navlinks a:hover { color:#f97316; }
+  </style>
+  <script>
+    // Star rating UI helper
+    function initStars(){
+      var stars = document.querySelectorAll('.star');
+      stars.forEach(function(star){
+        star.addEventListener('click', function(){
+          var val = Number(this.getAttribute('data-value'));
+          document.getElementById('rating').value = val;
+          stars.forEach(function(s){ s.classList.toggle('active', Number(s.getAttribute('data-value')) <= val); });
+        });
+      });
+    }
+
+    function getQueryParam(name){
+      var m = new RegExp('[?&]'+name+'=([^&]+)').exec(location.search);
+      return m ? decodeURIComponent(m[1]) : '';
+    }
+
+    function getListingId(){
+      var keys = ['listingId','id','listing_id','vehicleId','vehicle_id'];
+      for (var i = 0; i < keys.length; i++) {
+        var v = getQueryParam(keys[i]);
+        if (v) return v;
+      }
+      try {
+        var fromStorage = localStorage.getItem('lastViewedProductId') || localStorage.getItem('currentProductId');
+        if (fromStorage) return fromStorage;
+      } catch(_) {}
+      return '';
+    }
+
+    function getTokenOrRedirect(){
+      var token = localStorage.getItem('token');
+      if(!token){ alert('Please sign in to submit a review.'); window.location.href='signin.html'; return null; }
+      return token;
+    }
+
+    function readFileAsDataUrl(file){
+      return new Promise(function(resolve, reject){
+        var reader = new FileReader();
+        reader.onload = function(){ resolve(reader.result); };
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    }
+
+    async function uploadImageIfPresent(file){
+      if(!file) return '';
+      var token = getTokenOrRedirect(); if(!token) return '';
+      var dataUrl = await readFileAsDataUrl(file);
+      var res = await fetch('http://localhost:3000/upload', {
+        method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+        body: JSON.stringify({ filename: file.name || ('review-image.' + (file.type || 'png').split('/').pop()), dataUrl: dataUrl })
+      });
+      if(!res.ok){ try { var e = await res.json(); } catch(_){} throw new Error((e && e.error) || ('HTTP '+res.status)); }
+      var json = await res.json(); return json.url || '';
+    }
+
+    async function submitReview(){
+      var token = getTokenOrRedirect(); if(!token) return;
+      var listingId = getListingId();
+      var rating = Number(document.getElementById('rating').value);
+      var title = document.getElementById('title').value.trim();
+      var desc = document.getElementById('desc').value.trim();
+      var country = document.getElementById('country').value.trim();
+      var file = document.getElementById('image').files[0] || null;
+      var missing = [];
+      if(!listingId) missing.push('listing');
+      if(!rating || rating < 1 || rating > 5) missing.push('rating');
+      if(!title) missing.push('title');
+      if(!desc) missing.push('description');
+      if(!country) missing.push('country');
+      if (missing.length) { alert('Please complete the following: ' + missing.join(', ')); return; }
+      try {
+        var imageUrl = await uploadImageIfPresent(file);
+        var res = await fetch('http://localhost:3000/buyer/reviews', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'Authorization': 'Bearer ' + token },
+          body: JSON.stringify({ listingId: listingId, rating: rating, title: title, description: desc, country: country, image_url: imageUrl })
+        });
+        if(!res.ok){ var err = await res.json().catch(function(){ return {}; }); throw new Error(err.error || ('HTTP '+res.status)); }
+        await res.json();
+        alert('Review submitted and pending moderation.');
+        window.location.href = 'dashboard-purchases.html';
+      } catch(err) {
+        alert('Submit failed: ' + (err && err.message ? err.message : 'unknown'));
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', function(){
+      var listingId = getListingId();
+      document.getElementById('listing-id').textContent = listingId ? ('Listing #' + listingId) : 'No listing selected';
+      initStars();
+      document.getElementById('upload-image').addEventListener('click', async function(){
+        var file = document.getElementById('image').files[0]; if(!file){ alert('Choose an image first.'); return; }
+        try { var url = await uploadImageIfPresent(file); document.getElementById('image-preview').src = url; document.getElementById('image-preview').style.display='block'; document.getElementById('image-url').textContent = url || 'No image'; }
+        catch(err){ alert('Image upload failed: ' + (err && err.message ? err.message : 'unknown')); }
+      });
+      document.getElementById('submit').addEventListener('click', submitReview);
+    });
+  </script>
+</head>
+<body>
+  <header class="nav">
+    <div class="wrap">
+      <div style="display:flex;align-items:center;gap:12px">
+        <div style="width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg,#f97316,#fb923c)"></div>
+        <strong>MangoCar</strong>
+      </div>
+      <nav class="navlinks">
+        <a href="home.html">Home</a>
+        <a href="inventory.html">Inventory</a>
+        <a href="blog.html">Blog</a>
+        <a href="about-us.html">About Us</a>
+        <a href="contact-us.html">Contact Us</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="card">
+      <h1 class="title">Submit a Review</h1>
+      <div class="muted" id="listing-id">Listing</div>
+
+      <div class="field">
+        <label class="label">Star Rating (1–5)</label>
+        <div class="rating" aria-label="Star rating">
+          <i class="fa-solid fa-star star" data-value="1" aria-hidden="true"></i>
+          <i class="fa-solid fa-star star" data-value="2" aria-hidden="true"></i>
+          <i class="fa-solid fa-star star" data-value="3" aria-hidden="true"></i>
+          <i class="fa-solid fa-star star" data-value="4" aria-hidden="true"></i>
+          <i class="fa-solid fa-star star" data-value="5" aria-hidden="true"></i>
+          <input type="hidden" id="rating" value="0" />
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="label" for="title">Title</label>
+        <input id="title" class="input" placeholder="Great purchase!" />
+      </div>
+
+      <div class="field">
+        <label class="label" for="desc">Description</label>
+        <textarea id="desc" class="textarea" placeholder="Share your experience"></textarea>
+      </div>
+
+      <div class="field">
+        <label class="label" for="country">Country</label>
+        <select id="country" class="select">
+          <option value="">Select country</option>
+          <option>United States</option>
+          <option>Canada</option>
+          <option>United Kingdom</option>
+          <option>South Korea</option>
+          <option>Japan</option>
+          <option>Germany</option>
+          <option>India</option>
+          <option>Australia</option>
+          <option>Other</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label class="label">Image / Picture Upload</label>
+        <div class="preview">
+          <img id="image-preview" src="" alt="Uploaded preview" style="display:none" />
+          <span class="muted" id="image-url">No image uploaded</span>
+        </div>
+        <div class="actions">
+          <input id="image" type="file" accept="image/*" />
+          <button id="upload-image" class="btn">Upload Image</button>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button id="submit" class="btn btn-primary">Submit Review</button>
+        <button class="btn" onclick="location.href='dashboard-purchases.html'">Cancel</button>
+      </div>
+      <p class="muted" style="margin-top:8px">Your review will be visible once approved by an admin.</p>
+    </div>
+  </main>
+</body>
+</html>

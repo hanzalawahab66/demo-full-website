@@ -1,0 +1,1861 @@
+<!DOCTYPE html><html><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MangoCar - Premium Used Car Dealership</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              mango: '#FF8C42',
+              navy: '#1B2951',
+              charcoal: '#2D3748',
+            },
+            fontFamily: {
+              heading: ['Inter', 'sans-serif'],
+              body: ['Inter', 'sans-serif'],
+            },
+          },
+        },
+      };
+    </script>
+    <script>window.FontAwesomeConfig = {autoReplaceSvg: 'nest'};</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<!-- Removed external Google Fonts to avoid net::ERR_ABORTED in preview env -->
+    <style>
+        ::-webkit-scrollbar { display: none;}
+        * { font-family: 'Inter', sans-serif; }
+        
+        .skeleton {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+        }
+        
+        @keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+        
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+        
+        .brand-logo {
+            filter: grayscale(100%);
+            transition: filter 0.3s ease;
+        }
+        
+        .brand-logo:hover {
+            filter: grayscale(0%);
+        }
+        
+        .ken-burns {
+            animation: kenBurns 20s ease-in-out infinite alternate;
+        }
+        
+        @keyframes kenBurns {
+            0% { transform: scale(1) translateX(0); }
+            100% { transform: scale(1.1) translateX(-2%); }
+        }
+        
+        .pulse-offer {
+            animation: pulseOffer 2s ease-in-out infinite;
+        }
+        
+        @keyframes pulseOffer {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.05); }
+        }
+        
+        .stagger-animation {
+            opacity: 0;
+            transform: translateY(30px);
+            animation: staggerIn 0.6s ease-out forwards;
+        }
+        
+        @keyframes staggerIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .fade-slide-up {
+            opacity: 0;
+            transform: translateY(50px);
+            animation: fadeSlideUp 0.8s ease-out forwards;
+        }
+        
+        @keyframes fadeSlideUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+
+<!-- COMPONENT: Language Selector & Header -->
+<div class="bg-gray-100 shadow-sm font-body">
+    <div class="container mx-auto px-6 py-2">
+        <div class="flex justify-end items-center space-x-4">
+            <div class="relative">
+                <button id="languageToggle" class="flex items-center space-x-2 text-gray-700 hover:text-orange-500 font-medium transition-colors">
+                    <i class="fa-solid fa-globe text-base"></i>
+                    <span class="text-sm md:text-base">English</span>
+                    <i class="fa-solid fa-chevron-down text-xs"></i>
+                </button>
+                
+                <div id="languageDropdown" class="absolute right-0 top-full mt-1 bg-white rounded-lg shadow-xl border border-gray-200 py-2 min-w-[160px] hidden z-50">
+                    <button class="w-full px-4 py-2 text-left text-sm md:text-base text-gray-700 hover:bg-gray-50 hover:text-orange-500 transition-colors flex items-center space-x-2 font-medium" data-lang="en">
+                        <img src="https://flagcdn.com/w20/us.png" alt="English" class="w-4 h-3">
+                        <span>English</span>
+                    </button>
+                    <button class="w-full px-4 py-2 text-left text-sm md:text-base text-gray-700 hover:bg-gray-50 hover:text-orange-500 transition-colors flex items-center space-x-2 font-medium" data-lang="ko">
+                        <img src="https://flagcdn.com/w20/kr.png" alt="한국어" class="w-4 h-3">
+                        <span>한국어</span>
+                    </button>
+                    <button class="w-full px-4 py-2 text-left text-sm md:text-base text-gray-700 hover:bg-gray-50 hover:text-orange-500 transition-colors flex items-center space-x-2 font-medium" data-lang="ar">
+                        <img src="https://flagcdn.com/w20/sa.png" alt="العربية" class="w-4 h-3">
+                        <span>العربية</span>
+                    </button>
+                    <button class="w-full px-4 py-2 text-left text-sm md:text-base text-gray-700 hover:bg-gray-50 hover:text-orange-500 transition-colors flex items-center space-x-2 font-medium" data-lang="fr">
+                        <img src="https://flagcdn.com/w20/fr.png" alt="Français" class="w-4 h-3">
+                        <span>Français</span>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="text-gray-300">|</div>
+            
+            <div class="flex items-center space-x-4">
+                <button class="bg-transparent border border-gray-300 text-gray-700 hover:border-orange-500 hover:text-orange-500 px-6 py-2 rounded-lg font-medium transition-all" data-text="sign-in" onclick="window.location.href='signin.html'">
+                    Sign In
+                </button>
+                <button class="bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-lg font-semibold transition-all transform hover:scale-105" data-text="sign-up" onclick="window.location.href='signup.html'">
+                    Sign Up
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<header id="header" class="bg-white shadow-sm">
+  <div class="container mx-auto px-6 py-4">
+    <div class="flex items-center justify-between">
+      <!-- Branding -->
+      <a href="home.html" class="flex items-center space-x-2">
+        <span class="text-3xl font-heading font-extrabold text-navy tracking-wide">NSM</span>
+        <span class="text-3xl font-heading font-extrabold text-mango">Autos</span>
+      </a>
+      <!-- Search (seller header style; keep data-text for home script) -->
+      <div class="hidden md:flex flex-1 mx-8 max-w-xl">
+        <div class="flex items-center bg-gray-50 rounded-full border-2 border-gray-200 focus-within:border-orange-500 transition-colors w-full">
+          <input type="text" data-text="search-placeholder" placeholder="Identification Number / Product Number" class="flex-1 px-6 py-3 bg-transparent text-gray-700 placeholder-gray-500 focus:outline-none rounded-l-full" />
+          <button class="bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-full font-bold flex items-center space-x-2 transition-all">
+            <i class="fa-solid fa-search"></i>
+            <span>Search</span>
+          </button>
+        </div>
+      </div>
+      <!-- Icons -->
+      <div class="hidden md:flex items-center space-x-6">
+        <a id="favorite-action" href="dashboard-saved.html" class="text-gray-700 hover:text-orange-500 font-medium transition-colors cursor-pointer flex items-center space-x-2">
+          <i class="fa-regular fa-heart text-xl"></i>
+          <span>Favourite</span>
+        </a>
+        <a id="compare-action" href="dashboard-compare.html" class="text-gray-700 hover:text-orange-500 font-medium transition-colors cursor-pointer flex items-center space-x-2">
+          <i class="fa-solid fa-code-compare text-xl"></i>
+          <span>Add to Compare</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Nav -->
+    <nav class="flex items-center justify-center space-x-10 mt-4 pt-4 border-t border-gray-100">
+      <a href="home.html" class="text-gray-700 hover:text-orange-500 font-medium transition-colors">Home</a>
+      <a href="inventory.html" class="text-gray-700 hover:text-orange-500 font-medium transition-colors">Inventory</a>
+      <a href="blog.html" class="text-gray-700 hover:text-orange-500 font-medium transition-colors">Blog</a>
+      <a href="about-us.html" class="text-gray-700 hover:text-orange-500 font-medium transition-colors">About Us</a>
+      <a href="contact-us.html" class="text-gray-700 hover:text-orange-500 font-medium transition-colors">Contact Us</a>
+    </nav>
+  </div>
+</header>
+
+<!-- Hero slider removed per request -->
+
+<!-- COMPONENT: Secondary Banner Slider (below hero) -->
+<section id="secondary-banner" class="relative overflow-hidden py-0 my-0">
+    <div class="mx-auto max-w-[1920px] w-full h-auto relative">
+        <div id="secondary-banner-slider" class="relative w-full h-full overflow-hidden">
+            <!-- Track-based static fallback (will be replaced by API if available) -->
+            <div id="secondary-banner-track" class="w-full h-full flex transition-transform duration-700 ease-in-out" style="transform: translateX(0%)">
+                <div class="secondary-slide relative w-full h-full flex-shrink-0 bg-white">
+                    <img class="w-full h-full object-contain" src="/uploads/Gemini_Generated_Image_s0k6pes0k6pes0k6 (1).png" alt="Home banner 1">
+                </div>
+                <div class="secondary-slide relative w-full h-full flex-shrink-0 bg-white">
+                    <img class="w-full h-full object-contain" src="/uploads/Firefly_Flux.png" alt="Home banner 2">
+                </div>
+                <div class="secondary-slide relative w-full h-full flex-shrink-0 bg-white">
+                    <img class="w-full h-full object-contain" src="/uploads/Gemini_Generated_Image_9vzrp19vzrp19vzr (1) (1).png" alt="Home banner 3">
+                </div>
+                <div class="secondary-slide relative w-full h-full flex-shrink-0 bg-white">
+                    <img class="w-full h-full object-contain" src="/uploads/Gemini_Generated_Image_9vzrp19vzrp19vzr (1).png" alt="Home banner 4">
+                </div>
+            </div>
+
+            <!-- Navigation Dots -->
+            <div class="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex space-x-3 z-20">
+                <button class="secondary-dot active w-3 h-3 rounded-full bg-white opacity-100 transition-all" data-sslide="0"></button>
+                <button class="secondary-dot w-3 h-3 rounded-full bg-white opacity-50 hover:opacity-75 transition-all" data-sslide="1"></button>
+                <button class="secondary-dot w-3 h-3 rounded-full bg-white opacity-50 hover:opacity-75 transition-all" data-sslide="2"></button>
+                <button class="secondary-dot w-3 h-3 rounded-full bg-white opacity-50 hover:opacity-75 transition-all" data-sslide="3"></button>
+            </div>
+        </div>
+
+        <!-- Navigation Arrows -->
+        <button class="absolute left-4 top-1/2 transform -translate-y-1/2 text-white hover:text-orange-400 transition-colors z-30 bg-black bg-opacity-30 rounded-full w-12 h-12 flex items-center justify-center" id="secondaryPrev">
+            <i class="fa-solid fa-chevron-left text-xl"></i>
+        </button>
+        <button class="absolute right-4 top-1/2 transform -translate-y-1/2 text-white hover:text-orange-400 transition-colors z-30 bg-black bg-opacity-30 rounded-full w-12 h-12 flex items-center justify-center" id="secondaryNext">
+            <i class="fa-solid fa-chevron-right text-xl"></i>
+        </button>
+    </div>
+</section>
+
+<!-- COMPONENT: Featured Collections Section (moved up) -->
+<section id="featured-collections" class="py-20 bg-white">
+    <div class="container mx-auto px-6">
+        <div class="mb-16">
+            <h2 class="text-4xl lg:text-5xl font-bold text-gray-900">Search By <span class="text-orange-500">Category</span></h2>
+        </div>
+        
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8 max-w-6xl mx-auto">
+            <a href="inventory.html" class="group text-center cursor-pointer block">
+                <div class="relative h-28 mb-4 flex items-center justify-center">
+                    <img class="max-h-full w-auto object-contain transition-transform duration-300 group-hover:scale-110" src="/uploads/images%20(1).webp" alt="a group of three modern cars, an orange hatchback, a white crossover, and a black sedan, on a clean white background, photorealistic studio shot">
+                </div>
+                <h3 class="text-xl font-semibold text-gray-800 group-hover:text-orange-500 transition-colors">All</h3>
+            </a>
+            
+            <a href="inventory.html?model=Sedan" class="group text-center cursor-pointer block">
+                <div class="relative h-28 mb-4 flex items-center justify-center">
+                    <img class="max-h-full w-auto object-contain transition-transform duration-300 group-hover:scale-110" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/fa83731ad4-972ad7d2d10fb0a01f31.png" alt="a modern white sedan car, side-front view, on a clean white background, photorealistic studio shot">
+                </div>
+                <h3 class="text-xl font-semibold text-gray-800 group-hover:text-orange-500 transition-colors">Sedan</h3>
+            </a>
+            
+            <a href="inventory.html?model=SUV" class="group text-center cursor-pointer block">
+                <div class="relative h-28 mb-4 flex items-center justify-center">
+                    <img class="max-h-full w-auto object-contain transition-transform duration-300 group-hover:scale-110" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/816807c70a-933633c032f30f2147cc.png" alt="a modern white SUV, side-front view, on a clean white background, photorealistic studio shot">
+                </div>
+                <h3 class="text-xl font-semibold text-gray-800 group-hover:text-orange-500 transition-colors">SUV</h3>
+            </a>
+            
+            <a href="inventory.html?model=MPV%2FVan" class="group text-center cursor-pointer block">
+                <div class="relative h-28 mb-4 flex items-center justify-center">
+                    <img class="max-h-full w-auto object-contain transition-transform duration-300 group-hover:scale-110" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/98ecd90221-53db375069296231823f.png" alt="a modern silver passenger van, side-front view, on a clean white background, photorealistic studio shot">
+                </div>
+                <h3 class="text-xl font-semibold text-gray-800 group-hover:text-orange-500 transition-colors">MPV / Van</h3>
+            </a>
+            
+            <a href="inventory.html?model=Truck" class="group text-center cursor-pointer block">
+                <div class="relative h-28 mb-4 flex items-center justify-center">
+                    <img class="max-h-full w-auto object-contain transition-transform duration-300 group-hover:scale-110" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/4f88ac2781-9699d5774b1868bfc5cf.png" alt="a modern white single-cab pickup truck with an empty bed, side-front view, on a clean white background, photorealistic studio shot">
+                </div>
+                <h3 class="text-xl font-semibold text-gray-800 group-hover:text-orange-500 transition-colors">Truck</h3>
+            </a>
+            
+            <a href="inventory.html?model=Bus%2FETC" class="group text-center cursor-pointer block">
+                <div class="relative h-28 mb-4 flex items-center justify-center">
+                    <img class="max-h-full w-auto object-contain transition-transform duration-300 group-hover:scale-110" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/5ae69d6129-d82b119be3e0a90e46aa.png" alt="a modern white minibus, side-front view, on a clean white background, photorealistic studio shot">
+                </div>
+                <h3 class="text-xl font-semibold text-gray-800 group-hover:text-orange-500 transition-colors">Bus / ETC</h3>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- COMPONENT: New Arrivals Section -->
+<section id="new-arrivals" class="py-20 bg-white">
+    <div class="container mx-auto px-6">
+        <div class="flex justify-between items-center mb-10">
+            <h2 class="text-4xl font-bold text-gray-800">
+                <span class="text-orange-500">NEW</span> Arrival
+            </h2>
+            <span class="text-lg font-medium text-gray-600 hover:text-orange-500 transition-colors flex items-center cursor-pointer">
+                view more
+                <i class="fa-solid fa-arrow-right ml-2"></i>
+            </span>
+        </div>
+
+        <div class="relative">
+            <div id="new-arrival-slider" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+    <!-- Card 1 -->
+    <div class="bg-white rounded-lg border border-gray-200 hover:shadow-xl transition-shadow duration-300">
+        <div class="relative">
+            <img class="w-full h-56 object-cover rounded-t-lg" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/f562b27511-a355b131a39233d4017b.png" alt="2013 Hyundai Santa Fe DM silver SUV">
+        </div>
+        <div class="p-5">
+            <p class="text-sm text-gray-500 mb-1">2013 Hyundai</p>
+            <h3 class="text-lg font-bold text-gray-900 mb-4 truncate">Santa Fe DM</h3>
+            <div class="grid grid-cols-2 gap-x-4 gap-y-2 text-sm text-gray-600 mb-4">
+                <div class="flex items-center"><i class="fa-solid fa-tachometer-alt w-4 mr-2 text-gray-400"></i><span>197,572 KM</span></div>
+                <div class="flex items-center"><i class="fa-solid fa-gas-pump w-4 mr-2 text-gray-400"></i><span>DIESEL</span></div>
+                <div class="flex items-center"><i class="fa-solid fa-cogs w-4 mr-2 text-gray-400"></i><span>2,199cc</span></div>
+                <div class="flex items-center"><i class="fa-solid fa-car-side w-4 mr-2 text-gray-400"></i><span>AUTO</span></div>
+                <div class="flex items-center col-span-2"><i class="fa-solid fa-map-marker-alt w-4 mr-2 text-gray-400"></i><span>Korea</span></div>
+            </div>
+            <div class="text-right">
+                <span class="text-2xl font-bold text-gray-900">$ 4,850</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Card 2 -->
+    <div class="bg-white rounded-lg border border-gray-200 hover:shadow-xl transition-shadow duration-300">
+        <div class="relative">
+            <img class="w-full h-56 object-cover rounded-t-lg" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/fb604d0e30-b6d0d39c6c0d89548bc5.png" alt="2012 Hyundai Tucson iX white SUV">
+        </div>
+        <div class="p-5">
+            <p class="text-sm text-gray-500 mb-1">2012 Hyundai</p>
+            <h3 class="text-lg font-bold text-gray-900 mb-4 truncate">Tucson iX</h3>
+            <div class="grid grid-cols-2 gap-x-4 gap-y-2 text-sm text-gray-600 mb-4">
+                <div class="flex items-center"><i class="fa-solid fa-tachometer-alt w-4 mr-2 text-gray-400"></i><span>246,373 KM</span></div>
+                <div class="flex items-center"><i class="fa-solid fa-gas-pump w-4 mr-2 text-gray-400"></i><span>DIESEL</span></div>
+                <div class="flex items-center"><i class="fa-solid fa-cogs w-4 mr-2 text-gray-400"></i><span>1,995cc</span></div>
+                <div class="flex items-center"><i class="fa-solid fa-car-side w-4 mr-2 text-gray-400"></i><span>AUTO</span></div>
+                <div class="flex items-center col-span-2"><i class="fa-solid fa-map-marker-alt w-4 mr-2 text-gray-400"></i><span>Korea</span></div>
+            </div>
+            <div class="text-right">
+                <span class="text-2xl font-bold text-gray-900">$ 2,900</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Card 3 -->
+    <div class="bg-white rounded-lg border border-gray-200 hover:shadow-xl transition-shadow duration-300">
+        <div class="relative">
+            <img class="w-full h-56 object-cover rounded-t-lg" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/a2aa4fd8cb-d0caa7f47b8bf1689baa.png" alt="2014 Infiniti Q50 2.2D Premium dark blue sedan">
+        </div>
+        <div class="p-5">
+            <p class="text-sm text-gray-500 mb-1">2014 Infiniti</p>
+            <h3 class="text-lg font-bold text-gray-900 mb-4 truncate">Q50 2.2D Premium</h3>
+            <div class="grid grid-cols-2 gap-x-4 gap-y-2 text-sm text-gray-600 mb-4">
+                <div class="flex items-center"><i class="fa-solid fa-tachometer-alt w-4 mr-2 text-gray-400"></i><span>314,254 KM</span></div>
+                <div class="flex items-center"><i class="fa-solid fa-gas-pump w-4 mr-2 text-gray-400"></i><span>DIESEL</span></div>
+                <div class="flex items-center"><i class="fa-solid fa-cogs w-4 mr-2 text-gray-400"></i><span>2,143cc</span></div>
+                <div class="flex items-center"><i class="fa-solid fa-car-side w-4 mr-2 text-gray-400"></i><span>AUTO</span></div>
+                <div class="flex items-center col-span-2"><i class="fa-solid fa-map-marker-alt w-4 mr-2 text-gray-400"></i><span>Korea</span></div>
+            </div>
+            <div class="text-right">
+                <span class="text-2xl font-bold text-gray-900">$ 3,690</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Card 4 -->
+    <div class="bg-white rounded-lg border border-gray-200 hover:shadow-xl transition-shadow duration-300">
+        <div class="relative">
+            <img class="w-full h-56 object-cover rounded-t-lg" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/3bef772188-c2504b56c4657c7d3bce.png" alt="2011 Mercedes-Benz C-Class W204 C220 CDI Avantgarde silver sedan">
+        </div>
+        <div class="p-5">
+            <p class="text-sm text-gray-500 mb-1">2011 Benz</p>
+            <h3 class="text-lg font-bold text-gray-900 mb-4 truncate">C-Class W204 C220</h3>
+            <div class="grid grid-cols-2 gap-x-4 gap-y-2 text-sm text-gray-600 mb-4">
+                <div class="flex items-center"><i class="fa-solid fa-tachometer-alt w-4 mr-2 text-gray-400"></i><span>208,588 KM</span></div>
+                <div class="flex items-center"><i class="fa-solid fa-gas-pump w-4 mr-2 text-gray-400"></i><span>DIESEL</span></div>
+                <div class="flex items-center"><i class="fa-solid fa-cogs w-4 mr-2 text-gray-400"></i><span>2,143cc</span></div>
+                <div class="flex items-center"><i class="fa-solid fa-car-side w-4 mr-2 text-gray-400"></i><span>AUTO</span></div>
+                <div class="flex items-center col-span-2"><i class="fa-solid fa-map-marker-alt w-4 mr-2 text-gray-400"></i><span>Korea</span></div>
+            </div>
+            <div class="text-right">
+                <span class="text-2xl font-bold text-gray-900">$ 4,290</span>
+            </div>
+        </div>
+    </div>
+</div>
+            
+            <!-- Navigation Arrows -->
+            <button id="new-arrival-prev" class="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1/2 w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center text-gray-600 hover:text-orange-500 transition-all z-10">
+                <i class="fa-solid fa-chevron-left"></i>
+            </button>
+            <button id="new-arrival-next" class="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center text-gray-600 hover:text-orange-500 transition-all z-10">
+                <i class="fa-solid fa-chevron-right"></i>
+            </button>
+        </div>
+    </div>
+</section>
+
+<!-- COMPONENT: Featured Vehicles Section -->
+<section id="featured-vehicles" class="py-20 bg-gray-50">
+    <div class="container mx-auto px-6">
+        <div class="mb-16">
+            <h2 class="text-4xl lg:text-5xl font-bold text-gray-900">
+                <span class="text-orange-500">Best Sellers</span> by Type
+            </h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-16">
+            <!-- Sedan Category 1 -->
+            <div id="bestseller-sedan-1" class="flex items-center space-x-8">
+                <div class="flex-shrink-0 text-center w-52">
+                    <img class="w-full h-auto object-contain" src="/uploads/istockphoto-498580443-612x612.jpg" alt="a modern silver sedan car, side-view, on a clean white background, photorealistic studio shot">
+                    <p class="mt-2 text-lg font-semibold text-gray-700">Sedan</p>
+                </div>
+                <div class="flex-1">
+                    <ul class="space-y-4 text-lg text-gray-800">
+                        <li class="flex items-center">
+                            <span class="font-bold mr-3">1</span>
+                            <span>Hyundai Avante</span>
+                            <span class="ml-2 text-gray-500">(2,190)</span>
+                        </li>
+                        <li class="flex items-center">
+                            <span class="font-bold mr-3">2</span>
+                            <span>Kia K3</span>
+                            <span class="ml-2 text-gray-500">(794)</span>
+                        </li>
+                        <li class="flex items-center">
+                            <span class="font-bold mr-3">3</span>
+                            <span>Kia Forte</span>
+                            <span class="ml-2 text-gray-500">(47)</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- SUV Category -->
+            <div id="bestseller-suv" class="flex items-center space-x-8">
+                <div class="flex-shrink-0 text-center w-52">
+                    <img class="w-full h-auto object-contain" src="/uploads/istockphoto-2062732046-612x612.jpg" alt="a modern white SUV, side-view, on a clean white background, photorealistic studio shot">
+                    <p class="mt-2 text-lg font-semibold text-gray-700">SUV</p>
+                </div>
+                <div class="flex-1">
+                    <ul class="space-y-4 text-lg text-gray-800">
+                        <li class="flex items-center">
+                            <span class="font-bold mr-3">1</span>
+                            <span>Hyundai Tucson</span>
+                            <span class="ml-2 text-gray-500">(1,425)</span>
+                        </li>
+                        <li class="flex items-center">
+                            <span class="font-bold mr-3">2</span>
+                            <span>Hyundai Santa Fe</span>
+                            <span class="ml-2 text-gray-500">(2,164)</span>
+                        </li>
+                        <li class="flex items-center">
+                            <span class="font-bold mr-3">3</span>
+                            <span>Kia Sportage</span>
+                            <span class="ml-2 text-gray-500">(1,456)</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Sedan Category 2 -->
+            <div id="bestseller-sedan-2" class="flex items-center space-x-8">
+                <div class="flex-shrink-0 text-center w-52">
+                    <img class="w-full h-auto object-contain" src="/uploads/istockphoto-498580443-612x612.jpg" alt="a modern grey metallic sedan car, side-view, on a clean white background, photorealistic studio shot">
+                    <p class="mt-2 text-lg font-semibold text-gray-700">Sedan</p>
+                </div>
+                <div class="flex-1">
+                    <ul class="space-y-4 text-lg text-gray-800">
+                        <li class="flex items-center">
+                            <span class="font-bold mr-3">1</span>
+                            <span>Audi A6</span>
+                            <span class="ml-2 text-gray-500">(654)</span>
+                        </li>
+                        <li class="flex items-center">
+                            <span class="font-bold mr-3">2</span>
+                            <span>Volkswagen Golf</span>
+                            <span class="ml-2 text-gray-500">(190)</span>
+                        </li>
+                        <li class="flex items-center">
+                            <span class="font-bold mr-3">3</span>
+                            <span>Volkswagen Jetta</span>
+                            <span class="ml-2 text-gray-500">(158)</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Van Category -->
+            <div id="bestseller-van" class="flex items-center space-x-8">
+                <div class="flex-shrink-0 text-center w-52">
+                    <img class="w-full h-auto object-contain" src="/uploads/istockphoto-2149237608-612x612.jpg" alt="a modern white cargo van, side-view, on a clean white background, photorealistic studio shot">
+                    <p class="mt-2 text-lg font-semibold text-gray-700">Van</p>
+                </div>
+                <div class="flex-1">
+                    <ul class="space-y-4 text-lg text-gray-800">
+                        <li class="flex items-center">
+                            <span class="font-bold mr-3">1</span>
+                            <span>Kia Carnival</span>
+                            <span class="ml-2 text-gray-500">(3,253)</span>
+                        </li>
+                        <li class="flex items-center">
+                            <span class="font-bold mr-3">2</span>
+                            <span>Hyundai Starex</span>
+                            <span class="ml-2 text-gray-500">(1,373)</span>
+                        </li>
+                        <li class="flex items-center text-gray-400">
+                            <span class="font-bold mr-3">3</span>
+                            <span>-</span>
+                            <span class="ml-2">(-)</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- COMPONENT: Why Choose Us Section -->
+<section id="why-choose-us" class="py-20 bg-gray-100">
+    <div class="container mx-auto px-6">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl lg:text-5xl font-bold text-gray-900 mb-6">Why Choose MangoCar?</h2>
+            <p class="text-xl text-gray-600 max-w-3xl mx-auto">We're committed to providing an exceptional car buying experience with transparency, quality, and outstanding service</p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div class="text-center bg-white p-8 rounded-2xl shadow-lg">
+                <div class="w-20 h-20 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <i class="fa-solid fa-certificate text-orange-500 text-3xl"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-900 mb-4">Certified Quality</h3>
+                <p class="text-gray-600">Every vehicle undergoes a comprehensive 150-point inspection by certified technicians</p>
+            </div>
+            
+            <div class="text-center bg-white p-8 rounded-2xl shadow-lg">
+                <div class="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <i class="fa-solid fa-dollar-sign text-blue-500 text-3xl"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-900 mb-4">Best Price Guarantee</h3>
+                <p class="text-gray-600">We'll match any competitor's price plus give you an additional $500 credit</p>
+            </div>
+            
+            <div class="text-center bg-white p-8 rounded-2xl shadow-lg">
+                <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <i class="fa-solid fa-shield-halved text-green-500 text-3xl"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-900 mb-4">Extended Warranty</h3>
+                <p class="text-gray-600">Complimentary 3-month/3,000-mile warranty on all certified pre-owned vehicles</p>
+            </div>
+            
+            <div class="text-center bg-white p-8 rounded-2xl shadow-lg">
+                <div class="w-20 h-20 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <i class="fa-solid fa-handshake text-purple-500 text-3xl"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-900 mb-4">No-Pressure Sales</h3>
+                <p class="text-gray-600">Our consultants are here to help, not pressure you into a decision</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- COMPONENT: Featured Collections Section removed (moved above) -->
+
+<!-- COMPONENT: Search by Price Range Section -->
+<section id="price-range" class="py-20 bg-gray-100">
+    <div class="container mx-auto px-6">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl lg:text-5xl font-bold text-gray-900 mb-6">Shop by Price Range</h2>
+            <p class="text-xl text-gray-600 max-w-3xl mx-auto">Find quality vehicles that fit your budget perfectly</p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <a href="inventory.html?priceMin=0&priceMax=15000" class="bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl hover:-translate-y-2 transition-all duration-300 text-center group block">
+                <div class="text-4xl font-bold text-orange-500 mb-4 group-hover:scale-110 transition-transform">Under $15K</div>
+                <p class="text-gray-600 mb-4">Great value vehicles for budget-conscious buyers</p>
+                <div class="text-sm text-gray-500">847 vehicles available</div>
+            </a>
+            
+            <a href="inventory.html?priceMin=15000&priceMax=25000" class="bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl hover:-translate-y-2 transition-all duration-300 text-center group block">
+                <div class="text-4xl font-bold text-blue-500 mb-4 group-hover:scale-110 transition-transform">$15K - $25K</div>
+                <p class="text-gray-600 mb-4">Perfect balance of features and affordability</p>
+                <div class="text-sm text-gray-500">1,203 vehicles available</div>
+            </a>
+            
+            <a href="inventory.html?priceMin=25000&priceMax=35000" class="bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl hover:-translate-y-2 transition-all duration-300 text-center group block">
+                <div class="text-4xl font-bold text-green-500 mb-4 group-hover:scale-110 transition-transform">$25K - $35K</div>
+                <p class="text-gray-600 mb-4">Premium features with excellent reliability</p>
+                <div class="text-sm text-gray-500">542 vehicles available</div>
+            </a>
+            
+            <a href="inventory.html?priceMin=35000" class="bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl hover:-translate-y-2 transition-all duration-300 text-center group block">
+                <div class="text-4xl font-bold text-purple-500 mb-4 group-hover:scale-110 transition-transform">$35K+</div>
+                <p class="text-gray-600 mb-4">Luxury vehicles with cutting-edge technology</p>
+                <div class="text-sm text-gray-500">255 vehicles available</div>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- COMPONENT: Popular Car Brands Section -->
+<section id="popular-brands" class="py-20 bg-white">
+    <div class="container mx-auto px-6">
+        <div class="mb-12">
+            <h2 class="text-4xl font-bold text-gray-800">
+                Popular Car <span class="text-orange-500">Brands</span>
+            </h2>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-8 text-lg">
+            
+            <!-- Hyundai -->
+            <a href="inventory.html?make=Hyundai" class="flex items-center space-x-3 cursor-pointer group">
+                <div class="w-8 h-8 flex items-center justify-center bg-transparent">
+                    <img class="h-6 w-auto object-contain brand-logo" src="/uploads/Gemini_Generated_Image_d8pxpwd8pxpwd8px.png" alt="monochrome logo of Hyundai" style="background: transparent;">
+                </div>
+                <span class="font-medium text-gray-800 group-hover:text-orange-500 transition-colors">Hyundai</span>
+                <span class="text-gray-500 text-base">(19,569)</span>
+            </a>
+
+            <!-- Kia -->
+            <a href="inventory.html?make=Kia" class="flex items-center space-x-3 cursor-pointer group">
+                <div class="w-8 h-8 flex items-center justify-center bg-transparent">
+ <img class="h-6 w-auto object-contain brand-logo" src="/uploads/kia.png" alt="monochrome logo of Kia" style="background: transparent;">
+                </div>
+                <span class="font-medium text-gray-800 group-hover:text-orange-500 transition-colors">Kia</span>
+                <span class="text-gray-500 text-base">(18,114)</span>
+            </a>
+
+            <!-- BMW -->
+            <a href="inventory.html?make=BMW" class="flex items-center space-x-3 cursor-pointer group">
+                <div class="w-8 h-8 flex items-center justify-center bg-transparent">
+ <img class="h-8 w-8 object-contain brand-logo" src="/uploads/bmw.svg" alt="official full color logo of BMW" style="background: transparent;">
+                </div>
+                <span class="font-medium text-gray-800 group-hover:text-orange-500 transition-colors">BMW</span>
+                <span class="text-gray-500 text-base">(5,697)</span>
+            </a>
+
+            <!-- Benz -->
+            <a href="inventory.html?make=Mercedes-Benz" class="flex items-center space-x-3 cursor-pointer group">
+                <div class="w-8 h-8 flex items-center justify-center bg-transparent">
+ <img class="h-8 w-8 object-contain brand-logo" src="/uploads/mercdies.png" alt="monochrome line art logo of Mercedes-Benz" style="background: transparent;">
+                </div>
+                <span class="font-medium text-gray-800 group-hover:text-orange-500 transition-colors">Benz</span>
+                <span class="text-gray-500 text-base">(5,508)</span>
+            </a>
+
+            <!-- Genesis -->
+            <a href="inventory.html?make=Genesis" class="flex items-center space-x-3 cursor-pointer group">
+                <div class="w-8 h-8 flex items-center justify-center bg-transparent">
+ <img class="h-6 w-auto object-contain brand-logo" src="/uploads/genesis.png" alt="monochrome logo of Genesis Motors" style="background: transparent;">
+                </div>
+                <span class="font-medium text-gray-800 group-hover:text-orange-500 transition-colors">Genesis</span>
+                <span class="text-gray-500 text-base">(5,160)</span>
+            </a>
+
+            <!-- Chevrolet -->
+            <a href="inventory.html?make=Chevrolet" class="flex items-center space-x-3 cursor-pointer group">
+                <div class="w-8 h-8 flex items-center justify-center bg-transparent">
+ <img class="h-6 w-auto object-contain brand-logo" src="/uploads/chevrolet.png" alt="monochrome logo of Chevrolet" style="background: transparent;">
+                </div>
+                <span class="font-medium text-gray-800 group-hover:text-orange-500 transition-colors">Chevrolet</span>
+                <span class="text-gray-500 text-base">(3,403)</span>
+            </a>
+
+            <!-- KG Mobility -->
+            <a href="inventory.html?make=KG%20Mobility" class="flex items-center space-x-3 cursor-pointer group">
+                <div class="w-8 h-8 flex items-center justify-center bg-transparent">
+ <img class="h-7 w-auto object-contain brand-logo" src="/uploads/kg%20mobility.png" alt="monochrome logo of KG Mobility SsangYong" style="background: transparent;">
+                </div>
+                <span class="font-medium text-gray-800 group-hover:text-orange-500 transition-colors">KG Mobility (Ss...</span>
+                <span class="text-gray-500 text-base">(3,397)</span>
+            </a>
+            
+            <!-- Renault Korea -->
+            <a href="inventory.html?make=Renault%20Korea" class="flex items-center space-x-3 cursor-pointer group">
+                <div class="w-8 h-8 flex items-center justify-center bg-transparent">
+ <img class="h-8 w-auto object-contain brand-logo" src="/uploads/renault%20korea.png" alt="monochrome logo of Renault Korea" style="background: transparent;">
+                </div>
+                <span class="font-medium text-gray-800 group-hover:text-orange-500 transition-colors">Renault Korea (...)</span>
+                <span class="text-gray-500 text-base">(2,971)</span>
+            </a>
+            
+            <!-- Audi -->
+            <a href="inventory.html?make=Audi" class="flex items-center space-x-3 cursor-pointer group">
+                <div class="w-8 h-8 flex items-center justify-center bg-transparent">
+ <img class="h-6 w-auto object-contain brand-logo" src="/uploads/audi.png" alt="monochrome logo of Audi" style="background: transparent;">
+                </div>
+                <span class="font-medium text-gray-800 group-hover:text-orange-500 transition-colors">Audi</span>
+                <span class="text-gray-500 text-base">(1,865)</span>
+            </a>
+            
+            <!-- Mini -->
+            <a href="inventory.html?make=Mini" class="flex items-center space-x-3 cursor-pointer group">
+                <div class="w-8 h-8 flex items-center justify-center bg-transparent">
+ <img class="h-6 w-auto object-contain brand-logo" src="/uploads/mini.png" alt="monochrome logo of Mini Cooper" style="background: transparent;">
+                </div>
+                <span class="font-medium text-gray-800 group-hover:text-orange-500 transition-colors">Mini</span>
+                <span class="text-gray-500 text-base">(1,117)</span>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- COMPONENT: Customer Testimonials Section -->
+<section id="testimonials" class="py-20 bg-white">
+    <div class="container mx-auto px-6">
+        <div class="flex justify-between items-center mb-10">
+            <h2 class="text-4xl font-bold text-gray-800">
+                Mangocar <span class="text-orange-500">Best Reviews</span>
+            </h2>
+            <span class="text-lg font-medium text-gray-600 hover:text-orange-500 transition-colors flex items-center cursor-pointer">
+                view more
+                <i class="fa-solid fa-arrow-right ml-2"></i>
+            </span>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Review Card 1 -->
+            <div class="bg-white rounded-lg overflow-hidden group cursor-pointer shadow-lg hover:shadow-xl transition-all">
+                <div class="overflow-hidden rounded-t-lg">
+                    <img class="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/5b02f51ee7-e5610804702f4075a6c8.png" alt="satisfied customer standing next to white luxury SUV with thumbs up, professional car dealership background, high quality photo">
+                </div>
+                <div class="p-6">
+                    <div class="flex items-center mb-3">
+                        <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-5.jpg" alt="Customer photo" class="w-12 h-12 rounded-full mr-4">
+                        <div>
+                            <h4 class="font-semibold text-gray-900">Sarah Johnson</h4>
+                            <div class="flex items-center space-x-1">
+                                <i class="fa-solid fa-star text-yellow-400 text-sm"></i>
+                                <i class="fa-solid fa-star text-yellow-400 text-sm"></i>
+                                <i class="fa-solid fa-star text-yellow-400 text-sm"></i>
+                                <i class="fa-solid fa-star text-yellow-400 text-sm"></i>
+                                <i class="fa-solid fa-star text-yellow-400 text-sm"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-2">Best quality just as expected!</h3>
+                    <p class="text-gray-600 mb-4">"My BMW X5 arrived in perfect condition from Germany. The whole process was transparent and professional. Highly recommend MangoCar!"</p>
+                    <div class="flex items-center space-x-2 text-gray-700">
+                        <img src="https://flagcdn.com/w20/us.png" alt="USA flag" class="w-5 h-auto">
+                        <span>United States</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Review Card 2 -->
+            <div class="bg-white rounded-lg overflow-hidden group cursor-pointer shadow-lg hover:shadow-xl transition-all">
+                <div class="overflow-hidden rounded-t-lg">
+                    <img class="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/c7524dcff1-d6499033e6995e79a09d.png" alt="happy family of four standing in front of silver sedan car, modern suburban driveway, professional photo">
+                </div>
+                <div class="p-6">
+                    <div class="flex items-center mb-3">
+                        <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-3.jpg" alt="Customer photo" class="w-12 h-12 rounded-full mr-4">
+                        <div>
+                            <h4 class="font-semibold text-gray-900">Michael Chen</h4>
+                            <div class="flex items-center space-x-1">
+                                <i class="fa-solid fa-star text-yellow-400 text-sm"></i>
+                                <i class="fa-solid fa-star text-yellow-400 text-sm"></i>
+                                <i class="fa-solid fa-star text-yellow-400 text-sm"></i>
+                                <i class="fa-solid fa-star text-yellow-400 text-sm"></i>
+                                <i class="fa-solid fa-star text-yellow-400 text-sm"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-2">Perfect family car at great price!</h3>
+                    <p class="text-gray-600 mb-4">"Found the perfect Honda Accord for our family. The financing options were flexible and the staff was incredibly helpful throughout."</p>
+                    <div class="flex items-center space-x-2 text-gray-700">
+                        <img src="https://flagcdn.com/w20/ca.png" alt="Canada flag" class="w-5 h-auto">
+                        <span>Canada</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Review Card 3 -->
+            <div class="bg-white rounded-lg overflow-hidden group cursor-pointer shadow-lg hover:shadow-xl transition-all">
+                <div class="overflow-hidden rounded-t-lg">
+                    <img class="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/fa6a459112-4e56cdda369556ebd935.png" alt="professional businessman shaking hands with car salesman next to black luxury sedan, modern car dealership showroom">
+                </div>
+                <div class="p-6">
+                    <div class="flex items-center mb-3">
+                        <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-8.jpg" alt="Customer photo" class="w-12 h-12 rounded-full mr-4">
+                        <div>
+                            <h4 class="font-semibold text-gray-900">David Rodriguez</h4>
+                            <div class="flex items-center space-x-1">
+                                <i class="fa-solid fa-star text-yellow-400 text-sm"></i>
+                                <i class="fa-solid fa-star text-yellow-400 text-sm"></i>
+                                <i class="fa-solid fa-star text-yellow-400 text-sm"></i>
+                                <i class="fa-solid fa-star text-yellow-400 text-sm"></i>
+                                <i class="fa-solid fa-star text-yellow-400 text-sm"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-2">Outstanding service and quality!</h3>
+                    <p class="text-gray-600 mb-4">"Exceptional experience from start to finish. The Mercedes-Benz C-Class I purchased exceeded my expectations. Will definitely return!"</p>
+                    <div class="flex items-center space-x-2 text-gray-700">
+                        <img src="https://flagcdn.com/w20/mx.png" alt="Mexico flag" class="w-5 h-auto">
+                        <span>Mexico</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- COMPONENT: Clearance Sale Section -->
+<section id="clearance-sale" class="py-20 bg-gray-50">
+    <div class="container mx-auto px-6">
+        <div class="flex justify-between items-center mb-10">
+            <h2 class="text-4xl font-bold text-gray-800">
+                Clearance <span class="text-orange-500">Sale</span>
+            </h2>
+            <span class="text-lg font-medium text-gray-600 hover:text-orange-500 transition-colors flex items-center cursor-pointer">
+                view more
+                <i class="fa-solid fa-arrow-right ml-2"></i>
+            </span>
+        </div>
+
+        <div class="relative">
+            <!-- Slider Container -->
+            <div id="clearance-slider" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+    <!-- Card 1 -->
+    <div class="bg-white rounded-lg border border-gray-200 hover:shadow-xl transition-shadow duration-300">
+        <div class="relative">
+            <div class="absolute top-3 left-3 bg-red-500 text-white text-xs px-2 py-1 rounded-full font-bold">
+                CLEARANCE
+            </div>
+            <div class="absolute top-3 right-3 bg-orange-500 text-white text-xs px-2 py-1 rounded-full font-bold">
+                -7%
+            </div>
+            <img class="w-full h-56 object-cover rounded-t-lg" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/b28ba9cdd9-8d56dcd4e48840bcfc72.png" alt="white 2012 Audi Q5 2.0 TDI Quattro luxury SUV">
+        </div>
+        <div class="p-5">
+            <p class="text-sm text-gray-500 mb-1">2012 Audi</p>
+            <h3 class="text-lg font-bold text-gray-900 mb-4 truncate">Q5 2.0 TDI Quattro</h3>
+            <div class="grid grid-cols-2 gap-x-4 gap-y-2 text-sm text-gray-600 mb-4">
+                <div class="flex items-center"><i class="fa-solid fa-tachometer-alt w-4 mr-2 text-gray-400"></i><span>93,630 KM</span></div>
+                <div class="flex items-center"><i class="fa-solid fa-gas-pump w-4 mr-2 text-gray-400"></i><span>DIESEL</span></div>
+                <div class="flex items-center"><i class="fa-solid fa-cogs w-4 mr-2 text-gray-400"></i><span>1,968cc</span></div>
+                <div class="flex items-center"><i class="fa-solid fa-car-side w-4 mr-2 text-gray-400"></i><span>AUTO</span></div>
+                <div class="flex items-center col-span-2"><i class="fa-solid fa-map-marker-alt w-4 mr-2 text-gray-400"></i><span>Germany</span></div>
+            </div>
+            <div class="flex items-center justify-between mb-4">
+                <div>
+                    <span class="text-gray-400 line-through text-sm">$ 7,700</span>
+                    <div class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full font-semibold inline-block ml-2">
+                        Save $550
+                    </div>
+                </div>
+            </div>
+            <div class="text-right">
+                <span class="text-2xl font-bold text-gray-900">$ 7,150</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Card 2 -->
+    <div class="bg-white rounded-lg border border-gray-200 hover:shadow-xl transition-shadow duration-300">
+        <div class="relative">
+            <div class="absolute top-3 left-3 bg-red-500 text-white text-xs px-2 py-1 rounded-full font-bold">
+                CLEARANCE
+            </div>
+            <div class="absolute top-3 right-3 bg-orange-500 text-white text-xs px-2 py-1 rounded-full font-bold">
+                -12%
+            </div>
+            <img class="w-full h-56 object-cover rounded-t-lg" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/43a5e70ae9-ea6140a462a400e621cf.png" alt="white 2013 Audi New A4 2.0 TDI luxury sedan">
+        </div>
+        <div class="p-5">
+            <p class="text-sm text-gray-500 mb-1">2013 Audi</p>
+            <h3 class="text-lg font-bold text-gray-900 mb-4 truncate">New A4 2.0 TDI</h3>
+            <div class="grid grid-cols-2 gap-x-4 gap-y-2 text-sm text-gray-600 mb-4">
+                <div class="flex items-center"><i class="fa-solid fa-tachometer-alt w-4 mr-2 text-gray-400"></i><span>142,358 KM</span></div>
+                <div class="flex items-center"><i class="fa-solid fa-gas-pump w-4 mr-2 text-gray-400"></i><span>DIESEL</span></div>
+                <div class="flex items-center"><i class="fa-solid fa-cogs w-4 mr-2 text-gray-400"></i><span>1,968cc</span></div>
+                <div class="flex items-center"><i class="fa-solid fa-car-side w-4 mr-2 text-gray-400"></i><span>AUTO</span></div>
+                <div class="flex items-center col-span-2"><i class="fa-solid fa-map-marker-alt w-4 mr-2 text-gray-400"></i><span>Germany</span></div>
+            </div>
+            <div class="flex items-center justify-between mb-4">
+                <div>
+                    <span class="text-gray-400 line-through text-sm">$ 5,100</span>
+                    <div class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full font-semibold inline-block ml-2">
+                        Save $600
+                    </div>
+                </div>
+            </div>
+            <div class="text-right">
+                <span class="text-2xl font-bold text-gray-900">$ 4,500</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Card 3 -->
+    <div class="bg-white rounded-lg border border-gray-200 hover:shadow-xl transition-shadow duration-300">
+        <div class="relative">
+            <div class="absolute top-3 left-3 bg-red-500 text-white text-xs px-2 py-1 rounded-full font-bold">
+                CLEARANCE
+            </div>
+            <div class="absolute top-3 right-3 bg-orange-500 text-white text-xs px-2 py-1 rounded-full font-bold">
+                -3%
+            </div>
+            <img class="w-full h-56 object-cover rounded-t-lg" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/596742028b-1bf256165f0230eaea74.png" alt="silver 2017 BMW 5 Series G30 520D xDrive M Sport luxury sedan">
+        </div>
+        <div class="p-5">
+            <p class="text-sm text-gray-500 mb-1">2017 BMW</p>
+            <h3 class="text-lg font-bold text-gray-900 mb-4 truncate">5 Series (G30) 520D xDrive M Sport</h3>
+            <div class="grid grid-cols-2 gap-x-4 gap-y-2 text-sm text-gray-600 mb-4">
+                <div class="flex items-center"><i class="fa-solid fa-tachometer-alt w-4 mr-2 text-gray-400"></i><span>222,488 KM</span></div>
+                <div class="flex items-center"><i class="fa-solid fa-gas-pump w-4 mr-2 text-gray-400"></i><span>DIESEL</span></div>
+                <div class="flex items-center"><i class="fa-solid fa-cogs w-4 mr-2 text-gray-400"></i><span>1,995cc</span></div>
+                <div class="flex items-center"><i class="fa-solid fa-car-side w-4 mr-2 text-gray-400"></i><span>AUTO</span></div>
+                <div class="flex items-center col-span-2"><i class="fa-solid fa-map-marker-alt w-4 mr-2 text-gray-400"></i><span>Germany</span></div>
+            </div>
+            <div class="flex items-center justify-between mb-4">
+                <div>
+                    <span class="text-gray-400 line-through text-sm">$ 14,100</span>
+                    <div class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full font-semibold inline-block ml-2">
+                        Save $400
+                    </div>
+                </div>
+            </div>
+            <div class="text-right">
+                <span class="text-2xl font-bold text-gray-900">$ 13,700</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Card 4 -->
+    <div class="bg-white rounded-lg border border-gray-200 hover:shadow-xl transition-shadow duration-300">
+        <div class="relative">
+            <div class="absolute top-3 left-3 bg-red-500 text-white text-xs px-2 py-1 rounded-full font-bold">
+                CLEARANCE
+            </div>
+            <div class="absolute top-3 right-3 bg-orange-500 text-white text-xs px-2 py-1 rounded-full font-bold">
+                -7%
+            </div>
+            <img class="w-full h-56 object-cover rounded-t-lg" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/c4aba9316b-7a5cb11fff3d85a891b3.png" alt="white 2015 Audi New A3 35 TDI Dynamic luxury sedan">
+        </div>
+        <div class="p-5">
+            <p class="text-sm text-gray-500 mb-1">2015 Audi</p>
+            <h3 class="text-lg font-bold text-gray-900 mb-4 truncate">New A3 35 TDI Dynamic</h3>
+            <div class="grid grid-cols-2 gap-x-4 gap-y-2 text-sm text-gray-600 mb-4">
+                <div class="flex items-center"><i class="fa-solid fa-tachometer-alt w-4 mr-2 text-gray-400"></i><span>91,391 KM</span></div>
+                <div class="flex items-center"><i class="fa-solid fa-gas-pump w-4 mr-2 text-gray-400"></i><span>DIESEL</span></div>
+                <div class="flex items-center"><i class="fa-solid fa-cogs w-4 mr-2 text-gray-400"></i><span>1,598cc</span></div>
+                <div class="flex items-center"><i class="fa-solid fa-car-side w-4 mr-2 text-gray-400"></i><span>AUTO</span></div>
+                <div class="flex items-center col-span-2"><i class="fa-solid fa-map-marker-alt w-4 mr-2 text-gray-400"></i><span>Germany</span></div>
+            </div>
+            <div class="flex items-center justify-between mb-4">
+                <div>
+                    <span class="text-gray-400 line-through text-sm">$ 8,100</span>
+                    <div class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full font-semibold inline-block ml-2">
+                        Save $600
+                    </div>
+                </div>
+            </div>
+            <div class="text-right">
+                <span class="text-2xl font-bold text-gray-900">$ 7,500</span>
+            </div>
+        </div>
+    </div>
+</div>
+            
+            <!-- Navigation Arrows -->
+            <button id="clearance-prev" class="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1/2 w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center text-gray-600 hover:text-orange-500 transition-all z-10">
+                <i class="fa-solid fa-chevron-left"></i>
+            </button>
+            <button id="clearance-next" class="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center text-gray-600 hover:text-orange-500 transition-all z-10">
+                <i class="fa-solid fa-chevron-right"></i>
+            </button>
+        </div>
+    </div>
+</section>
+
+<!-- COMPONENT: Most Affordable Cars Section -->
+<section id="affordable-cars" class="py-20 bg-gray-50">
+    <div class="container mx-auto px-6">
+        <div class="flex justify-between items-center mb-10">
+            <h2 class="text-4xl font-bold text-gray-800">
+                Most <span class="text-orange-500">Affordable</span>
+            </h2>
+            <span class="text-lg font-medium text-gray-600 hover:text-orange-500 transition-colors flex items-center cursor-pointer">
+                view more
+                <i class="fa-solid fa-arrow-right ml-2"></i>
+            </span>
+        </div>
+
+        <div class="relative">
+            <div id="affordable-slider" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+    <!-- Card 1 -->
+    <div class="bg-white rounded-lg border border-gray-200 hover:shadow-xl transition-shadow duration-300">
+        <div class="relative">
+            <div class="absolute top-3 right-3 bg-blue-500 text-white text-xs px-2 py-1 rounded-full font-bold">
+                AFFORDABLE
+            </div>
+            <img class="w-full h-56 object-cover rounded-t-lg" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/b28ba9cdd9-8d56dcd4e48840bcfc72.png" alt="white 2012 Audi Q5 2.0 TDI Quattro luxury SUV">
+        </div>
+        <div class="p-5">
+            <p class="text-sm text-gray-500 mb-1">2012 Audi</p>
+            <h3 class="text-lg font-bold text-gray-900 mb-4 truncate">Q5 2.0 TDI Quattro</h3>
+            <div class="grid grid-cols-2 gap-x-4 gap-y-2 text-sm text-gray-600 mb-4">
+                <div class="flex items-center"><i class="fa-solid fa-tachometer-alt w-4 mr-2 text-gray-400"></i><span>93,630 KM</span></div>
+                <div class="flex items-center"><i class="fa-solid fa-gas-pump w-4 mr-2 text-gray-400"></i><span>DIESEL</span></div>
+                <div class="flex items-center"><i class="fa-solid fa-cogs w-4 mr-2 text-gray-400"></i><span>1,968cc</span></div>
+                <div class="flex items-center"><i class="fa-solid fa-car-side w-4 mr-2 text-gray-400"></i><span>AUTO</span></div>
+                <div class="flex items-center col-span-2"><i class="fa-solid fa-map-marker-alt w-4 mr-2 text-gray-400"></i><span>Germany</span></div>
+            </div>
+            <div class="text-right mb-2">
+                <span class="text-sm text-gray-500">From</span>
+                <div class="text-sm text-gray-600">$145/month</div>
+            </div>
+            <div class="text-right">
+                <span class="text-2xl font-bold text-gray-900">$ 7,150</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Card 2 -->
+    <div class="bg-white rounded-lg border border-gray-200 hover:shadow-xl transition-shadow duration-300">
+        <div class="relative">
+            <div class="absolute top-3 right-3 bg-blue-500 text-white text-xs px-2 py-1 rounded-full font-bold">
+                AFFORDABLE
+            </div>
+            <img class="w-full h-56 object-cover rounded-t-lg" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/43a5e70ae9-ea6140a462a400e621cf.png" alt="white 2013 Audi New A4 2.0 TDI luxury sedan">
+        </div>
+        <div class="p-5">
+            <p class="text-sm text-gray-500 mb-1">2013 Audi</p>
+            <h3 class="text-lg font-bold text-gray-900 mb-4 truncate">New A4 2.0 TDI</h3>
+            <div class="grid grid-cols-2 gap-x-4 gap-y-2 text-sm text-gray-600 mb-4">
+                <div class="flex items-center"><i class="fa-solid fa-tachometer-alt w-4 mr-2 text-gray-400"></i><span>142,358 KM</span></div>
+                <div class="flex items-center"><i class="fa-solid fa-gas-pump w-4 mr-2 text-gray-400"></i><span>DIESEL</span></div>
+                <div class="flex items-center"><i class="fa-solid fa-cogs w-4 mr-2 text-gray-400"></i><span>1,968cc</span></div>
+                <div class="flex items-center"><i class="fa-solid fa-car-side w-4 mr-2 text-gray-400"></i><span>AUTO</span></div>
+                <div class="flex items-center col-span-2"><i class="fa-solid fa-map-marker-alt w-4 mr-2 text-gray-400"></i><span>Germany</span></div>
+            </div>
+            <div class="text-right mb-2">
+                <span class="text-sm text-gray-500">From</span>
+                <div class="text-sm text-gray-600">$92/month</div>
+            </div>
+            <div class="text-right">
+                <span class="text-2xl font-bold text-gray-900">$ 4,500</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Card 3 -->
+    <div class="bg-white rounded-lg border border-gray-200 hover:shadow-xl transition-shadow duration-300">
+        <div class="relative">
+            <div class="absolute top-3 right-3 bg-blue-500 text-white text-xs px-2 py-1 rounded-full font-bold">
+                AFFORDABLE
+            </div>
+            <img class="w-full h-56 object-cover rounded-t-lg" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/596742028b-1bf256165f0230eaea74.png" alt="silver 2017 BMW 5 Series G30 520D xDrive M Sport luxury sedan">
+        </div>
+        <div class="p-5">
+            <p class="text-sm text-gray-500 mb-1">2017 BMW</p>
+            <h3 class="text-lg font-bold text-gray-900 mb-4 truncate">5 Series (G30) 520D xDrive M Sport</h3>
+            <div class="grid grid-cols-2 gap-x-4 gap-y-2 text-sm text-gray-600 mb-4">
+                <div class="flex items-center"><i class="fa-solid fa-tachometer-alt w-4 mr-2 text-gray-400"></i><span>222,488 KM</span></div>
+                <div class="flex items-center"><i class="fa-solid fa-gas-pump w-4 mr-2 text-gray-400"></i><span>DIESEL</span></div>
+                <div class="flex items-center"><i class="fa-solid fa-cogs w-4 mr-2 text-gray-400"></i><span>1,995cc</span></div>
+                <div class="flex items-center"><i class="fa-solid fa-car-side w-4 mr-2 text-gray-400"></i><span>AUTO</span></div>
+                <div class="flex items-center col-span-2"><i class="fa-solid fa-map-marker-alt w-4 mr-2 text-gray-400"></i><span>Germany</span></div>
+            </div>
+            <div class="text-right mb-2">
+                <span class="text-sm text-gray-500">From</span>
+                <div class="text-sm text-gray-600">$280/month</div>
+            </div>
+            <div class="text-right">
+                <span class="text-2xl font-bold text-gray-900">$ 13,700</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Card 4 -->
+    <div class="bg-white rounded-lg border border-gray-200 hover:shadow-xl transition-shadow duration-300">
+        <div class="relative">
+            <div class="absolute top-3 right-3 bg-blue-500 text-white text-xs px-2 py-1 rounded-full font-bold">
+                AFFORDABLE
+            </div>
+            <img class="w-full h-56 object-cover rounded-t-lg" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/c4aba9316b-7a5cb11fff3d85a891b3.png" alt="white 2015 Audi New A3 35 TDI Dynamic luxury sedan">
+        </div>
+        <div class="p-5">
+            <p class="text-sm text-gray-500 mb-1">2015 Audi</p>
+            <h3 class="text-lg font-bold text-gray-900 mb-4 truncate">New A3 35 TDI Dynamic</h3>
+            <div class="grid grid-cols-2 gap-x-4 gap-y-2 text-sm text-gray-600 mb-4">
+                <div class="flex items-center"><i class="fa-solid fa-tachometer-alt w-4 mr-2 text-gray-400"></i><span>91,391 KM</span></div>
+                <div class="flex items-center"><i class="fa-solid fa-gas-pump w-4 mr-2 text-gray-400"></i><span>DIESEL</span></div>
+                <div class="flex items-center"><i class="fa-solid fa-cogs w-4 mr-2 text-gray-400"></i><span>1,598cc</span></div>
+                <div class="flex items-center"><i class="fa-solid fa-car-side w-4 mr-2 text-gray-400"></i><span>AUTO</span></div>
+                <div class="flex items-center col-span-2"><i class="fa-solid fa-map-marker-alt w-4 mr-2 text-gray-400"></i><span>Germany</span></div>
+            </div>
+            <div class="text-right mb-2">
+                <span class="text-sm text-gray-500">From</span>
+                <div class="text-sm text-gray-600">$153/month</div>
+            </div>
+            <div class="text-right">
+                <span class="text-2xl font-bold text-gray-900">$ 7,500</span>
+            </div>
+        </div>
+    </div>
+</div>
+            
+            <!-- Navigation Arrows -->
+            <button id="affordable-prev" class="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-5 w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center text-gray-600 hover:text-orange-500 hover:bg-gray-50 transition-all z-10 opacity-75 hover:opacity-100">
+                <i class="fa-solid fa-chevron-left"></i>
+            </button>
+            <button id="affordable-next" class="absolute right-0 top-1/2 -translate-y-1/2 translate-x-5 w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center text-gray-600 hover:text-orange-500 hover:bg-gray-50 transition-all z-10 opacity-75 hover:opacity-100">
+                <i class="fa-solid fa-chevron-right"></i>
+            </button>
+        </div>
+    </div>
+</section>
+
+<!-- COMPONENT: How to Use MangoCar Section -->
+<section id="how-to-use" class="py-20 bg-white">
+    <div class="container mx-auto px-6">
+        <div class="mb-16">
+            <h2 class="text-4xl lg:text-5xl font-bold text-gray-900">How to use Mango Car?</h2>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <!-- How to Pay Card -->
+            <div id="how-to-pay-card" class="bg-white rounded-xl border border-gray-200 p-8 flex flex-col justify-between shadow-sm hover:shadow-lg transition-shadow duration-300 h-[250px]">
+                <div>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-4">How to Pay?</h3>
+                    <p class="text-gray-600">
+                        Purchase a reliable used car conveniently at MangoCar.
+                        <br>
+                        Search and Choose your car, and follow simple steps.
+                    </p>
+                </div>
+                <div class="self-end">
+                     <i class="fa-solid fa-credit-card text-gray-300 text-5xl"></i>
+                </div>
+            </div>
+
+            <!-- How to Buy Card -->
+            <div id="how-to-buy-card" class="bg-white rounded-xl border border-gray-200 p-8 flex flex-col justify-between shadow-sm hover:shadow-lg transition-shadow duration-300 h-[250px]">
+                <div>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-4">How to Buy?</h3>
+                    <p class="text-gray-600">
+                        Make a secure payment through bank transfer!
+                        <br>
+                        Confirm MangoCar bank account, and follow some steps to pay.
+                    </p>
+                </div>
+                <div class="self-end">
+                    <i class="fa-solid fa-cart-shopping text-gray-300 text-5xl"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- COMPONENT: From The Blog Section -->
+<section id="blog-section" class="py-20 bg-gray-50">
+    <div class="container mx-auto px-6">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl lg:text-5xl font-bold text-gray-900 mb-6">From The Blog</h2>
+            <p class="text-xl text-gray-600 max-w-3xl mx-auto">Stay informed with the latest automotive news, buying tips, and maintenance advice</p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <article class="bg-white rounded-2xl shadow-lg overflow-hidden group hover:shadow-xl transition-all">
+                <div class="relative overflow-hidden">
+                    <img class="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-500" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/9fa1e239f6-d8dc2da854c566e44215.png" alt="car maintenance tips automotive service guide">
+                    <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-500"></div>
+                </div>
+                <div class="p-6">
+                    <div class="text-sm text-orange-500 font-semibold mb-2">MAINTENANCE TIPS</div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">10 Essential Car Maintenance Tips for Winter</h3>
+                    <p class="text-gray-600 mb-4">Keep your vehicle running smoothly during cold weather with these expert-recommended maintenance practices.</p>
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm text-gray-500">Dec 15, 2024</span>
+                        <button class="text-orange-500 hover:text-orange-600 font-semibold opacity-0 group-hover:opacity-100 transition-all">
+                            Read More →
+                        </button>
+                    </div>
+                </div>
+            </article>
+            
+            <article class="bg-white rounded-2xl shadow-lg overflow-hidden group hover:shadow-xl transition-all">
+                <div class="relative overflow-hidden">
+                    <img class="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-500" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/d68061125b-c188c162abd2d3a655c5.png" alt="car buying guide tips automotive shopping advice">
+                    <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-500"></div>
+                </div>
+                <div class="p-6">
+                    <div class="text-sm text-blue-500 font-semibold mb-2">BUYING GUIDE</div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">First-Time Car Buyer's Complete Guide</h3>
+                    <p class="text-gray-600 mb-4">Everything you need to know about purchasing your first vehicle, from budgeting to financing options.</p>
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm text-gray-500">Dec 12, 2024</span>
+                        <button class="text-orange-500 hover:text-orange-600 font-semibold opacity-0 group-hover:opacity-100 transition-all">
+                            Read More →
+                        </button>
+                    </div>
+                </div>
+            </article>
+            
+            <article class="bg-white rounded-2xl shadow-lg overflow-hidden group hover:shadow-xl transition-all">
+                <div class="relative overflow-hidden">
+                    <img class="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-500" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/2ce69bc6a2-dc1b39d57eb2f28f2287.png" alt="electric hybrid cars eco friendly vehicles future automotive">
+                    <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-500"></div>
+                </div>
+                <div class="p-6">
+                    <div class="text-sm text-green-500 font-semibold mb-2">INDUSTRY NEWS</div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">The Rise of Electric Vehicles in 2024</h3>
+                    <p class="text-gray-600 mb-4">Explore the latest trends in electric vehicle adoption and what it means for the used car market.</p>
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm text-gray-500">Dec 8, 2024</span>
+                        <button class="text-orange-500 hover:text-orange-600 font-semibold opacity-0 group-hover:opacity-100 transition-all">
+                            Read More →
+                        </button>
+                    </div>
+                </div>
+            </article>
+        </div>
+        
+        <div class="text-center mt-12">
+            <button class="bg-gray-900 hover:bg-gray-800 text-white px-8 py-4 rounded-lg font-semibold text-lg transition-all">
+                View All Articles
+            </button>
+        </div>
+    </div>
+</section>
+
+<!-- COMPONENT: Footer -->
+<footer id="footer" class="bg-gray-900 text-white py-16">
+    <div class="container mx-auto px-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 mb-12">
+            <div class="lg:col-span-2">
+                <div class="flex items-center mb-6">
+                    <div class="w-12 h-12 bg-gradient-to-br from-orange-400 to-orange-600 rounded-xl flex items-center justify-center">
+                        <i class="fa-solid fa-car text-white text-xl"></i>
+                    </div>
+                    <span class="ml-3 text-2xl font-bold">MangoCar</span>
+                </div>
+                <p class="text-gray-300 mb-6 max-w-md">
+                    Your trusted partner in finding the perfect pre-owned vehicle. Quality, transparency, and exceptional service are our commitments to you.
+                </p>
+                <div class="flex items-center space-x-4">
+                    <i class="fa-solid fa-phone text-orange-500"></i>
+                    <span class="font-semibold">(555) 123-CARS</span>
+                </div>
+                <div class="flex items-center space-x-4 mt-2">
+                    <i class="fa-solid fa-envelope text-orange-500"></i>
+                    <span>info@mangocar.com</span>
+                </div>
+                <div class="flex items-center space-x-4 mt-2">
+                    <i class="fa-solid fa-location-dot text-orange-500"></i>
+                    <span>123 Auto Plaza, Car City, CC 12345</span>
+                </div>
+            </div>
+            
+            <div>
+                <h3 class="text-lg font-bold mb-4">Inventory</h3>
+                <ul class="space-y-2 text-gray-300">
+                    <li><span class="hover:text-orange-500 transition-colors cursor-pointer">All Vehicles</span></li>
+                    <li><span class="hover:text-orange-500 transition-colors cursor-pointer">SUVs</span></li>
+                    <li><span class="hover:text-orange-500 transition-colors cursor-pointer">Sedans</span></li>
+                    <li><span class="hover:text-orange-500 transition-colors cursor-pointer">Trucks</span></li>
+                    <li><span class="hover:text-orange-500 transition-colors cursor-pointer">Luxury Cars</span></li>
+                    <li><span class="hover:text-orange-500 transition-colors cursor-pointer">Under $15K</span></li>
+                </ul>
+            </div>
+            
+            <div>
+                <h3 class="text-lg font-bold mb-4">Services</h3>
+                <ul class="space-y-2 text-gray-300">
+                    <li><span class="hover:text-orange-500 transition-colors cursor-pointer">Financing</span></li>
+                    <li><span class="hover:text-orange-500 transition-colors cursor-pointer">Trade-In</span></li>
+                    <li><span class="hover:text-orange-500 transition-colors cursor-pointer">Extended Warranty</span></li>
+                    <li><span class="hover:text-orange-500 transition-colors cursor-pointer">Vehicle History</span></li>
+                    <li><span class="hover:text-orange-500 transition-colors cursor-pointer">Inspection</span></li>
+                    <li><span class="hover:text-orange-500 transition-colors cursor-pointer">Delivery</span></li>
+                </ul>
+            </div>
+            
+            <div>
+                <h3 class="text-lg font-bold mb-4">Company</h3>
+                <ul class="space-y-2 text-gray-300">
+                    <li><span class="hover:text-orange-500 transition-colors cursor-pointer">About Us</span></li>
+                    <li><span class="hover:text-orange-500 transition-colors cursor-pointer">Our Team</span></li>
+                    <li><span class="hover:text-orange-500 transition-colors cursor-pointer">Careers</span></li>
+                    <li><span class="hover:text-orange-500 transition-colors cursor-pointer">Reviews</span></li>
+                    <li><span class="hover:text-orange-500 transition-colors cursor-pointer">Contact</span></li>
+                    <li><span class="hover:text-orange-500 transition-colors cursor-pointer">Blog</span></li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="border-t border-gray-800 pt-8">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="text-gray-400 mb-4 md:mb-0">
+                    © 2024 MangoCar. All rights reserved.
+                </div>
+                <div class="flex items-center space-x-6">
+                    <span class="text-gray-400 hover:text-orange-500 transition-colors cursor-pointer">Privacy Policy</span>
+                    <span class="text-gray-400 hover:text-orange-500 transition-colors cursor-pointer">Terms of Service</span>
+                    <div class="flex items-center space-x-4 ml-8">
+                        <span class="text-gray-400 hover:text-orange-500 transition-colors cursor-pointer">
+                            <i class="fa-brands fa-facebook text-xl"></i>
+                        </span>
+                        <span class="text-gray-400 hover:text-orange-500 transition-colors cursor-pointer">
+                            <i class="fa-brands fa-twitter text-xl"></i>
+                        </span>
+                        <span class="text-gray-400 hover:text-orange-500 transition-colors cursor-pointer">
+                            <i class="fa-brands fa-instagram text-xl"></i>
+                        </span>
+                        <span class="text-gray-400 hover:text-orange-500 transition-colors cursor-pointer">
+                            <i class="fa-brands fa-youtube text-xl"></i>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script src="scripts/language.js"></script>
+
+<script>
+
+// Hero slider removed; associated JS eliminated per request
+
+// Tab functionality for Best Sellers section
+document.querySelectorAll('.tab-button').forEach(button => {
+    button.addEventListener('click', () => {
+        document.querySelectorAll('.tab-button').forEach(btn => {
+            btn.classList.remove('active', 'bg-white', 'text-gray-900');
+            btn.classList.add('text-gray-600');
+        });
+        
+        button.classList.add('active', 'bg-white', 'text-gray-900');
+        button.classList.remove('text-gray-600');
+    });
+});
+
+// Skeleton loading animation
+window.addEventListener('load', () => {
+    setTimeout(() => {
+        document.querySelectorAll('.skeleton').forEach(skeleton => {
+            skeleton.classList.add('fade-slide-up');
+            skeleton.classList.remove('skeleton');
+        });
+    }, 1000);
+});
+
+// Sticky header shadow effect
+window.addEventListener('scroll', () => {
+    const header = document.getElementById('header');
+    if (window.scrollY > 10) {
+        header.classList.add('shadow-xl');
+    } else {
+        header.classList.remove('shadow-xl');
+    }
+});
+
+// Intersection Observer for animations
+const observerOptions = {
+    threshold: 0.1,
+    rootMargin: '0px 0px -50px 0px'
+};
+
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.classList.add('fade-slide-up');
+        }
+    });
+}, observerOptions);
+
+document.querySelectorAll('.stagger-animation').forEach((el, index) => {
+    el.style.animationDelay = `${index * 0.2}s`;
+    observer.observe(el);
+});
+
+// New Arrivals slider functionality
+let newArrivalSlide = 0;
+const newArrivalSlides = document.querySelectorAll('#new-arrival-slider .snap-start');
+const newArrivalTotal = newArrivalSlides.length;
+
+function showNewArrivalSlide(index) {
+    if (!newArrivalTotal || index < 0 || index >= newArrivalTotal) return;
+    // Hide all slides
+    newArrivalSlides.forEach((slide) => {
+        slide.style.opacity = '0';
+    });
+    
+    // Show current slide
+    const current = newArrivalSlides[index];
+    if (current) {
+        current.style.opacity = '1';
+        newArrivalSlide = index;
+    }
+}
+
+function nextNewArrivalSlide() {
+    if (!newArrivalTotal) return;
+    const nextIndex = (newArrivalSlide + 1) % newArrivalTotal;
+    showNewArrivalSlide(nextIndex);
+}
+
+function prevNewArrivalSlide() {
+    if (!newArrivalTotal) return;
+    const prevIndex = (newArrivalSlide - 1 + newArrivalTotal) % newArrivalTotal;
+    showNewArrivalSlide(prevIndex);
+}
+
+// Auto-slider functionality
+let newArrivalAutoInterval = null;
+if (newArrivalTotal > 0) {
+    newArrivalAutoInterval = setInterval(nextNewArrivalSlide, 4000);
+}
+
+// Navigation event listeners
+const newArrivalNextBtn = document.getElementById('new-arrival-next');
+if (newArrivalNextBtn) {
+    newArrivalNextBtn.addEventListener('click', () => {
+        if (newArrivalAutoInterval) clearInterval(newArrivalAutoInterval);
+        nextNewArrivalSlide();
+        if (newArrivalTotal > 0) {
+            newArrivalAutoInterval = setInterval(nextNewArrivalSlide, 4000);
+        }
+    });
+}
+
+const newArrivalPrevBtn = document.getElementById('new-arrival-prev');
+if (newArrivalPrevBtn) {
+    newArrivalPrevBtn.addEventListener('click', () => {
+        if (newArrivalAutoInterval) clearInterval(newArrivalAutoInterval);
+        prevNewArrivalSlide();
+        if (newArrivalTotal > 0) {
+            newArrivalAutoInterval = setInterval(nextNewArrivalSlide, 4000);
+        }
+    });
+}
+
+// Dot navigation
+const newArrivalDots = document.querySelectorAll('#new-arrival-slider .dot');
+newArrivalDots.forEach((dot, index) => {
+    dot.addEventListener('click', () => {
+        if (newArrivalAutoInterval) clearInterval(newArrivalAutoInterval);
+        showNewArrivalSlide(index);
+        if (newArrivalTotal > 0) {
+            newArrivalAutoInterval = setInterval(nextNewArrivalSlide, 4000);
+        }
+    });
+});
+
+// Pause auto-slider on hover
+const newArrivalContainerEl = document.getElementById('new-arrival-slider');
+if (newArrivalContainerEl) {
+    newArrivalContainerEl.addEventListener('mouseenter', () => {
+        if (newArrivalAutoInterval) clearInterval(newArrivalAutoInterval);
+    });
+
+    newArrivalContainerEl.addEventListener('mouseleave', () => {
+        if (newArrivalTotal > 0) {
+            newArrivalAutoInterval = setInterval(nextNewArrivalSlide, 4000);
+        }
+    });
+}
+
+// Initialize first slide
+if (newArrivalTotal > 0) {
+    showNewArrivalSlide(0);
+}
+
+// Clearance Sale slider functionality
+let clearanceSlide = 0;
+const clearanceSlides = document.querySelectorAll('#clearance-slider .snap-start');
+const clearanceTotal = clearanceSlides.length;
+
+function showClearanceSlide(index) {
+    if (!clearanceTotal || index < 0 || index >= clearanceTotal) return;
+    // Hide all slides
+    clearanceSlides.forEach((slide) => {
+        slide.style.opacity = '0';
+    });
+    
+    // Show current slide
+    const current = clearanceSlides[index];
+    if (current) {
+        current.style.opacity = '1';
+        clearanceSlide = index;
+    }
+}
+
+function nextClearanceSlide() {
+    if (!clearanceTotal) return;
+    const nextIndex = (clearanceSlide + 1) % clearanceTotal;
+    showClearanceSlide(nextIndex);
+}
+
+function prevClearanceSlide() {
+    if (!clearanceTotal) return;
+    const prevIndex = (clearanceSlide - 1 + clearanceTotal) % clearanceTotal;
+    showClearanceSlide(prevIndex);
+}
+
+// Auto-slider functionality
+let clearanceAutoInterval = null;
+if (clearanceTotal > 0) {
+    clearanceAutoInterval = setInterval(nextClearanceSlide, 4000);
+}
+
+// Navigation event listeners
+const clearanceNextBtn = document.getElementById('clearance-next');
+if (clearanceNextBtn) {
+    clearanceNextBtn.addEventListener('click', () => {
+        if (clearanceAutoInterval) clearInterval(clearanceAutoInterval);
+        nextClearanceSlide();
+        if (clearanceTotal > 0) {
+            clearanceAutoInterval = setInterval(nextClearanceSlide, 4000);
+        }
+    });
+}
+
+const clearancePrevBtn = document.getElementById('clearance-prev');
+if (clearancePrevBtn) {
+    clearancePrevBtn.addEventListener('click', () => {
+        if (clearanceAutoInterval) clearInterval(clearanceAutoInterval);
+        prevClearanceSlide();
+        if (clearanceTotal > 0) {
+            clearanceAutoInterval = setInterval(nextClearanceSlide, 4000);
+        }
+    });
+}
+
+// Dot navigation
+const clearanceDots = document.querySelectorAll('#clearance-slider .dot');
+clearanceDots.forEach((dot, index) => {
+    dot.addEventListener('click', () => {
+        if (clearanceAutoInterval) clearInterval(clearanceAutoInterval);
+        showClearanceSlide(index);
+        if (clearanceTotal > 0) {
+            clearanceAutoInterval = setInterval(nextClearanceSlide, 4000);
+        }
+    });
+});
+
+// Pause auto-slider on hover
+const clearanceContainerEl = document.getElementById('clearance-slider');
+if (clearanceContainerEl) {
+    clearanceContainerEl.addEventListener('mouseenter', () => {
+        if (clearanceAutoInterval) clearInterval(clearanceAutoInterval);
+    });
+
+    clearanceContainerEl.addEventListener('mouseleave', () => {
+        if (clearanceTotal > 0) {
+            clearanceAutoInterval = setInterval(nextClearanceSlide, 4000);
+        }
+    });
+}
+
+// Initialize first slide
+if (clearanceTotal > 0) {
+    showClearanceSlide(0);
+}
+
+// Most Affordable Cars slider functionality
+let affordableSlide = 0;
+const affordableSlides = document.querySelectorAll('#affordable-slider .snap-start');
+const affordableTotal = affordableSlides.length;
+
+function showAffordableSlide(index) {
+    if (!affordableTotal || index < 0 || index >= affordableTotal) return;
+    // Hide all slides
+    affordableSlides.forEach((slide) => {
+        slide.style.opacity = '0';
+    });
+    
+    // Show current slide
+    const current = affordableSlides[index];
+    if (current) {
+        current.style.opacity = '1';
+        affordableSlide = index;
+    }
+}
+
+function nextAffordableSlide() {
+    if (!affordableTotal) return;
+    const nextIndex = (affordableSlide + 1) % affordableTotal;
+    showAffordableSlide(nextIndex);
+}
+
+function prevAffordableSlide() {
+    if (!affordableTotal) return;
+    const prevIndex = (affordableSlide - 1 + affordableTotal) % affordableTotal;
+    showAffordableSlide(prevIndex);
+}
+
+// Auto-slider functionality
+let affordableAutoInterval = null;
+if (affordableTotal > 0) {
+    affordableAutoInterval = setInterval(nextAffordableSlide, 4000);
+}
+
+// Navigation event listeners
+const affordableNextBtn = document.getElementById('affordable-next');
+if (affordableNextBtn) {
+    affordableNextBtn.addEventListener('click', () => {
+        if (affordableAutoInterval) clearInterval(affordableAutoInterval);
+        nextAffordableSlide();
+        if (affordableTotal > 0) {
+            affordableAutoInterval = setInterval(nextAffordableSlide, 4000);
+        }
+    });
+}
+
+const affordablePrevBtn = document.getElementById('affordable-prev');
+if (affordablePrevBtn) {
+    affordablePrevBtn.addEventListener('click', () => {
+        if (affordableAutoInterval) clearInterval(affordableAutoInterval);
+        prevAffordableSlide();
+        if (affordableTotal > 0) {
+            affordableAutoInterval = setInterval(nextAffordableSlide, 4000);
+        }
+    });
+}
+
+// Dot navigation
+const affordableDots = document.querySelectorAll('#affordable-slider .dot');
+affordableDots.forEach((dot, index) => {
+    dot.addEventListener('click', () => {
+        if (affordableAutoInterval) clearInterval(affordableAutoInterval);
+        showAffordableSlide(index);
+        if (affordableTotal > 0) {
+            affordableAutoInterval = setInterval(nextAffordableSlide, 4000);
+        }
+    });
+});
+
+// Pause auto-slider on hover
+const affordableContainerEl = document.getElementById('affordable-slider');
+if (affordableContainerEl) {
+    affordableContainerEl.addEventListener('mouseenter', () => {
+        if (affordableAutoInterval) clearInterval(affordableAutoInterval);
+    });
+
+    affordableContainerEl.addEventListener('mouseleave', () => {
+        if (affordableTotal > 0) {
+            affordableAutoInterval = setInterval(nextAffordableSlide, 4000);
+        }
+    });
+}
+
+// Initialize first slide
+ if (affordableTotal > 0) {
+     showAffordableSlide(0);
+ }
+ 
+ // Homepage vehicle search: build query and navigate to inventory
+ (function(){
+   function val(el, def){
+     if(!el) return '';
+     const v = el.value && el.value.trim();
+     return (v && v !== def) ? v : '';
+   }
+   function buildQuery(){
+     const type = val(document.getElementById('filterType'), 'All Types');
+     const make = val(document.getElementById('filterMake'), 'All Makes');
+     const price = val(document.getElementById('filterPrice'), 'Any Price');
+     const year = val(document.getElementById('filterYear'), 'Any Year');
+     const params = new URLSearchParams();
+     if(type) params.set('type', type);
+     if(make) params.set('make', make);
+     if(price) params.set('price', price);
+     if(year) params.set('year', year);
+     return params.toString();
+   }
+   const btn = document.getElementById('searchVehiclesBtn');
+   if(btn){
+     btn.addEventListener('click', function(){
+       const qs = buildQuery();
+       const url = 'inventory.html' + (qs ? ('?' + qs) : '');
+       window.location.href = url;
+     });
+   }
+ })();
+ 
+ // Secondary banner slider functionality with dynamic load from backend
+ (function(){
+   const container = document.getElementById('secondary-banner-slider');
+   if (!container) return;
+ 
+  function setupSecondarySlider(){
+    const track = container.querySelector('#secondary-banner-track');
+    if (!track) return;
+    const slides = Array.from(track.children);
+    const dots = Array.from(container.querySelectorAll('.secondary-dot'));
+    const nextBtn = document.getElementById('secondaryNext');
+    const prevBtn = document.getElementById('secondaryPrev');
+    let current = 0;
+    const total = slides.length;
+
+    function show(index){
+      track.style.transform = `translateX(-${index * 100}%)`;
+      dots.forEach((d, i) => {
+        if (i === index) { d.classList.add('active'); d.style.opacity = '1'; }
+        else { d.classList.remove('active'); d.style.opacity = '0.5'; }
+      });
+      current = index;
+    }
+    function next(){ show((current + 1) % total); }
+    function prev(){ show((current - 1 + total) % total); }
+
+    let autoInterval = setInterval(next, 5000);
+    if (nextBtn) nextBtn.addEventListener('click', () => { clearInterval(autoInterval); next(); autoInterval = setInterval(next, 5000); });
+    if (prevBtn) prevBtn.addEventListener('click', () => { clearInterval(autoInterval); prev(); autoInterval = setInterval(next, 5000); });
+    dots.forEach((dot, i) => dot.addEventListener('click', () => { clearInterval(autoInterval); show(i); autoInterval = setInterval(next, 5000); }));
+
+    const bannerSection = document.getElementById('secondary-banner');
+    if (bannerSection) {
+      bannerSection.addEventListener('mouseenter', () => { clearInterval(autoInterval); });
+      bannerSection.addEventListener('mouseleave', () => { autoInterval = setInterval(next, 5000); });
+    }
+
+    show(0);
+  }
+ 
+  async function loadSecondarySliderFromAPI(){
+    // Prefer backend on 3000, then fallback to local JSON (same-origin)
+    const apiOrigin = window.__apiOrigin || 'http://localhost:3000';
+    const LOCAL_PLACEHOLDER = '/placeholder-car.svg';
+    const BAD_HOSTS = ['storage.googleapis.com', 'appspot.com'];
+    async function fetchWithTimeout(url, opts = {}, timeoutMs = 2500) {
+      const controller = new AbortController();
+      const id = setTimeout(() => controller.abort(), timeoutMs);
+      try {
+        const res = await fetch(url, { ...opts, signal: controller.signal, cache: 'no-store', mode: 'cors' });
+        return res;
+      } finally {
+        clearTimeout(id);
+      }
+    }
+    const endpoints = [
+      apiOrigin + '/public/sliders/home-secondary',
+      'backend/secondary-slider.json'
+    ];
+    let data = null;
+    for (const url of endpoints) {
+      try {
+        const res = await fetchWithTimeout(url);
+        if (res && res.ok) {
+          const json = await res.json();
+          if (Array.isArray(json) && json.length > 0) { data = json; break; }
+        }
+      } catch (_) {}
+    }
+
+    if (!data) { setupSecondarySlider(); return; }
+ 
+      // Rebuild track, slides, and dots from API
+      container.innerHTML = '';
+      const track = document.createElement('div');
+      track.id = 'secondary-banner-track';
+      track.className = 'w-full h-full flex transition-transform duration-700 ease-in-out';
+      track.style.transform = 'translateX(0%)';
+      function normalizeBannerSrc(src){
+        const s = String(src || '').trim();
+        if (!s) return LOCAL_PLACEHOLDER;
+        if (s.startsWith('http://localhost:3000/uploads')) return s.replace('http://localhost:3000', apiOrigin);
+        if (s.startsWith('/uploads/') || s.startsWith('uploads/')) return s;
+        try {
+          const u = new URL(s, window.location.origin);
+          if (BAD_HOSTS.some(h => u.hostname.includes(h))) return LOCAL_PLACEHOLDER;
+        } catch(_) { return LOCAL_PLACEHOLDER; }
+        return s;
+      }
+      data.forEach((item) => {
+        const slide = document.createElement('div');
+    slide.className = 'secondary-slide relative w-full h-full flex-shrink-0 bg-white';
+        slide.innerHTML = `
+          <img class="w-full h-full object-contain" src="${normalizeBannerSrc(item.src)}" alt="${item.alt || 'Banner'}" loading="lazy" referrerpolicy="no-referrer" onerror="this.onerror=null;this.src='${LOCAL_PLACEHOLDER}'">
+        `;
+        track.appendChild(slide);
+      });
+      container.appendChild(track);
+      const dotsWrap = document.createElement('div');
+      dotsWrap.className = 'absolute bottom-6 left-1/2 transform -translate-x-1/2 flex space-x-3 z-20';
+      data.forEach((_, idx) => {
+        const dot = document.createElement('button');
+        dot.className = 'secondary-dot w-3 h-3 rounded-full bg-white opacity-50 hover:opacity-75 transition-all';
+        dot.setAttribute('data-sslide', String(idx));
+        dotsWrap.appendChild(dot);
+      });
+      container.appendChild(dotsWrap);
+
+      setupSecondarySlider();
+  }
+  loadSecondarySliderFromAPI();
+})();
+ 
+ // Header search bar: navigate to inventory with query
+ (function(){
+   const inputEl = document.querySelector('input[data-text="search-placeholder"]');
+   const btnEl = inputEl ? inputEl.parentElement?.querySelector('button') : null;
+   function go(){
+     const q = (inputEl?.value || '').trim();
+     const url = 'inventory.html' + (q ? ('?q=' + encodeURIComponent(q)) : '');
+     window.location.href = url;
+   }
+   if (inputEl) {
+     inputEl.addEventListener('keydown', (e) => { if (e.key === 'Enter') go(); });
+   }
+   if (btnEl) {
+     btnEl.addEventListener('click', go);
+   }
+ })();
+ </script>
+ 
+  <!-- Header role-based replacement: show Dashboard link when signed in -->
+  <script>
+    (function(){
+      try {
+        var role = (localStorage.getItem('role') || localStorage.getItem('userRole') || '').toLowerCase();
+        if (!role || (role !== 'buyer' && role !== 'seller')) return;
+        var signInEl = document.querySelector('[data-text="sign-in"]');
+        var signUpEl = document.querySelector('[data-text="sign-up"]');
+        var container = (signInEl && signInEl.parentElement) || (signUpEl && signUpEl.parentElement);
+        if (!container) return;
+        if (signInEl) signInEl.remove();
+        if (signUpEl) signUpEl.remove();
+        var link = document.createElement('a');
+        link.textContent = role === 'buyer' ? 'Buyer Dashboard' : 'Seller Dashboard';
+        link.href = role === 'buyer' ? 'buyer-dashboard.html' : 'seller-dashboard.html';
+        link.className = 'bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-lg font-semibold transition-all transform hover:scale-105';
+        container.appendChild(link);
+      } catch(e) { /* no-op */ }
+    })();
+  </script>
+  
+  
+  <!-- Protected header actions: Favourite and Compare -->
+  <script>
+    (function(){
+      function isSignedIn(){
+        try {
+          var role = (localStorage.getItem('role') || localStorage.getItem('userRole') || '').toLowerCase();
+          var token = localStorage.getItem('token');
+          var user = localStorage.getItem('user');
+          return !!(token || user || (role === 'buyer' || role === 'seller'));
+        } catch(_) { return false; }
+      }
+      function protectLink(id){
+        var el = document.getElementById(id);
+        if (!el) return;
+        el.addEventListener('click', function(e){
+          if (!isSignedIn()) {
+            e.preventDefault();
+            alert('Please sign in to use this feature.');
+          }
+        });
+      }
+      protectLink('favorite-action');
+      protectLink('compare-action');
+    })();
+  </script>
+  
+  </body></html>

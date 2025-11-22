@@ -1,0 +1,656 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Super Admin Panel — Create New Listing</title>
+  <!-- Page Protection: allow superadmin, listing_editor, and user_manager -->
+  <script>
+    (function(){
+      try {
+        var role = (localStorage.getItem('userRole') || localStorage.getItem('role') || '').toLowerCase();
+        var token = localStorage.getItem('token');
+        var allowed = ['superadmin','listing_editor','user_manager'];
+        if (!token || allowed.indexOf(role) === -1) {
+          window.location.href = 'signin.html';
+        }
+      } catch (e) {
+        window.location.href = 'signin.html';
+      }
+    })();
+  </script>
+  
+  <style>
+    :root{--bg:#f6f7fb;--text:#0f172a;--muted:#64748b;--primary:#2563eb;--primary-hover:#1d4ed8;--topbar-bg:#ffffff;--topbar-border:#e5e7eb;--sidebar-bg:#0b1220;--sidebar-border:#1f2937;--sidebar-text:#cbd5e1;--sidebar-hover-bg:#111827;--sidebar-active-bg:#1f2937;--card:#fff;--card-bg:#fff;--card-border:#e5e7eb}
+    * { box-sizing: border-box; } html, body { height: 100%; }
+    body { margin: 0; background: var(--bg); color: var(--text); font-family: Inter, Segoe UI, Roboto, Helvetica, Arial, system-ui, -apple-system, sans-serif; }
+    .admin-layout { display: grid; grid-template-columns: 280px 1fr; grid-template-rows: 64px auto; grid-template-areas: "topbar topbar" "sidebar content"; height: 100vh; width: 100%; }
+    .topbar { grid-area: topbar; display: flex; align-items: center; justify-content: space-between; padding: 0 16px; background: var(--topbar-bg); border-bottom: 1px solid var(--topbar-border); position: sticky; top: 0; z-index: 10; }
+    .brand { display: flex; align-items: center; gap: 12px; font-weight: 600; }
+    .brand-logo { width: 28px; height: 28px; border-radius: 8px; background: linear-gradient(135deg, var(--primary), #9333ea); }
+    .top-actions { display: flex; align-items: center; gap: 8px; }
+    .btn { border: 1px solid var(--card-border); background: #fff; color: var(--text); padding: 8px 12px; border-radius: 8px; cursor: pointer; font-weight: 600; }
+    .btn:hover { background: #f9fafb; }
+    .btn-primary { background: var(--primary); color: #fff; border-color: var(--primary); }
+    .btn-primary:hover { background: var(--primary-hover); }
+    .admin-name { color: var(--muted); font-weight: 500; }
+
+    .sidebar { grid-area: sidebar; background: var(--sidebar-bg); border-right: 1px solid var(--sidebar-border); color: #fff; padding: 16px 12px; overflow-y: auto; }
+    .sidebar-header { font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--sidebar-text); margin-bottom: 12px; opacity: 0.9; }
+    .wizard { display: flex; flex-direction: column; gap: 6px; }
+    .wizard a { display: flex; align-items: center; gap: 10px; padding: 10px 12px; text-decoration: none; color: var(--sidebar-text); border-radius: 10px; transition: background 160ms ease, color 160ms ease; font-weight: 500; }
+    .wizard a:hover { background: var(--sidebar-hover-bg); color: #fff; }
+    .wizard a.active { background: var(--sidebar-active-bg); color: #fff; }
+    .wizard .step-index { width: 22px; height: 22px; border-radius: 6px; background: #334155; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; }
+    .sidebar-footer { margin-top: 14px; border-top: 1px solid var(--sidebar-border); padding-top: 12px; }
+    .sidebar-footer a { color: var(--sidebar-text); text-decoration: none; }
+    .sidebar-footer a:hover { text-decoration: underline; color: #fff; }
+
+    .content { grid-area: content; padding: 20px; overflow-y: auto; }
+    .content h1 { margin: 0 0 12px; font-size: 24px; }
+    .content .muted { color: var(--muted); }
+
+    /* Form styles copied to match sell-my-car */
+    .card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:12px;padding:16px;margin-top:16px}
+    .grid{display:grid;gap:12px}
+    .grid.grid-2{grid-template-columns:1fr 1fr}
+    .grid.grid-3{grid-template-columns:1fr 1fr 1fr}
+    .field label{display:block;font-weight:600;margin-bottom:6px}
+    .input,.select,.number{padding:8px 10px;border:1px solid var(--card-border);border-radius:8px;font-size:14px;width:100%}
+    .checklist{display:flex;flex-wrap:wrap;gap:8px}
+    .check{display:flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--card-border);padding:8px 10px;border-radius:8px}
+    .btn{border:1px solid var(--card-border);background:#fff;color:var(--text);padding:8px 12px;border-radius:8px;cursor:pointer;font-weight:600}
+    .btn-primary{background:var(--primary);color:#fff;border-color:var(--primary)}
+    .actions{display:flex;gap:8px}
+    .muted{color:var(--muted);font-size:13px}
+    .chips{display:flex;flex-wrap:wrap;gap:8px}
+    .chip{display:inline-flex;gap:6px;align-items:center;background:#f3f4f6;border:1px solid var(--card-border);padding:6px 10px;border-radius:999px}
+    .table{width:100%;border-collapse:collapse;margin-top:6px}
+    .table th,.table td{border:1px solid var(--card-border);padding:8px;text-align:left}
+  </style>
+</head>
+<body>
+  <div class="admin-layout">
+    <header class="topbar" role="banner">
+      <div class="brand" aria-label="Admin brand">
+        <div class="brand-logo" aria-hidden="true"></div>
+        <span>Super Admin Panel</span>
+      </div>
+      <div class="top-actions">
+        <button class="btn" onclick="location.href='home.html'">Back to Site</button>
+        <a class="btn" href="admin.html">Back to Dashboard</a>
+        <span class="admin-name">Signed in as <strong>Super Admin</strong></span>
+        <button class="btn-primary" onclick="location.href='signin.html'">Logout</button>
+      </div>
+    </header>
+
+    <!-- DIFFERENT SIDEBAR SPECIFIC TO CREATE LISTING -->
+    <aside class="sidebar" role="navigation" aria-label="Create Listing sidebar">
+      <div class="sidebar-header">Listing Wizard</div>
+      <nav class="wizard">
+        <a href="#section-1" class="active"><span class="step-index">1</span> Categorization</a>
+        <a href="#section-2"><span class="step-index">2</span> Vehicle Info</a>
+        <a href="#section-3"><span class="step-index">3</span> Relevant Info</a>
+        <a href="#section-4"><span class="step-index">4</span> Option Info</a>
+        <a href="#section-5"><span class="step-index">5</span> Interior/Exterior</a>
+        <a href="#section-6"><span class="step-index">6</span> Safety</a>
+        <a href="#section-7"><span class="step-index">7</span> Convenience</a>
+        <a href="#section-8"><span class="step-index">8</span> Insurance History</a>
+        <a href="#section-9"><span class="step-index">9</span> Photos</a>
+        <a href="#section-10"><span class="step-index">10</span> Create Listing</a>
+      </nav>
+      <div class="sidebar-footer">
+        <a href="admin.html">← Back to Dashboard</a>
+      </div>
+    </aside>
+
+    <main class="content" role="main">
+      <h1>Create New Listing</h1>
+      <p class="muted">Add a new vehicle with categorization, specs, features, and insurance history.</p>
+      <form id="create-listing-form">
+      <!-- Listing Basics: Title, Price & PIN -->
+      <section id="section-basics" class="card">
+        <h2>Listing Basics</h2>
+        <div class="grid grid-2">
+          <div class="field">
+            <label>Listing Title</label>
+            <input id="listing-title" class="input" placeholder="e.g. 2018 Toyota Corolla SE" required>
+          </div>
+          <div class="field">
+            <label>Price</label>
+            <input id="listing-price" type="number" step="0.01" class="number" placeholder="e.g. 15999" required>
+          </div>
+        </div>
+        <div class="grid grid-2" style="margin-top:12px">
+          <div class="field">
+            <label>Product Identification Number (PIN)</label>
+            <input id="product-id-number" class="input" placeholder="e.g. PIN-12345" required>
+          </div>
+        </div>
+      </section>
+
+      <!-- 1) Categorization -->
+      <section id="section-1" class="card">
+        <h2>1) Categorization</h2>
+        <div class="grid grid-2">
+          <div class="field">
+            <label>Category</label>
+            <select id="category-id" class="select" aria-label="Select Category" required>
+              <option value="">— Loading categories —</option>
+            </select>
+            <span class="muted">Only categories from the list can be selected.</span>
+          </div>
+          <div class="field">
+            <label>Tags</label>
+            <div id="tag-list" class="checklist"></div>
+            <span class="muted">Select applicable tags for this listing.</span>
+          </div>
+        </div>
+        <div class="actions" style="margin-top:8px"><span class="muted">Examples: SUV, Hybrid, AWD</span></div>
+      </section>
+
+      <!-- 2) Vehicle Info -->
+      <section id="section-2" class="card">
+        <h2>2) Vehicle Info</h2>
+        <div class="grid grid-3">
+          <div class="field"><label>Model</label>
+            <select id="model-id" class="select" aria-label="Select Model" required>
+              <option value="">— Loading models —</option>
+            </select>
+          </div>
+          <div class="field"><label>Year</label><input type="number" class="number" id="v-year" required></div>
+          <div class="field"><label>Transmission</label><input class="input" id="v-trans" required></div>
+          <div class="field"><label>Fuel</label><input class="input" id="v-fuel" required></div>
+          <div class="field"><label>Color</label><input class="input" id="v-color" required></div>
+          <div class="field"><label>Displacement (L)</label><input type="number" class="number" id="v-displ" required></div>
+          <div class="field"><label>Passenger Capacity</label><input type="number" class="number" id="v-pass" required></div>
+          <div class="field"><label>Drive Type</label><input class="input" id="v-drive" required></div>
+          <div class="field"><label>Chassis Number (Private)</label><input class="input" id="v-chassis" required></div>
+          <div class="field"><label>First Registration Date</label><input type="date" class="input" id="v-reg" required></div>
+          <div class="field"><label>Mileage (km)</label><input type="number" class="number" id="v-mile" required></div>
+          <div class="field"><label>Location</label><input class="input" id="v-loc" required></div>
+        </div>
+      </section>
+
+      <!-- 3) Relevant Information -->
+      <section id="section-3" class="card">
+        <h2>3) Relevant Information</h2>
+        <div id="relevant-list" class="checklist"></div>
+      </section>
+
+      <!-- 4) Option Info -->
+      <section id="section-4" class="card">
+        <h2>4) Option Info</h2>
+        <div id="options-list" class="checklist"></div>
+      </section>
+
+      <!-- 5) Interior/Exterior -->
+      <section id="section-5" class="card">
+        <h2>5) Interior/Exterior</h2>
+        <div id="interior-list" class="checklist"></div>
+      </section>
+
+      <!-- 6) Safety -->
+      <section id="section-6" class="card">
+        <h2>6) Safety</h2>
+        <div id="safety-list" class="checklist"></div>
+      </section>
+
+      <!-- 7) Convenience / Other -->
+      <section id="section-7" class="card">
+        <h2>7) Convenience / Other</h2>
+        <div id="conv-list" class="checklist"></div>
+      </section>
+
+      <!-- 8) Insurance History -->
+      <section id="section-8" class="card">
+        <h2>8) Insurance History</h2>
+        <div class="grid grid-3">
+          <div class="field"><label>Manufacturer</label><input class="input" id="ih-mfr" required></div>
+          <div class="field"><label>Model</label><input class="input" id="ih-model" required></div>
+          <div class="field"><label>Year</label><input type="number" class="number" id="ih-year" required></div>
+          <div class="field"><label>Fuel</label><input class="input" id="ih-fuel" required></div>
+          <div class="field"><label>License Plate</label><input class="input" id="ih-plate" required></div>
+        </div>
+        <div style="margin-top:10px">
+          <strong>Accident Records</strong>
+          <table class="table">
+            <thead><tr><th>Repair Cost</th><th>Part</th><th>Labor</th><th>Painting</th><th>Action</th></tr></thead>
+            <tbody id="accident-body"></tbody>
+          </table>
+          <div class="actions"><button id="add-accident" class="btn">Add Record</button></div>
+        </div>
+      </section>
+
+      <!-- 9) Upload Photos -->
+      <section id="section-9" class="card">
+        <h2>9) Upload Photos</h2>
+        <div class="grid grid-2">
+          <div class="field">
+            <label>Photos</label>
+            <input id="photo-upload" type="file" class="input" accept="image/*" multiple required>
+            <div class="muted">You can upload up to 20 photos. Supported: JPG, PNG.</div>
+          </div>
+          <div class="field">
+            <label>Uploaded</label>
+            <div id="photo-chips" class="chips"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Final Action -->
+      <section id="section-10" class="card">
+        <div class="actions">
+          <button id="create-listing" class="btn btn-primary" type="submit">Create Listing</button>
+        </div>
+      </section>
+      </form>
+      <footer class="footer">© 2024 NSM Autos Admin</footer>
+    </main>
+
+    <script>
+      // Wizard active highlighting
+      (function(){
+        var links=document.querySelectorAll('.wizard a');
+        links.forEach(function(a){a.addEventListener('click',function(){links.forEach(function(l){l.classList.remove('active')});a.classList.add('active');});});
+      })();
+
+      // Model select: fetch public models and populate dropdown (with fallbacks)
+      (function(){
+        const selectEl = document.getElementById('model-id');
+        if (!selectEl) return;
+        const API_1 = 'http://localhost:3001';
+        const API_2 = 'http://localhost:3000';
+        function setLoading(){ selectEl.innerHTML = '<option value="">— Loading models —</option>'; }
+        function setError(msg){ selectEl.innerHTML = '<option value="">'+String(msg||'Failed to load models')+'</option>'; }
+        function renderOptions(models){
+          const html = ['<option value="">— Select a model —</option>']
+            .concat((Array.isArray(models)?models:[]).map(m=>`<option value="${String(m.id)}">${String(m.name||m.slug||('Model '+m.id))}</option>`));
+          selectEl.innerHTML = html.join('');
+        }
+        async function tryFetch(url){
+          const res = await fetch(url, { headers: { 'Accept':'application/json' } });
+          const data = await res.json().catch(()=>({}));
+          if (!res.ok) throw new Error((data && data.error) || ('HTTP '+res.status));
+          return Array.isArray(data?.models) ? data.models : Array.isArray(data) ? data : [];
+        }
+        async function load(){
+          setLoading();
+          try { renderOptions(await tryFetch(`${API_1}/public/models`)); }
+          catch (_){
+            try { renderOptions(await tryFetch(`${API_2}/public/models`)); }
+            catch(__){
+              try {
+                const res = await fetch('/backend/models.json', { headers: { 'Accept':'application/json' } });
+                const data = await res.json().catch(()=>[]);
+                renderOptions(Array.isArray(data)?data:[]);
+              } catch(e3){ setError('Failed to load models'); }
+            }
+          }
+        }
+        // Sync Insurance History model text with dropdown selection
+        selectEl.addEventListener('change', function(){
+          const name = (this.options[this.selectedIndex]?.text || '').trim();
+          const ih = document.getElementById('ih-model');
+          if (ih && name) ih.value = name;
+        });
+        load();
+      })();
+
+      // Category select: fetch from /admin/categories and build nested options
+      (function(){
+        const API='http://localhost:3000';
+        const selectEl=document.getElementById('category-id');
+        function setLoading(){ if(selectEl) selectEl.innerHTML='<option value="">— Loading categories —</option>'; }
+        function setError(msg){ if(selectEl) selectEl.innerHTML='<option value="">'+String(msg||'Failed to load categories')+'</option>'; }
+        function buildTreeOptions(cats){
+          const byParent=new Map();
+          (Array.isArray(cats)?cats:[]).forEach(c=>{
+            const key=(c.parent_id==null)?'null':String(c.parent_id);
+            if(!byParent.has(key)) byParent.set(key,[]);
+            byParent.get(key).push(c);
+          });
+          for(const list of byParent.values()){ list.sort((a,b)=>String(a.name).localeCompare(String(b.name))); }
+          const out=[];
+          function walk(parentKey,depth){
+            const list=byParent.get(parentKey)||[];
+            list.forEach(c=>{ out.push({id:c.id,name:c.name,depth}); walk(String(c.id),depth+1); });
+          }
+          walk('null',0);
+          return out;
+        }
+        function renderOptions(options){
+          const nbsp='\u00A0';
+          const indent=(d)=> (d>0? (nbsp.repeat(2*d)+'↳ '):'');
+          const html=['<option value="">— Select a category —</option>']
+            .concat(options.map(o=>`<option value="${String(o.id)}">${indent(o.depth)}${String(o.name)}</option>`));
+          selectEl.innerHTML=html.join('');
+        }
+        async function load(){
+          if(!selectEl) return; setLoading();
+          const token=localStorage.getItem('token');
+          try{
+            const headers = { 'Accept':'application/json' };
+            if(token) headers['Authorization'] = `Bearer ${token}`;
+            const res=await fetch(`${API}/admin/categories`,{ headers });
+            let data = await res.json().catch(()=>null);
+            if(!res.ok){ throw new Error((data && data.error) || `HTTP ${res.status}`); }
+            const options=buildTreeOptions(data);
+            renderOptions(options);
+          }catch(err){
+            console.warn('Admin categories fetch failed, falling back:',err);
+            try{
+              const res2 = await fetch('/backend/categories.json', { headers:{ 'Accept':'application/json' } });
+              const data2 = await res2.json();
+              const options=buildTreeOptions(data2);
+              renderOptions(options);
+            }catch(e2){ console.error('Fallback categories load failed:', e2); setError('Failed to load categories'); }
+          }
+        }
+        load();
+      })();
+
+      // Checklist renderers and strict tagging
+      (function(){
+        const items={
+          relevant:['Total Loss','Flood Damage','Theft','Government usage'],
+          options:['Sunroof','4WD','Leather Seat','Heated Seat','Ventilated Seat','Rear Camera','360° View','Smart Key','Navigation','Auto A/C'],
+          interior:['Power Seat','Roof Rack','Heated Seat','Power Steering Wheel','Power Door Lock'],
+          safety:['Parking Sensor','All Airbags','ABS'],
+          conv:['Cruise Control','AUX','CD Player','Bluetooth','USB']
+        };
+        function renderChecks(id,arr){
+          const el=document.getElementById(id);
+          if(!el) return;
+          el.innerHTML='';
+          arr.forEach(name=>{
+            const lab=document.createElement('label'); lab.className='check';
+            const cb=document.createElement('input'); cb.type='checkbox'; cb.value=name; cb.name=id+'[]';
+            lab.appendChild(cb); lab.appendChild(document.createTextNode(' '+name));
+            el.appendChild(lab);
+          });
+        }
+        renderChecks('relevant-list',items.relevant);
+        renderChecks('options-list',items.options);
+        renderChecks('interior-list',items.interior);
+        renderChecks('safety-list',items.safety);
+        renderChecks('conv-list',items.conv);
+
+        // Strict tags: fetch from backend (3000) with fallbacks and render as checkboxes
+        (function(){
+          const container=document.getElementById('tag-list');
+          if(!container) return;
+          const headers = { 'Accept':'application/json' };
+          async function tryFetch(url){ const r=await fetch(url,{ headers }); const d=await r.json(); return Array.isArray(d?.tags)? d.tags : (Array.isArray(d)? d : []); }
+          (async function(){
+            try {
+              // Prefer 3000 current API
+              const tags = await tryFetch('http://localhost:3000/public/tags');
+              render(tags);
+            } catch(e1){
+              console.warn('3000 tags failed, trying 3001:', e1.message);
+              try {
+                const tags = await tryFetch('http://localhost:3001/public/tags');
+                render(tags);
+              } catch(e2){
+                console.warn('3001 tags failed, using JSON fallback:', e2.message);
+                try {
+                  const r = await fetch('/backend/tags.json', { headers });
+                  const arr = r.ok ? await r.json() : [];
+                  render(Array.isArray(arr)? arr : []);
+                } catch(e3){
+                  console.error('Failed to load tags from all sources', e3);
+                  container.innerHTML = '<span class="muted">Failed to load tags.</span>';
+                }
+              }
+            }
+          })();
+
+          function render(tags){
+            container.innerHTML='';
+            tags.forEach(tag => {
+              const lab=document.createElement('label'); lab.className='check';
+              const cb=document.createElement('input'); cb.type='checkbox'; cb.value=String(tag.id); cb.name='tag-list[]';
+              lab.appendChild(cb); lab.appendChild(document.createTextNode(' '+(tag.name || tag.slug || ('Tag '+tag.id))));
+              container.appendChild(lab);
+            });
+          }
+        })();
+
+        // Photos
+        const photoInput=document.getElementById('photo-upload');
+        const photoChips=document.getElementById('photo-chips');
+        let photos=[]; // [{ name, dataUrl }]
+        function renderPhotos(){
+          photoChips.innerHTML='';
+          photos.forEach((p)=>{
+            const chip=document.createElement('span'); chip.className='chip';
+            chip.innerHTML=`${p.name} <button title="Remove">×</button>`;
+            chip.querySelector('button').addEventListener('click',function(){ photos=photos.filter(x=>x!==p); chip.remove(); });
+            photoChips.appendChild(chip);
+          });
+        }
+        // Helper function to compress image
+        function compressImage(file, maxWidth = 1280, quality = 0.8) {
+          return new Promise((resolve) => {
+            const canvas = document.createElement('canvas');
+          const ctx = canvas.getContext('2d');
+            const img = new Image();
+            
+            img.onload = () => {
+              // Calculate new dimensions
+              let { width, height } = img;
+              if (width > maxWidth) {
+                height = (height * maxWidth) / width;
+                width = maxWidth;
+              }
+              
+              // Set canvas size and draw compressed image
+              canvas.width = width;
+              canvas.height = height;
+              ctx.drawImage(img, 0, 0, width, height);
+              
+              // Convert to compressed data URL
+              const compressedDataUrl = canvas.toDataURL('image/jpeg', quality);
+              resolve(compressedDataUrl);
+            };
+            
+            img.src = URL.createObjectURL(file);
+          });
+        }
+
+        function fileToDataUrl(file){
+          return new Promise((resolve,reject)=>{
+            const reader=new FileReader();
+            reader.onload=()=>resolve(reader.result);
+            reader.onerror=()=>reject(reader.error||new Error('File read error'));
+            reader.readAsDataURL(file);
+          });
+        }
+        if(photoInput){
+          photoInput.addEventListener('change',async function(){
+            const files=Array.from(photoInput.files||[]);
+            try{
+              // Compress images before converting to data URLs
+              const compressedUrls = await Promise.all(
+                files.map(file => compressImage(file, 1280, 0.7))
+              );
+              photos=files.map((f,i)=>({ name: f.name, dataUrl: compressedUrls[i] }));
+            }catch(err){
+              console.warn('Photo compression failed, using original:', err);
+              // Fallback to original method if compression fails
+              const urls=await Promise.all(files.map(fileToDataUrl));
+              photos=files.map((f,i)=>({ name: f.name, dataUrl: urls[i] }));
+            }
+            renderPhotos();
+          });
+        }
+
+        // Accident rows
+        const tbody=document.getElementById('accident-body');
+        const btnAdd=document.getElementById('add-accident');
+        function addRow(){
+          if(!tbody) return;
+          const tr=document.createElement('tr');
+          tr.innerHTML=`
+            <td><input class="number" type="number" step="0.01" placeholder="0"/></td>
+            <td><input class="input" placeholder="Part"/></td>
+            <td><input class="number" type="number" step="0.01" placeholder="0"/></td>
+            <td><input class="number" type="number" step="0.01" placeholder="0"/></td>
+            <td><button class="btn">Remove</button></td>`;
+          tr.querySelector('button').addEventListener('click',function(){ tr.remove(); });
+          tbody.appendChild(tr);
+        }
+        if(btnAdd){ btnAdd.addEventListener('click', addRow); }
+        // Add initial row
+        addRow();
+
+        // Helpers
+        function getChecked(id){
+          const el=document.getElementById(id); if(!el) return [];
+          return Array.from(el.querySelectorAll('input[type=checkbox]'))
+            .filter(cb=>cb.checked)
+            .map(cb=>cb.value);
+        }
+        function getAccidents(){
+          const rows=Array.from(tbody.querySelectorAll('tr'));
+          return rows.map(r=>{
+            const cells=r.querySelectorAll('td');
+            return {
+              repairCost: Number(cells[0].querySelector('input').value||0),
+              part: cells[1].querySelector('input').value||'',
+              labor: Number(cells[2].querySelector('input').value||0),
+              painting: Number(cells[3].querySelector('input').value||0)
+            };
+          });
+        }
+        function getVal(id){ const el=document.getElementById(id); return (el && el.value) || ''; }
+
+        // Submit to admin endpoint
+        const form=document.getElementById('create-listing-form');
+        const btnCreate=document.getElementById('create-listing');
+        if(form){
+          if(btnCreate){ btnCreate.type = 'submit'; }
+          form.addEventListener('submit', async function(e){
+            e.preventDefault();
+            // Native HTML required validation
+            if(!form.checkValidity()){
+              form.reportValidity();
+              return;
+            }
+
+            // Group-level validations: require at least one checkbox per section
+            function requireGroup(id,message){
+              const container=document.getElementById(id);
+              if(!container){ alert(message||(`Section ${id} is missing.`)); return false; }
+              const boxes=Array.from(container.querySelectorAll('input[type=checkbox]'));
+              // Clear prior custom validity
+              boxes.forEach(cb=> cb.setCustomValidity(''));
+              const ok = boxes.some(cb=> cb.checked);
+              if(!ok){
+                if(boxes[0]){ boxes[0].setCustomValidity(message||'Please select at least one option.'); boxes[0].reportValidity(); }
+                else { alert(message||'Please select at least one option.'); }
+                return false;
+              }
+              return true;
+            }
+
+            if(!requireGroup('tag-list','Please select at least one tag.')) return;
+            if(!requireGroup('relevant-list','Please select at least one relevant info.')) return;
+            if(!requireGroup('options-list','Please select at least one option.')) return;
+            if(!requireGroup('interior-list','Please select at least one interior/exterior item.')) return;
+            if(!requireGroup('safety-list','Please select at least one safety item.')) return;
+            if(!requireGroup('conv-list','Please select at least one convenience item.')) return;
+
+            // Photos: ensure at least one file selected
+            const photoInput=document.getElementById('photo-upload');
+            if(!photoInput || !(photoInput.files && photoInput.files.length)){
+              if(photoInput){ photoInput.setCustomValidity('Please upload at least one photo.'); photoInput.reportValidity(); }
+              return;
+            } else { if(photoInput) photoInput.setCustomValidity(''); }
+
+            // Values for payload
+            const titleVal = (document.getElementById('listing-title')?.value || '').trim();
+            const priceVal = Number((document.getElementById('listing-price')?.value || '').trim());
+            const pinVal = (document.getElementById('product-id-number')?.value || '').trim();
+
+            const payload={
+              title: titleVal,
+              price: priceVal,
+              product_id_number: pinVal || undefined,
+              categoryId: (function(){ const v=document.getElementById('category-id')?.value || ''; return v? Number(v) : null; })(),
+              tagIds: getChecked('tag-list').map(Number).filter(x=>Number.isFinite(x)),
+              vehicle:{
+                model: (function(){
+                  const sel = document.getElementById('model-id');
+                  const opt = sel ? sel.options[sel.selectedIndex] : null;
+                  return opt ? String(opt.text).trim() : '';
+                })(),
+                modelId: (function(){ const v=document.getElementById('model-id')?.value || ''; return v? Number(v) : null; })(),
+                year: Number(getVal('v-year')||0),
+                transmission: getVal('v-trans'),
+                fuel: getVal('v-fuel'),
+                color: getVal('v-color'),
+                displacementL: Number(getVal('v-displ')||0),
+                passengerCapacity: Number(getVal('v-pass')||0),
+                driveType: getVal('v-drive'),
+                chassisNumber: getVal('v-chassis'),
+                firstRegDate: getVal('v-reg'),
+                mileageKm: Number(getVal('v-mile')||0),
+                location: getVal('v-loc')
+              },
+              relevant: getChecked('relevant-list'),
+              options: getChecked('options-list'),
+              interior: getChecked('interior-list'),
+              safety: getChecked('safety-list'),
+              convenience: getChecked('conv-list'),
+              insuranceHistory:{
+                manufacturer: getVal('ih-mfr'),
+                model: getVal('ih-model'),
+                year: Number(getVal('ih-year')||0),
+                fuel: getVal('ih-fuel'),
+                licensePlate: getVal('ih-plate'),
+                accidents: getAccidents() // optional by design
+              },
+              photos,
+              photoCount: photos.length,
+              image_url: (photos && photos.length && photos[0].dataUrl) ? photos[0].dataUrl : undefined,
+              language: localStorage.getItem('language') || 'en',
+              status: 'approved'
+            };
+
+            const token=localStorage.getItem('token');
+            const role=(localStorage.getItem('userRole')||localStorage.getItem('role')||'').toLowerCase();
+            const allowed=['superadmin','listing_editor','user_manager'];
+            if(!token || allowed.indexOf(role)===-1){
+              alert('Please sign in with an allowed role (listing_editor, user_manager, or superadmin).');
+              window.location.href='signin.html';
+              return;
+            }
+            const API_BASE='http://localhost:3000';
+            fetch(`${API_BASE}/admin/create-listing`,{
+              method:'POST',
+              headers:{
+                'Content-Type':'application/json',
+                'Accept':'application/json',
+                'Authorization':`Bearer ${token}`
+              },
+              body: JSON.stringify(payload)
+            }).then(async (r)=>{
+              if(!r.ok){
+                const err=await r.json().catch(()=>({}));
+                throw new Error(err.error || `Create failed: ${r.status}`);
+              }
+              return r.json();
+            }).then((out)=>{
+              alert('Listing Created Successfully! ID: ' + (out.id || 'unknown'));
+            }).catch((err)=>{
+              alert('Creation error: ' + err.message);
+            });
+          });
+        }
+      })();
+    </script>
+  </div>
+</body>
+</html>

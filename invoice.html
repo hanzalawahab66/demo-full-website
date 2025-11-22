@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Invoice</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --mango: #f59e0b;
+            --green: #16a34a;
+        }
+        .step-dot { width: 16px; height: 16px; border-radius: 9999px; }
+        .copyable:hover { opacity: 0.8; }
+    </style>
+    <script>
+        function formatMoney(n){
+            if (typeof n !== 'number') return n || '—';
+            return '$' + n.toLocaleString();
+        }
+        function readLatest(){
+            try { return JSON.parse(localStorage.getItem('latestOrder')||'{}'); } catch { return {}; }
+        }
+        function genOrderNo(){
+            const now = new Date();
+            const y = String(now.getFullYear()).slice(2);
+            const m = String(now.getMonth()+1).padStart(2,'0');
+            const d = String(now.getDate()).padStart(2,'0');
+            const rand = Math.floor(Math.random()*1e8).toString().padStart(8,'0');
+            return `BUY_${y}${m}${d}_${rand}`;
+        }
+        function copyText(txt){
+            navigator.clipboard.writeText(txt||'').then(()=>{
+                const toast = document.getElementById('copy-toast');
+                toast.classList.remove('hidden');
+                setTimeout(()=>toast.classList.add('hidden'), 1200);
+            });
+        }
+        document.addEventListener('DOMContentLoaded', () => {
+            const order = readLatest();
+            const title = order.title || 'Purchase Application Received';
+            const orderNo = order.orderNo || genOrderNo();
+            const vin = order.vin || 'N/A';
+            const price = typeof order.price === 'number' ? order.price : Number(order.price||0) || 0;
+            const listingId = order.listingId;
+            const country = order.country || '';
+
+            document.getElementById('title-line').textContent = title;
+            document.getElementById('total-price').textContent = `${formatMoney(price)} + Shipping Fee`;
+            document.getElementById('order-no').textContent = orderNo;
+            document.getElementById('vin-no').textContent = vin;
+
+            const myPage = document.getElementById('btn-my-page');
+            myPage.onclick = () => window.location.href = 'buyerordersandpayments.html';
+            const buyCar = document.getElementById('btn-buy-car');
+            buyCar.onclick = () => {
+                if (listingId) {
+                    const q = new URLSearchParams({ listingId: String(listingId), country });
+                    window.location.href = 'buy-now.html?' + q.toString();
+                } else {
+                    window.location.href = 'inventory.html';
+                }
+            };
+
+            document.getElementById('copy-order').onclick = () => copyText(orderNo);
+            document.getElementById('copy-vin').onclick = () => copyText(vin);
+        });
+    </script>
+</head>
+<body class="bg-gray-100">
+    <main class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Progress Steps -->
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 mb-6">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                    <div class="step-dot bg-[var(--mango)] mr-3"></div>
+                    <span class="text-sm font-semibold text-gray-900">Requested</span>
+                </div>
+                <div class="flex-1 h-px bg-gray-200 mx-3"></div>
+                <div class="flex items-center">
+                    <div class="step-dot bg-gray-300 mr-3"></div>
+                    <span class="text-sm text-gray-500">In progress</span>
+                </div>
+                <div class="flex-1 h-px bg-gray-200 mx-3"></div>
+                <div class="flex items-center">
+                    <div class="step-dot bg-gray-300 mr-3"></div>
+                    <span class="text-sm text-gray-500">Completed</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Invoice Card -->
+        <section class="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
+            <div class="flex items-start mb-4">
+                <div class="w-10 h-10 rounded-full bg-orange-100 text-[var(--mango)] flex items-center justify-center mr-3">
+                    <i class="fa-solid fa-check"></i>
+                </div>
+                <div>
+                    <h1 id="title-line" class="text-2xl font-bold text-gray-900">Purchase Application Received</h1>
+                    <p class="text-gray-500">Thank you!<br />Your message has been received. We will contact you shortly.</p>
+                </div>
+            </div>
+
+            <div class="mt-3">
+                <div class="text-sm font-semibold text-gray-700 mb-1">Total Price</div>
+                <div id="total-price" class="text-2xl font-extrabold text-[var(--mango)]">$0 + Shipping Fee</div>
+            </div>
+
+            <div class="my-4 border-t"></div>
+
+            <div class="space-y-3 text-sm">
+                <div class="flex items-center">
+                    <span class="w-36 text-gray-500">Order NO:</span>
+                    <span id="order-no" class="font-medium text-gray-900">—</span>
+                    <button id="copy-order" class="ml-2 copyable text-gray-500 hover:text-gray-700" title="Copy"><i class="fa-regular fa-copy"></i></button>
+                </div>
+                <div class="flex items-center">
+                    <span class="w-36 text-gray-500">VIN NO:</span>
+                    <span id="vin-no" class="font-medium text-gray-900">—</span>
+                    <button id="copy-vin" class="ml-2 copyable text-gray-500 hover:text-gray-700" title="Copy"><i class="fa-regular fa-copy"></i></button>
+                </div>
+            </div>
+
+            <div class="mt-4 p-4 bg-gray-50 border rounded-xl text-gray-600 text-sm">
+                Connecting with a customer service representative through WhatsApp
+            </div>
+
+            <div class="mt-4">
+                <button class="px-5 py-2 border border-[var(--green)] text-[var(--green)] rounded-full hover:bg-green-50">
+                    <i class="fa-brands fa-whatsapp mr-2"></i>
+                    WhatsApp
+                </button>
+            </div>
+
+            <div class="mt-6 flex items-center justify-between">
+                <button id="btn-my-page" class="px-4 py-2 border rounded-lg text-gray-700 hover:bg-gray-50">Go to My Page</button>
+                <button id="btn-buy-car" class="px-4 py-2 bg-[var(--mango)] text-white rounded-lg hover:bg-orange-600">Go to Buy My car</button>
+            </div>
+        </section>
+
+        <!-- Copy toast -->
+        <div id="copy-toast" class="hidden fixed bottom-6 left-1/2 -translate-x-1/2 bg-black text-white text-sm px-3 py-1 rounded">Copied</div>
+    </main>
+</body>
+</html>

@@ -1,0 +1,134 @@
+[
+  {
+    "id": 1,
+    "name": "BMW",
+    "parent_id": null,
+    "created_at": "2025-11-15T19:33:45.867Z"
+  },
+  {
+    "id": 2,
+    "name": "Audi",
+    "parent_id": null,
+    "created_at": "2025-11-15T19:33:54.344Z"
+  },
+  {
+    "id": 3,
+    "name": "Toyota",
+    "parent_id": null,
+    "created_at": "2025-11-15T19:34:05.292Z",
+    "image_url": "/uploads/Gemini_Generated_Image_9i5qs69i5qs69i5qr-1763581707041-p2vo63.png"
+  },
+  {
+    "id": 4,
+    "name": "Honda",
+    "parent_id": null,
+    "created_at": "2025-11-15T19:34:16.113Z",
+    "image_url": "/uploads/Gemini_Generated_Image_9i5qs69i5qs69i5q33-1763581719789-ddudpi.png"
+  },
+  {
+    "id": 5,
+    "name": "Hyundai",
+    "parent_id": null,
+    "created_at": "2025-11-15T19:34:46.109Z",
+    "image_url": "/uploads/Gemini_Generated_Image_9i5qs69i5qs69i5q-1763581731766-zkdn6h.png"
+  },
+  {
+    "id": 6,
+    "name": "5 Series",
+    "parent_id": 1,
+    "created_at": "2025-11-15T20:38:48.908Z"
+  },
+  {
+    "id": 7,
+    "name": "Mercdes-Benz",
+    "parent_id": null,
+    "created_at": "2025-11-16T16:57:16.708Z"
+  },
+  {
+    "id": 8,
+    "name": "Sonata",
+    "parent_id": 5,
+    "created_at": "2025-11-16T16:58:10.088Z"
+  },
+  {
+    "id": 9,
+    "name": "Camry",
+    "parent_id": 3,
+    "created_at": "2025-11-16T17:01:50.946Z"
+  },
+  {
+    "id": 10,
+    "name": "Camry (XV70)",
+    "parent_id": 9,
+    "created_at": "2025-11-16T17:03:08.223Z"
+  },
+  {
+    "id": 11,
+    "name": "E Class",
+    "parent_id": 7,
+    "created_at": "2025-11-16T17:07:30.340Z"
+  },
+  {
+    "id": 12,
+    "name": "Kia",
+    "parent_id": null,
+    "created_at": "2025-11-16T17:25:23.314Z"
+  },
+  {
+    "id": 13,
+    "name": "Genesis",
+    "parent_id": null,
+    "created_at": "2025-11-16T17:25:41.960Z"
+  },
+  {
+    "id": 14,
+    "name": "Chevrolet",
+    "parent_id": null,
+    "created_at": "2025-11-16T17:26:06.047Z"
+  },
+  {
+    "id": 15,
+    "name": "KG Mobility",
+    "parent_id": null,
+    "created_at": "2025-11-16T17:26:30.692Z"
+  },
+  {
+    "id": 16,
+    "name": "Renault Korea",
+    "parent_id": null,
+    "created_at": "2025-11-16T17:26:45.806Z"
+  },
+  {
+    "id": 17,
+    "name": "Mini",
+    "parent_id": null,
+    "created_at": "2025-11-16T17:27:03.715Z"
+  },
+  {
+    "id": 18,
+    "name": "K5",
+    "parent_id": 12,
+    "created_at": "2025-11-17T16:27:09.505Z"
+  },
+  {
+    "id": 19,
+    "name": "Land Rover",
+    "parent_id": null,
+    "created_at": "2025-11-19T19:06:36.940Z",
+    "image_url": "/uploads/00170000000000000000-1763580387437-0wdddm.svg"
+  },
+  {
+    "id": 20,
+    "name": "AutoTestCat-Edit",
+    "parent_id": null,
+    "image_url": "/uploads/cat-replace-957381897-1763580277903-ozbirb.png",
+    "created_at": "2025-11-19T19:24:16.071Z"
+  },
+  {
+    "id": 21,
+    "name": "Honda 2",
+    "parent_id": null,
+    "image_url": "/uploads/Gemini_Generated_Image_9i5qs69i5qs69i5q33-1763658380919-l566by.png",
+    "created_at": "2025-11-20T17:06:20.928Z"
+  }
+]

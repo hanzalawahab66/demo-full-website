@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Approve Seller</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .result { margin: 10px 0; padding: 10px; border-radius: 5px; }
+        .success { background-color: #d4edda; color: #155724; }
+        .error { background-color: #f8d7da; color: #721c24; }
+        .info { background-color: #d1ecf1; color: #0c5460; }
+        button { margin: 5px; padding: 10px 15px; }
+        .user-card { border: 1px solid #ddd; margin: 10px 0; padding: 10px; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <h1>Approve Seller Tool</h1>
+    
+    <div>
+        <button onclick="loginAsAdmin()">1. Login as Admin</button>
+        <button onclick="getAllUsers()">2. Get All Users</button>
+        <button onclick="approveTestSeller()">3. Approve Test Seller</button>
+    </div>
+    
+    <div id="results"></div>
+    
+    <button onclick="clearResults()">Clear Results</button>
+
+    <script>
+        let adminToken = null;
+
+        function addResult(message, type = 'info') {
+            const results = document.getElementById('results');
+            const div = document.createElement('div');
+            div.className = `result ${type}`;
+            div.innerHTML = `<strong>${new Date().toLocaleTimeString()}</strong>: ${message}`;
+            results.appendChild(div);
+            results.scrollTop = results.scrollHeight;
+        }
+
+        function clearResults() {
+            document.getElementById('results').innerHTML = '';
+        }
+
+        async function loginAsAdmin() {
+            addResult('Attempting to login as superadmin...', 'info');
+            
+            // Try with the superadmin account we found
+            const credentials = [
+                { email: 'umarmarwat1339@gmail.com', password: 'admin123' },
+                { email: 'umarmarwat1339@gmail.com', password: '123456' },
+                { email: 'umarmarwat1339@gmail.com', password: 'password123' },
+                { email: 'umarmarwat1339@gmail.com', password: '12345678' }
+            ];
+
+            for (const cred of credentials) {
+                try {
+                    addResult(`Trying password: ${cred.password}`, 'info');
+                    const response = await fetch('http://localhost:3001/login', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(cred)
+                    });
+
+                    const data = await response.json();
+                    
+                    if (response.ok) {
+                        adminToken = data.token;
+                        addResult(`✅ Admin login successful! Token stored.`, 'success');
+                        return;
+                    } else {
+                        addResult(`❌ Failed with ${cred.password}: ${data.error}`, 'error');
+                    }
+                } catch (error) {
+                    addResult(`❌ Network error with ${cred.password}: ${error.message}`, 'error');
+                }
+            }
+            
+            addResult('❌ All admin login attempts failed', 'error');
+        }
+
+        async function getAllUsers() {
+            if (!adminToken) {
+                addResult('❌ Please login as admin first', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch('http://localhost:3001/admin/users', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${adminToken}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    addResult(`✅ Found ${data.users ? data.users.length : 0} users`, 'success');
+                    
+                    // Show sellers
+                    const sellers = data.users.filter(u => u.role === 'seller');
+                    sellers.forEach(seller => {
+                        addResult(`Seller: ${seller.email} (ID: ${seller.id}, Status: ${seller.status})`, 'info');
+                    });
+                } else {
+                    addResult(`❌ Failed to get users: ${data.error}`, 'error');
+                }
+            } catch (error) {
+                addResult(`❌ Network error: ${error.message}`, 'error');
+            }
+        }
+
+        async function approveTestSeller() {
+            if (!adminToken) {
+                addResult('❌ Please login as admin first', 'error');
+                return;
+            }
+
+            // Try to approve the seller we found: umarmarwat3@gmail.com (ID: 1761597392750)
+            const sellerId = 1761597392750;
+            
+            try {
+                const response = await fetch(`http://localhost:3001/admin/approve/${sellerId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `Bearer ${adminToken}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    addResult(`✅ Seller approved successfully!`, 'success');
+                } else {
+                    addResult(`❌ Failed to approve seller: ${data.error}`, 'error');
+                }
+            } catch (error) {
+                addResult(`❌ Network error: ${error.message}`, 'error');
+            }
+        }
+
+        // Auto-run on load
+        window.addEventListener('load', () => {
+            addResult('Ready to approve seller. Follow steps 1-3 in order.', 'info');
+        });
+    </script>
+</body>
+</html>

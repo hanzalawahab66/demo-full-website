@@ -1,0 +1,32 @@
+[
+  {
+    "id": 1,
+    "listingId": 1761568080510,
+    "orderId": null,
+    "rating": 5,
+    "title": "Best quality just as expected!",
+    "description": "\"My BMW X5 arrived in perfect condition from Germany. The whole process was transparent and professional. Highly recommend MangoCar!\"",
+    "country": "United States",
+    "image_url": "/uploads/07c5582bb8-270455e7ac305d3d85ef-1763635644596-l620db.png",
+    "status": "approved",
+    "buyer_id": 10000000000004,
+    "buyer_email": "umarmarwat10@gmail.com",
+    "created_at": "2025-11-20T10:47:24.613Z",
+    "moderated_at": "2025-11-20T13:10:09.247Z",
+    "moderated_by": 1761597392749
+  },
+  {
+    "id": 2,
+    "listingId": 1761568080512,
+    "orderId": null,
+    "rating": 5,
+    "title": "great",
+    "description": "nice",
+    "country": "United States",
+    "image_url": "/uploads/Gemini_Generated_Image_1info91info91inf-1763822569357-z6e1ki.png",
+    "status": "pending",
+    "buyer_id": 10000000000005,
+    "buyer_email": "majidinam39@gmail.com",
+    "created_at": "2025-11-22T14:42:49.368Z"
+  }
+]

@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Super Admin Panel — Blog Management</title>
+  <style>
+    :root {
+      --bg: #f6f7fb; --text: #0f172a; --muted: #64748b; --primary: #2563eb; --primary-hover: #1d4ed8;
+      --topbar-bg: #ffffff; --topbar-border: #e5e7eb; --sidebar-bg: #0b1220; --sidebar-border: #1f2937;
+      --sidebar-text: #cbd5e1; --sidebar-hover-bg: #111827; --sidebar-active-bg: #1f2937;
+      --card-bg: #ffffff; --card-border: #e5e7eb; --success: #16a34a; --danger: #dc2626; --warning: #f59e0b;
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body { margin: 0; background: var(--bg); color: var(--text); font-family: Inter, Segoe UI, Roboto, Helvetica, Arial, system-ui, -apple-system, sans-serif; }
+    .admin-layout { display: grid; grid-template-columns: 260px 1fr; grid-template-rows: 64px auto; grid-template-areas: "topbar topbar" "sidebar content"; height: 100vh; width: 100%; }
+    .topbar { grid-area: topbar; display: flex; align-items: center; justify-content: space-between; padding: 0 16px; background: var(--topbar-bg); border-bottom: 1px solid var(--topbar-border); position: sticky; top: 0; z-index: 10; }
+    .brand { display: flex; align-items: center; gap: 12px; font-weight: 600; }
+    .brand-logo { width: 28px; height: 28px; border-radius: 8px; background: linear-gradient(135deg, var(--primary), #9333ea); }
+    .top-actions { display: flex; align-items: center; gap: 8px; }
+    .btn { border: 1px solid var(--card-border); background: #fff; color: var(--text); padding: 8px 12px; border-radius: 8px; cursor: pointer; font-weight: 600; }
+    .btn:hover { background: #f9fafb; }
+    .btn-primary { background: var(--primary); color: #fff; border: 1px solid var(--primary); padding: 8px 12px; border-radius: 8px; cursor: pointer; font-weight: 600; }
+    .btn-primary:hover { background: var(--primary-hover); }
+
+    .sidebar { grid-area: sidebar; background: var(--sidebar-bg); border-right: 1px solid var(--sidebar-border); color: #fff; padding: 16px 12px; overflow-y: auto; }
+    .sidebar-header { font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--sidebar-text); margin-bottom: 12px; opacity: 0.9; }
+    .menu { display: flex; flex-direction: column; gap: 6px; }
+    .menu a { display: flex; align-items: center; gap: 10px; color: var(--sidebar-text); text-decoration: none; padding: 10px 12px; border-radius: 8px; }
+    .menu a:hover { background: var(--sidebar-hover-bg); }
+    .menu a.active { background: var(--sidebar-active-bg); color: #fff; }
+    .icon { width: 18px; height: 18px; border-radius: 4px; background: #334155; }
+
+    .content { grid-area: content; padding: 16px; overflow-y: auto; }
+    .cards { display: grid; grid-template-columns: 1fr; gap: 16px; }
+    .card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 16px; }
+    .card h2 { margin: 0 0 8px; }
+
+    .field { margin-bottom: 12px; }
+    .field label { display: block; font-weight: 600; margin-bottom: 6px; }
+    .input, .select { width: 100%; padding: 10px 12px; border: 1px solid var(--card-border); border-radius: 8px; background: #fff; color: var(--text); }
+    .muted { color: var(--muted); font-size: 12px; }
+    .toolbar { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 8px; }
+    .toolbar .btn { padding: 6px 10px; }
+    .editor { border: 1px solid var(--card-border); border-radius: 10px; padding: 10px; min-height: 180px; background: #fff; overflow: auto; resize: vertical; }
+    .preview { display: flex; gap: 12px; align-items: center; }
+    .preview img { max-height: 80px; border-radius: 8px; border: 1px solid var(--card-border); }
+
+    .actions { display: flex; gap: 10px; margin-top: 8px; }
+    .list { margin-top: 16px; }
+    .list-item { padding: 10px 12px; border-bottom: 1px solid var(--card-border); display: flex; justify-content: space-between; align-items: center; }
+  </style>
+</head>
+<body>
+  <div class="admin-layout">
+    <header class="topbar" role="banner">
+      <div class="brand" aria-label="Admin brand">
+        <div class="brand-logo" aria-hidden="true"></div>
+        <span>Super Admin Panel</span>
+      </div>
+      <div class="top-actions">
+        <button class="btn" onclick="location.href='home.html'">Back to Site</button>
+        <span class="admin-name">Signed in as <strong>Super Admin</strong></span>
+        <button class="btn" onclick="location.href='signin.html'">Logout</button>
+      </div>
+    </header>
+
+    <aside class="sidebar" role="navigation" aria-label="Admin sidebar">
+      <div class="sidebar-header">Main Menu</div>
+      <nav class="menu">
+        <a href="admin.html"><span class="icon"></span> Dashboard</a>
+        <a href="user-management.html"><span class="icon"></span> User Management</a>
+        <a href="listing-approval.html"><span class="icon"></span> Listing Approvals</a>
+        <a href="create-listing.html"><span class="icon"></span> Create New Listing</a>
+        <a href="manage-all-listings.html"><span class="icon"></span> Manage All Listings</a>
+        <a href="category-management.html"><span class="icon"></span> Category Management</a>
+        <a href="tag-management.html"><span class="icon"></span> Tag Management</a>
+        <a href="model-management.html"><span class="icon"></span> Model Management</a>
+        <a href="slider-management.html"><span class="icon"></span> Slider Management</a>
+        <a href="setting.html"><span class="icon"></span> Setting</a>
+        <a href="admin-messages.html"><span class="icon"></span> Buyer Messages</a>
+        <a href="invoice-intake.html"><span class="icon"></span> Invoice Intake</a>
+        <a href="blog-management.html" class="active"><span class="icon"></span> Blog Management</a>
+      </nav>
+    </aside>
+
+    <main class="content" role="main">
+      <h1>Create Blog Post</h1>
+      <p class="muted">Add a Title, Featured Image, and rich Description. The editor supports resizing and inserting images in the content.</p>
+
+      <section class="cards">
+        <div class="card">
+          <h2>Blog Details</h2>
+          <div class="field">
+            <label for="blog-title">Title</label>
+            <input id="blog-title" class="input" placeholder="Enter a concise title" />
+          </div>
+
+          <div class="field">
+            <label>Featured Image</label>
+            <div class="preview">
+              <img id="featured-preview" src="" alt="Featured preview" style="display:none" />
+              <span class="muted" id="featured-url">No image uploaded</span>
+            </div>
+            <div class="actions">
+              <input id="featured-file" type="file" accept="image/*" />
+              <button id="upload-featured" class="btn">Upload</button>
+            </div>
+            <div class="muted">The featured image appears on the public Blog page and as the hero image on each post.</div>
+          </div>
+
+          <div class="field">
+            <label>Description</label>
+            <div class="toolbar">
+              <button class="btn" data-cmd="bold">Bold</button>
+              <button class="btn" data-cmd="italic">Italic</button>
+              <button class="btn" data-cmd="h2">H2</button>
+              <button class="btn" data-cmd="h3">H3</button>
+              <button class="btn" id="insert-image">Insert Image</button>
+              <input id="inline-image-file" type="file" accept="image/*" style="display:none" />
+            </div>
+            <div id="blog-editor" class="editor" contenteditable="true" aria-label="Blog description editor"></div>
+            <div class="muted">Tip: Drag the editor’s bottom edge to resize. Images can be inserted directly in the content.</div>
+          </div>
+
+          <div class="actions">
+            <button id="publish" class="btn-primary">Publish Blog</button>
+            <button id="reset" class="btn">Reset</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>Existing Posts</h2>
+          <div id="blog-list" class="list"></div>
+        </div>
+      </section>
+
+      <script>
+        (function(){
+          var state = {
+            featuredImageUrl: '',
+            blogs: [],
+            editingId: null
+          };
+
+          function updateFeaturedPreview(url){
+            var img = document.getElementById('featured-preview');
+            var txt = document.getElementById('featured-url');
+            if(url){ img.src = url; img.style.display = 'block'; txt.textContent = url; }
+            else { img.src = ''; img.style.display = 'none'; txt.textContent = 'No image uploaded'; }
+          }
+
+          function getTokenOrRedirect() {
+            var token = localStorage.getItem('token');
+            if (!token) { alert('Please sign in to manage blogs.'); window.location.href='signin.html'; return null; }
+            return token;
+          }
+
+          function renderBlogList(){
+            var list = document.getElementById('blog-list');
+            if(!Array.isArray(state.blogs) || state.blogs.length === 0){ list.innerHTML = '<div class="muted">No blogs yet.</div>'; return; }
+            list.innerHTML = state.blogs.map(function(b){
+              var date = b.created_at ? new Date(b.created_at).toLocaleString() : '';
+              return (
+                '<div class="list-item">'
+                + '<div><strong>' + (b.title || '') + '</strong><div class="muted">' + date + '</div></div>'
+                + '<div class="actions">'
+                + '<button class="btn" data-action="edit" data-id="' + (b.id || '') + '">Edit</button>'
+                + '</div>'
+                + '</div>'
+              );
+            }).join('');
+          }
+
+          function tryFetchBlogs(){
+            return fetch('http://localhost:3000/admin/blogs', { headers: { 'Accept': 'application/json', 'Authorization': 'Bearer ' + (localStorage.getItem('token') || '') } })
+              .then(function(r){ if(!r.ok) return []; return r.json(); })
+              .catch(function(){ return []; });
+          }
+
+          function uploadFile(file){
+            return new Promise(function(resolve, reject){
+              var reader = new FileReader();
+              reader.onload = function(){
+                var token = getTokenOrRedirect(); if(!token) { reject(new Error('no-token')); return; }
+                fetch('http://localhost:3000/upload', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+                  body: JSON.stringify({ filename: file.name, dataUrl: reader.result })
+                }).then(function(res){ return res.json(); })
+                  .then(function(json){ if(json && json.url) resolve(json.url); else reject(new Error('Upload failed')); })
+                  .catch(function(err){ reject(err); });
+              };
+              reader.readAsDataURL(file);
+            });
+          }
+
+          // Toolbar commands
+          document.querySelector('.toolbar').addEventListener('click', function(e){
+            var btn = e.target.closest('button'); if(!btn) return; var cmd = btn.getAttribute('data-cmd');
+            var editor = document.getElementById('blog-editor'); editor.focus();
+            if(cmd === 'bold') document.execCommand('bold');
+            else if(cmd === 'italic') document.execCommand('italic');
+            else if(cmd === 'h2') document.execCommand('formatBlock', false, 'h2');
+            else if(cmd === 'h3') document.execCommand('formatBlock', false, 'h3');
+          });
+
+          // Inline image insertion
+          document.getElementById('insert-image').addEventListener('click', function(){
+            document.getElementById('inline-image-file').click();
+          });
+          document.getElementById('inline-image-file').addEventListener('change', async function(){
+            var file = this.files && this.files[0]; if(!file) return;
+            try {
+              var url = await uploadFile(file);
+              document.getElementById('blog-editor').focus();
+              document.execCommand('insertImage', false, url);
+            } catch(err) {
+              alert('Inline image upload failed: ' + (err && err.message ? err.message : 'unknown'));
+            }
+            this.value = '';
+          });
+
+          // Featured image upload
+          document.getElementById('upload-featured').addEventListener('click', async function(){
+            var fileInput = document.getElementById('featured-file');
+            var file = fileInput.files && fileInput.files[0]; if(!file) { alert('Choose a file first.'); return; }
+            try {
+              var url = await uploadFile(file);
+              state.featuredImageUrl = url;
+              updateFeaturedPreview(url);
+            } catch(err) { alert('Upload failed: ' + (err && err.message ? err.message : 'unknown')); }
+          });
+
+          // Publish / Update
+          document.getElementById('publish').addEventListener('click', async function(){
+            var token = getTokenOrRedirect(); if(!token) return;
+            var title = document.getElementById('blog-title').value.trim();
+            var descHtml = document.getElementById('blog-editor').innerHTML.trim();
+            if(!title || !descHtml){ alert('Title and Description are required.'); return; }
+            try {
+              var isEdit = !!state.editingId;
+              var url = isEdit ? ('http://localhost:3000/admin/blogs/' + state.editingId) : 'http://localhost:3000/admin/blogs';
+              var res = await fetch(url, {
+                method: isEdit ? 'PUT' : 'POST',
+                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'Authorization': 'Bearer ' + token },
+                body: JSON.stringify({ title: title, description_html: descHtml, featured_image_url: state.featuredImageUrl || '' })
+              });
+              if(!res.ok){ var err = await res.json().catch(function(){ return {}; }); throw new Error(err.error || ('HTTP '+res.status)); }
+              var saved = await res.json();
+              if(isEdit){
+                alert('Blog updated!');
+                var idx = state.blogs.findIndex(function(b){ return Number(b.id) === Number(state.editingId); });
+                if(idx !== -1) state.blogs[idx] = saved; renderBlogList();
+                state.editingId = null; document.getElementById('publish').textContent = 'Publish Blog';
+              } else {
+                alert('Blog published!');
+                state.blogs.unshift(saved); renderBlogList();
+              }
+              document.getElementById('blog-title').value = '';
+              document.getElementById('blog-editor').innerHTML = '';
+              state.featuredImageUrl = '';
+              updateFeaturedPreview('');
+            } catch(err) { alert('Publish failed: ' + (err && err.message ? err.message : 'unknown')); }
+          });
+
+          document.getElementById('reset').addEventListener('click', function(){
+            document.getElementById('blog-title').value = '';
+            document.getElementById('blog-editor').innerHTML = '';
+            state.editingId = null; document.getElementById('publish').textContent = 'Publish Blog';
+            state.featuredImageUrl = ''; updateFeaturedPreview('');
+          });
+
+          // Handle Edit button clicks
+          document.getElementById('blog-list').addEventListener('click', function(e){
+            var btn = e.target.closest('button[data-action="edit"]'); if(!btn) return;
+            var id = Number(btn.getAttribute('data-id'));
+            var post = state.blogs.find(function(b){ return Number(b.id) === id; });
+            if(!post){ alert('Blog not found'); return; }
+            state.editingId = id;
+            document.getElementById('blog-title').value = post.title || '';
+            document.getElementById('blog-editor').innerHTML = post.description_html || '';
+            state.featuredImageUrl = post.featured_image_url || '';
+            updateFeaturedPreview(state.featuredImageUrl);
+            document.getElementById('publish').textContent = 'Update Blog';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          });
+
+          // Initial load
+          (async function init(){
+            state.blogs = await tryFetchBlogs();
+            renderBlogList();
+          })();
+        })();
+      </script>
+    </main>
+  </div>
+</body>
+</html>

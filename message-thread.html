@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Message Thread</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>window.FontAwesomeConfig = {autoReplaceSvg: 'nest'};</script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * { font-family: 'Inter', sans-serif; }
+    .bubble { max-width: 72%; }
+    .bubble-buyer { background: #f97316; color: #fff; }
+    .bubble-admin { background: #f3f4f6; color: #0f172a; }
+    .bubble-time { font-size: 11px; color: #6b7280; margin-top: 4px; }
+  </style>
+</head>
+<body class="bg-gray-50">
+  <header class="bg-white border-b border-gray-200">
+    <div class="container mx-auto px-6 py-4 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 bg-gradient-to-br from-orange-400 to-orange-600 rounded-lg flex items-center justify-center">
+          <i class="fa-solid fa-comments text-white"></i>
+        </div>
+        <div>
+          <h1 id="thread-title" class="text-lg font-bold text-gray-900">Conversation</h1>
+          <div id="thread-subtitle" class="text-sm text-gray-600">Buyer ↔ Admin</div>
+        </div>
+      </div>
+      <div class="flex items-center gap-3">
+        <a href="dashboard-messages.html" class="text-sm text-blue-600 hover:text-blue-700 underline">Back to My Messages</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container mx-auto px-6 py-6">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <section class="lg:col-span-2 bg-white rounded-2xl shadow-lg border border-gray-200">
+        <div id="messages" class="p-6 space-y-4" aria-live="polite" aria-busy="false"></div>
+        <div class="border-t border-gray-200 p-4">
+          <form id="composer" class="flex items-end gap-3">
+            <textarea id="message-input" class="flex-1 rounded-lg border border-gray-300 p-3 focus:outline-none focus:ring-2 focus:ring-orange-500" rows="2" placeholder="Type your message..."></textarea>
+            <button id="send-btn" type="submit" class="bg-orange-500 hover:bg-orange-600 text-white px-5 py-3 rounded-lg font-semibold">
+              <i class="fa-solid fa-paper-plane mr-2"></i> Send
+            </button>
+          </form>
+        </div>
+      </section>
+
+      <aside class="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
+        <h3 class="text-base font-semibold text-gray-900 mb-2">Thread Info</h3>
+        <div id="thread-info" class="text-sm text-gray-700 space-y-2"></div>
+        <div class="mt-4">
+          <a id="product-link" href="#" class="text-sm text-blue-600 hover:text-blue-700 underline" style="display:none">View vehicle</a>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <script>
+    (function(){
+      function readJson(key){ try { var v = localStorage.getItem(key); return v ? JSON.parse(v) : null; } catch(e){ return null; } }
+      function writeJson(key, val){ try { localStorage.setItem(key, JSON.stringify(val)); } catch(e){} }
+      function getParam(name){ var m = new URLSearchParams(location.search); return m.get(name) || ''; }
+      function nowIso(){ return new Date().toISOString(); }
+      function formatTime(iso){ try{ var d = new Date(iso); return d.toLocaleString(); }catch(e){ return String(iso || ''); } }
+
+      var roleQ = getParam('role');
+      var role = roleQ || (localStorage.getItem('userRole') || 'buyer');
+      role = (role || '').toLowerCase();
+      if (role !== 'admin' && role !== 'buyer') role = 'buyer';
+
+      var order = getParam('order');
+      var threadParam = getParam('thread');
+      var threadId = order ? ('order:' + order) : (threadParam || '').toString();
+      if (!threadId) { threadId = 'general'; }
+
+      var store = readJson('messages') || {};
+      var threadsMeta = readJson('messages_meta') || {};
+      var threadMessages = Array.isArray(store[threadId]) ? store[threadId] : [];
+
+      // Populate meta from purchases if available
+      (function initMeta(){
+        var meta = threadsMeta[threadId] || {};
+        if (order) {
+          var purchases = readJson('purchases') || [];
+          var p = purchases.find(function(x){ return (x.orderNo || x.orderNumber || '') === order; });
+          if (p) {
+            meta.subject = 'Order ' + (p.orderNo || order);
+            var title = p.title || (p.vehicle && (p.vehicle.title || p.vehicle.name));
+            if (title) meta.vehicleTitle = title;
+            meta.listingId = p.listingId || p.id || '';
+          }
+        }
+        if (!meta.subject) { meta.subject = 'Conversation'; }
+        if (!meta.participants) { meta.participants = ['buyer','admin']; }
+        threadsMeta[threadId] = meta;
+        writeJson('messages_meta', threadsMeta);
+        // Header
+        var tTitle = document.getElementById('thread-title');
+        var tSub = document.getElementById('thread-subtitle');
+        if (tTitle) tTitle.textContent = meta.subject;
+        if (tSub) tSub.textContent = (meta.vehicleTitle ? (meta.vehicleTitle + ' • ') : '') + 'Buyer ↔ Admin';
+        var info = document.getElementById('thread-info');
+        if (info) {
+          var rows = [];
+          rows.push('<div><span class="font-semibold">Thread ID:</span> ' + threadId + '</div>');
+          if (order) rows.push('<div><span class="font-semibold">Order No:</span> ' + order + '</div>');
+          if (meta.vehicleTitle) rows.push('<div><span class="font-semibold">Vehicle:</span> ' + meta.vehicleTitle + '</div>');
+          info.innerHTML = rows.join('');
+        }
+        var productLink = document.getElementById('product-link');
+        if (productLink && meta.listingId) {
+          productLink.style.display = '';
+          productLink.href = 'product-detail.html?id=' + encodeURIComponent(meta.listingId);
+        }
+      })();
+
+      // Seed with a welcome message if empty
+      if (!threadMessages.length) {
+        threadMessages.push({ id: 'm1', from: 'admin', to: 'buyer', text: 'Hello! How can we help you with this order?', ts: nowIso() });
+        store[threadId] = threadMessages;
+        writeJson('messages', store);
+      }
+
+      function render(){
+        var wrap = document.getElementById('messages');
+        if (!wrap) return;
+        wrap.innerHTML = threadMessages.map(function(msg){
+          var isBuyer = (msg.from || '').toLowerCase() === 'buyer';
+          var alignClass = isBuyer ? 'justify-end' : 'justify-start';
+          var bubbleClass = isBuyer ? 'bubble bubble-buyer' : 'bubble bubble-admin';
+          return (
+            '<div class="flex ' + alignClass + '">'+
+              '<div class="rounded-2xl px-4 py-3 ' + bubbleClass + '">'+
+                '<div>' + escapeHtml(msg.text) + '</div>'+
+                '<div class="bubble-time">' + formatTime(msg.ts) + '</div>'+
+              '</div>'+
+            '</div>'
+          );
+        }).join('');
+        // Scroll to bottom
+        wrap.scrollTop = wrap.scrollHeight;
+      }
+
+      function escapeHtml(str){ return String(str || '').replace(/[&<>"']/g, function(s){ return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'})[s]; }); }
+
+      render();
+
+      // Sending messages
+      var form = document.getElementById('composer');
+      var input = document.getElementById('message-input');
+      if (form && input) {
+        form.addEventListener('submit', function(e){
+          e.preventDefault();
+          var text = (input.value || '').trim();
+          if (!text) return;
+          var msg = { id: 'm' + Math.random().toString(36).slice(2), from: role, to: role === 'buyer' ? 'admin' : 'buyer', text: text, ts: nowIso() };
+          threadMessages.push(msg);
+          store[threadId] = threadMessages;
+          writeJson('messages', store);
+          input.value = '';
+          render();
+        });
+      }
+
+      // Expose a small API for admin list page to mark read
+      window.__threadApi = {
+        threadId: threadId,
+        getMessages: function(){ return threadMessages.slice(); },
+        lastMessageTs: function(){ return (threadMessages[threadMessages.length-1]||{}).ts; }
+      };
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,409 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Super Admin Panel — Invoice Intake</title>
+  <style>
+    :root {
+      --bg: #f6f7fb;
+      --text: #0f172a;
+      --muted: #64748b;
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --topbar-bg: #ffffff;
+      --topbar-border: #e5e7eb;
+      --sidebar-bg: #0b1220;
+      --sidebar-border: #1f2937;
+      --sidebar-text: #cbd5e1;
+      --sidebar-hover-bg: #111827;
+      --sidebar-active-bg: #1f2937;
+      --card-bg: #ffffff;
+      --card-border: #e5e7eb;
+      --success: #16a34a;
+      --warning: #d97706;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body { margin: 0; background: var(--bg); color: var(--text); font-family: Inter, Segoe UI, Roboto, Helvetica, Arial, system-ui, -apple-system, sans-serif; }
+
+    .admin-layout { display: grid; grid-template-columns: 260px 1fr; grid-template-rows: 64px auto; grid-template-areas: "topbar topbar" "sidebar content"; height: 100vh; width: 100%; }
+    .topbar { grid-area: topbar; display: flex; align-items: center; justify-content: space-between; padding: 0 16px; background: var(--topbar-bg); border-bottom: 1px solid var(--topbar-border); position: sticky; top: 0; z-index: 10; }
+    .brand { display: flex; align-items: center; gap: 12px; font-weight: 600; }
+    .brand-logo { width: 28px; height: 28px; border-radius: 8px; background: linear-gradient(135deg, var(--primary), #9333ea); }
+    .top-actions { display: flex; align-items: center; gap: 8px; }
+    .btn { border: 1px solid var(--card-border); background: #fff; color: var(--text); padding: 8px 12px; border-radius: 8px; cursor: pointer; font-weight: 600; }
+    .btn:hover { background: #f9fafb; }
+    .btn-primary { background: var(--primary); color: #fff; border-color: var(--primary); }
+    .btn-primary:hover { background: var(--primary-hover); }
+    .admin-name { color: var(--muted); font-weight: 500; }
+
+    .sidebar { grid-area: sidebar; background: var(--sidebar-bg); border-right: 1px solid var(--sidebar-border); color: #fff; padding: 16px 12px; overflow-y: auto; }
+    .sidebar-header { font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--sidebar-text); margin-bottom: 12px; opacity: 0.9; }
+    .menu { display: flex; flex-direction: column; gap: 6px; }
+    .menu a { display: flex; align-items: center; gap: 10px; padding: 10px 12px; text-decoration: none; color: var(--sidebar-text); border-radius: 10px; transition: background 160ms ease, color 160ms ease; font-weight: 500; }
+    .menu a:hover { background: var(--sidebar-hover-bg); color: #fff; }
+    .menu a.active { background: var(--sidebar-active-bg); color: #fff; }
+    .menu .icon { width: 18px; height: 18px; border-radius: 4px; background: #334155; flex-shrink: 0; }
+
+    .content { grid-area: content; padding: 20px; overflow-y: auto; }
+    .content h1 { margin: 0 0 12px; font-size: 24px; }
+    .content .muted { color: var(--muted); }
+    .card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 16px; }
+    .table-actions button { margin-right: 6px; }
+    .badge { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 12px; border: 1px solid var(--card-border); }
+    .badge.requested { background: #fff; }
+    .badge.in_progress { background: #fff0e6; color: #7c2d12; border-color: #fed7aa; }
+    .badge.completed { background: #ecfdf5; color: #14532d; border-color: #d1fae5; }
+    /* Inline Invoice Modal */
+    .modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.45); display: none; align-items: center; justify-content: center; z-index: 100; }
+    .modal-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; width: min(760px, 96vw); max-height: 90vh; overflow: auto; box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
+    .modal-header { display: flex; align-items: center; justify-content: space-between; padding: 16px; border-bottom: 1px solid var(--card-border); }
+    .modal-body { padding: 16px; }
+    .copyable { cursor: pointer; }
+  </style>
+</head>
+<body>
+  <div class="admin-layout">
+    <header class="topbar" role="banner">
+      <div class="brand" aria-label="Admin brand">
+        <div class="brand-logo" aria-hidden="true"></div>
+        <span>Super Admin Panel</span>
+      </div>
+      <div class="top-actions">
+        <button class="btn" onclick="location.href='home.html'">Back to Site</button>
+        <span class="admin-name">Signed in as <strong>Super Admin</strong></span>
+        <button class="btn-primary" onclick="location.href='signin.html'">Logout</button>
+      </div>
+    </header>
+
+    <aside class="sidebar" role="navigation" aria-label="Admin sidebar">
+      <div class="sidebar-header">Main Menu</div>
+      <nav class="menu">
+        <a href="admin.html" title="Dashboard"><span class="icon"></span> Dashboard</a>
+        <a href="user-management.html" title="User Management"><span class="icon"></span> User Management</a>
+        <a href="listing-approval.html" title="Listing Approvals"><span class="icon"></span> Listing Approvals</a>
+        <a href="create-listing.html" title="Create New Listing"><span class="icon"></span> Create New Listing</a>
+        <a href="manage-all-listings.html" title="Manage All Listings"><span class="icon"></span> Manage All Listings</a>
+        <a href="category-management.html" title="Category Management"><span class="icon"></span> Category Management</a>
+        <a href="tag-management.html" title="Tag Management"><span class="icon"></span> Tag Management</a>
+        <a href="role-management.html" title="Role Management"><span class="icon"></span> Role Management</a>
+        <a href="setting.html" title="Setting"><span class="icon"></span> Setting</a>
+        <a href="invoice-intake.html" title="Invoice Intake" class="active"><span class="icon"></span> Invoice Intake</a>
+      </nav>
+    </aside>
+
+    <main class="content" role="main">
+      <h1>Invoice Intake</h1>
+      <p class="muted">All orders submitted from invoices, grouped by status.</p>
+
+      <div style="display:flex; gap:8px; margin:12px 0">
+        <button class="btn it-tab active" data-status="requested">Requested</button>
+        <button class="btn it-tab" data-status="in_progress">In Progress</button>
+        <button class="btn it-tab" data-status="completed">Complete</button>
+      </div>
+
+      <div class="it-panels">
+        <div class="it-panel" data-status="requested">
+          <div class="card">
+            <h3 style="margin:0 0 12px">Requested Orders</h3>
+            <div style="overflow:auto">
+              <table class="it-table" style="width:100%; border-collapse:collapse">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Date</th>
+                    <th>Buyer</th>
+                    <th>Phone</th>
+                    <th>Country</th>
+                    <th>Type</th>
+                    <th>Car</th>
+                    <th>VIN/ID</th>
+                    <th>Memo</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="it-body-requested"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div class="it-panel" data-status="in_progress" style="display:none">
+          <div class="card">
+            <h3 style="margin:0 0 12px">In Progress Orders</h3>
+            <div style="overflow:auto">
+              <table class="it-table" style="width:100%; border-collapse:collapse">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Date</th>
+                    <th>Buyer</th>
+                    <th>Phone</th>
+                    <th>Country</th>
+                    <th>Type</th>
+                    <th>Car</th>
+                    <th>VIN/ID</th>
+                    <th>Memo</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="it-body-inprogress"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div class="it-panel" data-status="completed" style="display:none">
+          <div class="card">
+            <h3 style="margin:0 0 12px">Completed Orders</h3>
+            <div style="overflow:auto">
+              <table class="it-table" style="width:100%; border-collapse:collapse">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Date</th>
+                    <th>Buyer</th>
+                    <th>Phone</th>
+                    <th>Country</th>
+                    <th>Type</th>
+                    <th>Car</th>
+                    <th>VIN/ID</th>
+                    <th>Memo</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="it-body-completed"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer class="footer" style="margin-top:24px; padding-top:12px; border-top:1px solid var(--card-border); color:var(--muted); font-size:12px;">© 2024 NSM Autos Admin</footer>
+
+      <!-- Invoice Modal -->
+      <div id="invoice-modal" class="modal-backdrop" aria-hidden="true">
+        <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="invoice-title">
+          <div class="modal-header">
+            <h2 id="invoice-title" style="margin:0; font-size:18px">Invoice</h2>
+            <button class="btn" id="invoice-close">Close</button>
+          </div>
+          <div id="invoice-content" class="modal-body"></div>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      // Highlight active page in sidebar
+      (function () {
+        var links = document.querySelectorAll('.sidebar .menu a');
+        var current = location.pathname.split('/').pop().toLowerCase();
+        links.forEach(function (link) {
+          var href = (link.getAttribute('href') || '').split('/').pop().toLowerCase();
+          if (href === current) link.classList.add('active'); else link.classList.remove('active');
+        });
+      })();
+
+      // Invoice Intake: load orders and listings, group by status, render tables, and enable status moves
+      (async function () {
+        function esc(v){ return String(v==null?'':v).replace(/[&<>"']/g,function(c){return({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'})[c];}); }
+        function fmtDate(d){ try { return new Date(d).toLocaleString(); } catch(e){ return esc(d||''); } }
+        function statusKey(s){ s = (s||'').toLowerCase(); if (s==='pending'||s==='requested') return 'requested'; if (s==='in_progress'||s==='progress'||s==='processing') return 'in_progress'; if (s==='completed'||s==='complete'||s==='approved') return 'completed'; return 'requested'; }
+
+        var tabBtns = Array.from(document.querySelectorAll('.it-tab'));
+        tabBtns.forEach(function(btn){
+          btn.addEventListener('click', function(){
+            tabBtns.forEach(function(b){ b.classList.remove('active'); });
+            btn.classList.add('active');
+            var target = btn.getAttribute('data-status');
+            Array.from(document.querySelectorAll('.it-panel')).forEach(function(p){ p.style.display = (p.getAttribute('data-status')===target) ? '' : 'none'; });
+          });
+        });
+
+        async function loadOrders(){
+          var token = localStorage.getItem('token');
+          try {
+            if (token) {
+              var r = await fetch('http://localhost:3000/admin/orders', { headers: { 'Authorization': 'Bearer ' + token }, cache: 'no-store' });
+              if (r.ok) return await r.json();
+            }
+          } catch(e) {}
+          try { var r2 = await fetch('backend/orders.json', { cache: 'no-store' }); return r2.ok ? await r2.json() : []; } catch(e){ return []; }
+        }
+        async function loadListings(){ try { var r = await fetch('backend/listings.json', { cache: 'no-store' }); return r.ok ? await r.json() : []; } catch(e){ return []; } }
+        async function loadUsers(){ try { var r = await fetch('backend/users.json', { cache: 'no-store' }); return r.ok ? await r.json() : []; } catch(e){ return []; } }
+
+        var orders = await loadOrders(); if (!Array.isArray(orders)) orders = [];
+        var listings = await loadListings(); if (!Array.isArray(listings)) listings = [];
+        var users = await loadUsers(); if (!Array.isArray(users)) users = [];
+        var map = new Map(); listings.forEach(function(l){ map.set(String(l.id), l); });
+        var usersById = new Map(); users.forEach(function(u){ usersById.set(String(u.id), u); });
+
+        function carTitle(listing){ if (!listing) return ''; if (listing.title) return listing.title; var maker=(listing.insuranceHistory&&listing.insuranceHistory.manufacturer)||''; var model=(listing.insuranceHistory&&listing.insuranceHistory.model)||''; var year=(listing.vehicle&&listing.vehicle.year)||(listing.insuranceHistory&&listing.insuranceHistory.year)||''; var parts=[year,maker,model].filter(Boolean); return parts.join(' '); }
+        // Build latestOrder payload and open invoice modal inline
+        function computeOrderNo(o){
+          var created = new Date(o && (o.created_at || o.createdAt) || Date.now());
+          var y = String(created.getFullYear()).slice(2);
+          var m = String(created.getMonth()+1).padStart(2,'0');
+          var d = String(created.getDate()).padStart(2,'0');
+          var suffix = String(o && o.id != null ? o.id : Math.floor(Math.random()*1e8)).slice(-8).padStart(8,'0');
+          return 'BUY_'+y+m+d+'_'+suffix;
+        }
+        function formatMoney(n){
+          var num = (typeof n === 'number') ? n : Number(n||0) || 0;
+          return '$' + num.toLocaleString();
+        }
+        function copyText(txt){
+          try { navigator.clipboard.writeText(String(txt||'')); } catch(e) {}
+        }
+        function resolveBuyerInfo(o){
+          var sel = (o && o.selection) || {};
+          var name = sel.name || (sel.payer && sel.payer.name) || (sel.consignee && sel.consignee.name) || '';
+          var telCode = sel.telCode || '';
+          var tel = sel.tel || (sel.payer && sel.payer.tel) || (sel.consignee && sel.consignee.tel) || '';
+          var phone = [telCode, tel].filter(Boolean).join(' ').trim();
+          var country = o.country || '';
+          // Fallback to user profile if selection is missing/incomplete
+          if ((!name || !phone || !country) && (o.buyer_id != null || (o.buyer_email && String(o.buyer_email).trim() !== ''))){
+            var u = usersById.get(String(o.buyer_id));
+            if (!u && o.buyer_email){
+              var emailLower = String(o.buyer_email||'').toLowerCase();
+              u = users.find(function(x){ return String(x.email||'').toLowerCase() === emailLower; });
+            }
+            if (u){
+              var profile = u.profile || {};
+              name = name || profile.name || u.name || '';
+              country = country || profile.country || u.country || '';
+              phone = phone || profile.phone_number || u.phone_number || '';
+            }
+          }
+          return { name: name, phone: phone, country: country, type: o.type || '' };
+        }
+        function openInvoiceForId(id){
+          var o = orders.find(function(x){ return String(x.id)===String(id); });
+          if (!o) { alert('Order not found for viewing'); return; }
+          var l = map.get(String(o.listingId));
+          var title = carTitle(l) || 'Purchase Application Received';
+          var vin = (l && (l.product_id_number || l.vin || (l.vehicle&&l.vehicle.vin))) || 'N/A';
+          var price = l ? (l.price || l.sellingPrice || l.listedPrice || l.reservePrice || 0) : 0;
+          var orderNo = computeOrderNo(o);
+          var productUrl = 'product-detail.html?id=' + encodeURIComponent(String(o.listingId||''));
+          var overlay = document.getElementById('invoice-modal');
+          var content = document.getElementById('invoice-content');
+          content.innerHTML = ''+
+            '<div class="card" style="margin-bottom:12px">'+
+              '<div style="display:flex; align-items:flex-start">'+
+                '<div style="width:40px; height:40px; border-radius:999px; background:#fff3e6; color:#f59e0b; display:flex; align-items:center; justify-content:center; margin-right:10px">✓</div>'+
+                '<div>'+ 
+                  '<div class="text" style="font-size:20px; font-weight:800">'+
+                    '<a href="'+esc(productUrl)+'" target="_blank" rel="noopener" style="color:inherit; text-decoration:underline">'+esc(title)+'</a>'+
+                  '</div>'+ 
+                  '<div class="muted">Thank you! Your message has been received. We will contact you shortly.</div>'+ 
+                '</div>'+ 
+              '</div>'+ 
+              '<div style="margin-top:12px">'+ 
+                '<div class="muted" style="font-weight:600; font-size:12px">Total Price</div>'+ 
+                '<div style="font-size:22px; font-weight:900; color:#f59e0b">'+esc(formatMoney(price))+' + Shipping Fee</div>'+ 
+              '</div>'+ 
+              '<div style="margin:12px 0; border-top:1px solid var(--card-border)"></div>'+ 
+              '<div class="text-sm" style="display:grid; grid-template-columns: auto 1fr auto; align-items:center; gap:8px">'+ 
+                '<span class="muted" style="width:120px">Order NO:</span>'+ 
+                '<span style="font-weight:600">'+esc(orderNo)+'</span>'+ 
+                '<button class="btn copyable" id="copy-order">Copy</button>'+ 
+                '<span class="muted" style="width:120px">VIN NO:</span>'+ 
+                '<span style="font-weight:600">'+esc(vin)+'</span>'+ 
+                '<button class="btn copyable" id="copy-vin">Copy</button>'+ 
+              '</div>'+ 
+              '<div class="text-sm" style="margin-top:10px">'+
+                '<span class="muted" style="width:120px">Product:</span> '+
+                '<a href="'+esc(productUrl)+'" target="_blank" rel="noopener" class="link" style="color:#2563eb; text-decoration:underline">View product</a>'+
+              '</div>'+ 
+            '</div>'+
+            '<div class="card" style="margin-bottom:8px">'+
+              '<div style="font-size:13px; color:var(--muted)">Country: '+esc(o.country||'')+' &nbsp;•&nbsp; Type: '+esc(o.type||'')+'</div>'+
+            '</div>';
+          overlay.style.display = 'flex';
+          var closeBtn = document.getElementById('invoice-close');
+          if (closeBtn) closeBtn.onclick = function(){ overlay.style.display = 'none'; };
+          overlay.addEventListener('click', function(e){ if (e.target === overlay) overlay.style.display = 'none'; });
+          var copyOrderBtn = document.getElementById('copy-order');
+          var copyVinBtn = document.getElementById('copy-vin');
+          if (copyOrderBtn) copyOrderBtn.onclick = function(){ copyText(orderNo); };
+          if (copyVinBtn) copyVinBtn.onclick = function(){ copyText(vin); };
+        }
+
+        function renderAll(){
+          var grouped = { requested: [], in_progress: [], completed: [] };
+          orders.forEach(function(o){ var key = statusKey(o.status); var listing = map.get(String(o.listingId)); grouped[key].push({ o:o, l:listing }); });
+          render(grouped.requested, 'it-body-requested', 'requested');
+          render(grouped.in_progress, 'it-body-inprogress', 'in_progress');
+          render(grouped.completed, 'it-body-completed', 'completed');
+        }
+
+        async function updateStatus(id, next){
+          var token = localStorage.getItem('token');
+          try {
+            var res = await fetch('http://localhost:3000/admin/orders/'+id+'/status', {
+              method: 'PATCH',
+              headers: { 'Content-Type': 'application/json', 'Authorization': token ? ('Bearer '+token) : '' },
+              body: JSON.stringify({ status: next })
+            });
+            if (res.ok) {
+              var updated = await res.json();
+              var idx = orders.findIndex(function(o){ return String(o.id)===String(updated.id); });
+              if (idx>=0) orders[idx] = updated; else orders.push(updated);
+              renderAll();
+              return true;
+            } else {
+              alert('Failed to update status: '+res.status);
+            }
+          } catch(e) {
+            alert('Network error while updating status');
+          }
+          return false;
+        }
+
+        function render(items, tbodyId, group){
+          var tbody = document.getElementById(tbodyId); if (!tbody) return;
+          tbody.innerHTML = items.map(function(x){
+            var o=x.o, l=x.l; var info = resolveBuyerInfo(o);
+            var nextBtn = '';
+            if (group==='requested') nextBtn = '<button class="btn" data-action="to-progress" data-id="'+esc(o.id)+'">Move to In Progress</button>';
+            else if (group==='in_progress') nextBtn = '<button class="btn" data-action="to-complete" data-id="'+esc(o.id)+'">Move to Complete</button>';
+            else nextBtn = '<span class="badge completed">Completed</span> <button class="btn btn-primary" data-action="generate" title="Generate invoice PDF" data-id="'+esc(o.id)+'">Generate Invoice</button>';
+            var viewBtn = '<button class="btn" data-action="view" data-id="'+esc(o.id)+'">View</button>';
+            return '<tr>'+ 
+              '<td>'+esc(o.id)+'</td>'+ 
+              '<td>'+fmtDate(o.created_at)+'</td>'+ 
+              '<td>'+esc(info.name || '')+'</td>'+ 
+              '<td>'+esc(info.phone || '')+'</td>'+ 
+              '<td>'+esc(info.country || '')+'</td>'+ 
+              '<td>'+esc(info.type || '')+'</td>'+ 
+              '<td>'+esc(carTitle(l) || '')+'</td>'+ 
+              '<td>'+esc((l && (l.product_id_number || l.vin)) || '')+'</td>'+ 
+              '<td>'+esc((o.selection && o.selection.memo) || '')+'</td>'+ 
+              '<td class="table-actions">'+viewBtn+' '+nextBtn+'</td>'+ 
+            '</tr>';
+          }).join('');
+
+          // Hook up action buttons after render
+          Array.from(tbody.querySelectorAll('button[data-action]')).forEach(function(btn){
+            btn.addEventListener('click', async function(){
+              var id = btn.getAttribute('data-id');
+              var action = btn.getAttribute('data-action');
+              if (action==='view') { openInvoiceForId(id); return; }
+              if (action==='generate') { window.location.href = 'manual-invoice.html?orderId='+encodeURIComponent(String(id)); return; }
+              var next = action==='to-progress' ? 'in_progress' : 'completed';
+              await updateStatus(id, next);
+            });
+          });
+        }
+
+        renderAll();
+      })();
+    </script>
+  </div>
+</body>
+</html>

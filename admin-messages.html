@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Super Admin Panel — Buyer Messages</title>
+  <style>
+    :root {
+      --bg: #f6f7fb; --text: #0f172a; --muted: #64748b; --primary: #2563eb; --primary-hover: #1d4ed8;
+      --topbar-bg: #ffffff; --topbar-border: #e5e7eb; --sidebar-bg: #0b1220; --sidebar-border: #1f2937;
+      --sidebar-text: #cbd5e1; --sidebar-hover-bg: #111827; --sidebar-active-bg: #1f2937;
+      --card-bg: #ffffff; --card-border: #e5e7eb; --success: #16a34a; --danger: #dc2626;
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body { margin: 0; background: var(--bg); color: var(--text); font-family: Inter, Segoe UI, Roboto, Helvetica, Arial, system-ui, -apple-system, sans-serif; }
+    .admin-layout { display: grid; grid-template-columns: 260px 1fr; grid-template-rows: 64px auto; grid-template-areas: "topbar topbar" "sidebar content"; height: 100vh; width: 100%; }
+    .topbar { grid-area: topbar; display: flex; align-items: center; justify-content: space-between; padding: 0 16px; background: var(--topbar-bg); border-bottom: 1px solid var(--topbar-border); position: sticky; top: 0; z-index: 10; }
+    .brand { display: flex; align-items: center; gap: 12px; font-weight: 600; }
+    .brand-logo { width: 28px; height: 28px; border-radius: 8px; background: linear-gradient(135deg, var(--primary), #9333ea); }
+    .top-actions { display: flex; align-items: center; gap: 12px; }
+    .admin-name { color: var(--muted); font-weight: 500; }
+    .btn { border: 1px solid var(--card-border); background: #fff; color: var(--text); padding: 8px 12px; border-radius: 8px; cursor: pointer; font-weight: 600; text-decoration: none; display: inline-block; }
+    .btn:hover { background: #f9fafb; }
+    .btn-primary { background: var(--primary); color: #fff; border-color: var(--primary); }
+    .btn-primary:hover { background: var(--primary-hover); }
+    .sidebar { grid-area: sidebar; background: var(--sidebar-bg); border-right: 1px solid var(--sidebar-border); color: #fff; padding: 16px 12px; overflow-y: auto; }
+    .sidebar-header { font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--sidebar-text); margin-bottom: 12px; opacity: 0.9; }
+    .menu { display: flex; flex-direction: column; gap: 6px; }
+    .menu a { display: flex; align-items: center; gap: 10px; color: var(--sidebar-text); text-decoration: none; padding: 10px 10px; border-radius: 8px; }
+    .menu a:hover { background: var(--sidebar-hover-bg); }
+    .menu a.active { background: var(--sidebar-active-bg); }
+    .menu .icon { width: 18px; height: 18px; border-radius: 4px; background: #334155; flex-shrink: 0; }
+    .content { grid-area: content; padding: 20px; overflow-y: auto; }
+    .content h1 { margin: 0 0 12px; font-size: 24px; }
+    .muted { color: var(--muted); }
+    .footer { margin-top: 24px; padding-top: 12px; border-top: 1px solid var(--card-border); color: var(--muted); font-size: 12px; }
+    .panel { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; }
+    .panel-header { padding: 12px 14px; border-bottom: 1px solid var(--card-border); display:flex; align-items:center; justify-content:space-between; }
+    .panel-body { padding: 0; }
+    .panel-footer { padding: 12px 14px; border-top: 1px solid var(--card-border); }
+    .messages-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .table-wrap { overflow: hidden; }
+    .table-responsive { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; }
+    thead th { text-align: left; padding: 12px 14px; font-size: 12px; color: var(--muted); background: #f9fafb; border-bottom: 1px solid var(--card-border); white-space: nowrap; }
+    tbody td { padding: 12px 14px; border-bottom: 1px solid var(--card-border); font-size: 14px; }
+    tbody tr:last-child td { border-bottom: none; }
+    /* Chat */
+    .messages-scroll { height: 380px; overflow-y: auto; padding: 12px; }
+    .bubble { max-width: 70%; border-radius: 14px; padding: 10px 12px; font-size: 14px; }
+    .bubble-time { font-size: 11px; color: var(--muted); margin-top: 4px; }
+    .bubble-row { display:flex; margin-bottom: 10px; }
+    .bubble-in { background:#f3f4f6; color: var(--text); margin-right:auto; }
+    .bubble-out { background: var(--primary); color: #fff; margin-left:auto; }
+    .compose { display:flex; gap: 8px; }
+    .compose-input { flex:1; padding: 10px 12px; border: 1px solid var(--card-border); border-radius: 10px; background:#fff; }
+  </style>
+</head>
+<body>
+  <div class="admin-layout">
+    <header class="topbar" role="banner">
+      <div class="brand" aria-label="Admin brand">
+        <div class="brand-logo" aria-hidden="true"></div>
+        <span>Super Admin Panel</span>
+      </div>
+      <div class="top-actions">
+        <a class="btn" href="home.html">Back to Site</a>
+        <span class="admin-name">Signed in as <strong>Super Admin</strong></span>
+        <a class="btn-primary" href="signin.html">Logout</a>
+      </div>
+    </header>
+
+    <aside class="sidebar" role="navigation" aria-label="Admin sidebar">
+      <div class="sidebar-header">Main Menu</div>
+      <nav class="menu">
+        <a href="admin.html" title="Dashboard"><span class="icon"></span> Dashboard</a>
+        <a href="user-management.html" title="User Management"><span class="icon"></span> User Management</a>
+        <a href="listing-approval.html" title="Listing Approvals"><span class="icon"></span> Listing Approvals</a>
+        <a href="create-listing.html" title="Create New Listing"><span class="icon"></span> Create New Listing</a>
+        <a href="manage-all-listings.html" title="Manage All Listings"><span class="icon"></span> Manage All Listings</a>
+        <a href="category-management.html" title="Category Management"><span class="icon"></span> Category Management</a>
+        <a href="tag-management.html" title="Tag Management"><span class="icon"></span> Tag Management</a>
+        <a href="role-management.html" title="Role Management"><span class="icon"></span> Role Management</a>
+        <a href="blog-management.html" title="Blog Management"><span class="icon"></span> Blog Management</a>
+        <a href="setting.html" title="Setting"><span class="icon"></span> Setting</a>
+        <a href="admin-messages.html" title="Buyer Messages" class="active"><span class="icon"></span> Buyer Messages</a>
+        <a href="invoice-intake.html" title="Invoice Intake"><span class="icon"></span> Invoice Intake</a>
+      </nav>
+    </aside>
+
+    <main class="content" role="main">
+      <h1>Buyer Messages</h1>
+      <p class="muted">Select a conversation to chat with the buyer. Messages update live like a messenger.</p>
+
+      <div class="messages-layout">
+        <section class="panel">
+          <div class="panel-header"><h3 style="margin:0">Conversations</h3></div>
+          <div class="panel-body">
+            <div class="table-wrap">
+              <div class="table-responsive">
+                <table aria-label="Buyer messages threads">
+                  <thead>
+                    <tr>
+                      <th style="width: 18%">Thread ID</th>
+                      <th style="width: 26%">Subject</th>
+                      <th style="width: 24%">Vehicle</th>
+                      <th style="width: 18%">Last Message</th>
+                      <th style="width: 14%">Messages</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="threads-tbody"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel" id="chat-panel">
+          <div class="panel-header">
+            <div>
+              <h3 id="chat-title" style="margin:0">Select a conversation</h3>
+              <div id="chat-subtitle" class="muted" style="font-size:13px"></div>
+            </div>
+            <div>
+              <a id="vehicle-link" class="btn" href="#" style="display:none">View Vehicle</a>
+            </div>
+          </div>
+          <div class="panel-body">
+            <div id="chat-messages" class="messages-scroll" aria-live="polite" aria-busy="false"></div>
+          </div>
+          <div class="panel-footer">
+            <form id="chat-compose" class="compose">
+              <input id="chat-input" class="compose-input" type="text" placeholder="Type a message..." />
+              <button id="chat-send" class="btn-primary" type="submit">Send</button>
+            </form>
+          </div>
+        </section>
+      </div>
+
+      <footer class="footer">© 2024 NSM Autos Admin</footer>
+    </main>
+
+    <script>
+      (function(){
+        function readJson(key){ try { var v = localStorage.getItem(key); return v ? JSON.parse(v) : null; } catch(e){ return null; } }
+        function writeJson(key, val){ try { localStorage.setItem(key, JSON.stringify(val)); } catch(e){} }
+        function lastTs(arr){ var m = arr[arr.length-1] || {}; return m.ts ? new Date(m.ts).toLocaleString() : '—'; }
+        function ensureStore(){ var s = readJson('messages'); if (!s || typeof s !== 'object') s = {}; return s; }
+        function ensureMeta(){ var m = readJson('messages_meta'); if (!m || typeof m !== 'object') m = {}; return m; }
+        function injectRows(){
+          store = ensureStore(); meta = ensureMeta();
+          var keys = Object.keys(store);
+          var rows = keys.map(function(k){
+            var arr = Array.isArray(store[k]) ? store[k] : [];
+            var m = meta[k] || {};
+            var subject = m.subject || 'Conversation';
+            var vehicle = m.vehicleTitle || '—';
+            return (
+              '<tr>'+
+                '<td>'+k+'</td>'+
+                '<td>'+subject+'</td>'+
+                '<td>'+vehicle+'</td>'+
+                '<td>'+ lastTs(arr) +'</td>'+
+                '<td>'+(arr.length || 0)+'</td>'+
+                '<td class="actions">'+
+                  '<button class="btn open-thread" data-thread="'+k+'">Open</button>'+
+                '</td>'+
+              '</tr>'
+            );
+          });
+          var tbody = document.getElementById('threads-tbody');
+          if (tbody) {
+            tbody.innerHTML = rows.join('') || '<tr><td colspan="6" style="text-align:center; padding:20px; color:'+ '#64748b' +'">No conversations yet.</td></tr>';
+          }
+        }
+
+        function deriveMeta(threadId){
+          var m = meta[threadId] || {};
+          // If thread is based on order, fetch purchase details
+          if (threadId.indexOf('order:') === 0) {
+            var orderNo = threadId.slice('order:'.length);
+            var purchases = readJson('purchases') || [];
+            var p = purchases.find(function(x){ return (x.orderNo || x.orderNumber || '') === orderNo; });
+            if (p) {
+              m.subject = 'Order ' + (p.orderNo || orderNo);
+              m.vehicleTitle = p.title || (p.vehicle && (p.vehicle.title || p.vehicle.name));
+              m.listingId = p.listingId || p.id || '';
+            }
+          }
+          if (!m.subject) m.subject = 'Conversation';
+          if (!m.participants) m.participants = ['buyer','admin'];
+          meta[threadId] = m; writeJson('messages_meta', meta);
+          return m;
+        }
+
+        function escapeHtml(str){ return String(str || '').replace(/[&<>"']/g, function(s){ return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'})[s]; }); }
+        function renderChat(){
+          var msgsEl = document.getElementById('chat-messages');
+          var titleEl = document.getElementById('chat-title');
+          var subEl = document.getElementById('chat-subtitle');
+          var vlink = document.getElementById('vehicle-link');
+          if (!activeThread) {
+            titleEl.textContent = 'Select a conversation';
+            subEl.textContent = '';
+            vlink.style.display = 'none';
+            msgsEl.innerHTML = '';
+            return;
+          }
+          var m = deriveMeta(activeThread);
+          titleEl.textContent = m.subject || activeThread;
+          subEl.textContent = (m.vehicleTitle ? (m.vehicleTitle + ' • ') : '') + 'Admin ↔ Buyer';
+          if (m.listingId) { vlink.style.display = ''; vlink.href = 'product-detail.html?id=' + encodeURIComponent(m.listingId); } else { vlink.style.display = 'none'; }
+
+          var arr = Array.isArray(store[activeThread]) ? store[activeThread] : [];
+          msgsEl.innerHTML = arr.map(function(msg){
+            var isOut = (msg.from || '').toLowerCase() === 'admin';
+            var bubbleClass = isOut ? 'bubble bubble-out' : 'bubble bubble-in';
+            var rowClass = isOut ? 'bubble-row' : 'bubble-row';
+            return (
+              '<div class="'+rowClass+'">'+
+                '<div class="'+bubbleClass+'">'+ escapeHtml(msg.text) +'<div class="bubble-time">'+ (msg.ts ? new Date(msg.ts).toLocaleString() : '') +'</div></div>'+
+              '</div>'
+            );
+          }).join('');
+          // Scroll to bottom
+          msgsEl.scrollTop = msgsEl.scrollHeight;
+        }
+
+        function openThread(threadId){
+          activeThread = threadId;
+          // Initialize thread if missing
+          if (!Array.isArray(store[threadId])) {
+            store[threadId] = [{ id: 'm1', from: 'buyer', to: 'admin', text: 'Hello, I have a question about this order.', ts: new Date().toISOString() }];
+            writeJson('messages', store);
+          }
+          renderChat();
+        }
+
+        function sendMessage(text){
+          if (!activeThread || !text) return;
+          var arr = Array.isArray(store[activeThread]) ? store[activeThread] : [];
+          arr.push({ id: 'm' + Math.random().toString(36).slice(2), from: 'admin', to: 'buyer', text: text, ts: new Date().toISOString() });
+          store[activeThread] = arr; writeJson('messages', store);
+          renderChat();
+        }
+
+        var store = ensureStore();
+        var meta = ensureMeta();
+        var activeThread = '';
+        injectRows();
+
+        var tbody = document.getElementById('threads-tbody');
+        if (tbody) {
+          tbody.addEventListener('click', function(e){
+            var btn = e.target.closest('.open-thread');
+            if (!btn) return;
+            var tid = btn.getAttribute('data-thread');
+            openThread(tid);
+          });
+        }
+
+        var form = document.getElementById('chat-compose');
+        var input = document.getElementById('chat-input');
+        if (form && input) {
+          form.addEventListener('submit', function(e){ e.preventDefault(); var text = (input.value||'').trim(); if (!text) return; sendMessage(text); input.value=''; });
+        }
+
+        // Live updates: refresh chat if messages change in other tab
+        window.addEventListener('storage', function(ev){
+          if (ev.key === 'messages') { store = ensureStore(); if (activeThread) renderChat(); injectRows(); }
+          if (ev.key === 'messages_meta') { meta = ensureMeta(); if (activeThread) renderChat(); }
+        });
+      })();
+    </script>
+  </div>
+</body>
+</html>

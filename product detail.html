@@ -1,0 +1,1150 @@
+<!DOCTYPE html><html><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2022 Toyota RAV4 Hybrid - MangoCar Premium Used Car Dealership</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>window.FontAwesomeConfig = {autoReplaceSvg:'nest'};</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<!-- Removed external Google Fonts to avoid net::ERR_ABORTED in preview env -->
+    <style>
+        ::-webkit-scrollbar { display: none;}
+        * { font-family:'Inter', sans-serif; }
+        
+        .sticky-column {
+            position: sticky;
+            top: 120px;
+            height: fit-content;
+        }
+        
+        .image-transition {
+            transition: opacity 0.3s ease-in-out;
+        }
+        
+        .thumbnail-active {
+            border: 3px solid #f97316;
+            opacity: 1;
+        }
+        
+        .thumbnail-inactive {
+            opacity: 0.7;
+            border: 2px solid transparent;
+        }
+        
+        .thumbnail-inactive:hover {
+            opacity: 1;
+            border: 2px solid #f97316;
+        }
+        
+        .cta-button {
+            transition: all 0.3s ease;
+        }
+        
+        .cta-button:hover {
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+            filter: brightness(1.05);
+        }
+        
+        .cta-button:active {
+            transform: scale(0.98);
+        }
+        
+        .fade-in-up {
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 0.6s ease-out forwards;
+        }
+        
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .vehicle-card-hover {
+            transition: all 0.3s ease;
+        }
+        
+        .vehicle-card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+        
+        .tab-active {
+            background-color: #f97316;
+            color: white;
+            border-bottom: 3px solid #ea580c;
+        }
+        
+        .tab-inactive {
+            background-color: #f3f4f6;
+            color: #6b7280;
+            border-bottom: 3px solid transparent;
+        }
+        
+        .tab-inactive:hover {
+            background-color: #e5e7eb;
+            color: #374151;
+        }
+        
+        .feature-highlight {
+            background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .pulse-dot {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+
+<header id="header" class="bg-white shadow-sm sticky top-0 z-50 transition-all duration-300">
+    <div class="container mx-auto px-8 py-6">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-12">
+                <div class="flex items-center space-x-4">
+                    <div class="flex items-center">
+                        <div class="relative">
+                            <span class="text-3xl font-black text-gray-900 tracking-tight">MANG</span>
+                            <div class="inline-block relative mx-1">
+                                <span class="text-3xl font-black text-gray-900">O</span>
+                                <div class="absolute inset-0 w-8 h-8 bg-gradient-to-br from-orange-400 to-orange-600 rounded-full opacity-80 -top-1"></div>
+                            </div>
+                            <span class="text-3xl font-black text-gray-900 tracking-tight">CAR</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center">
+                        <div class="relative w-12 h-12">
+                            <div class="absolute inset-0 w-8 h-8 bg-blue-500 rounded-full opacity-80"></div>
+                            <div class="absolute top-2 right-0 w-8 h-8 bg-orange-500 rounded-full opacity-80"></div>
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <span class="text-white font-bold text-sm z-10">CG</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flex-1 max-w-2xl mx-12">
+                <div class="relative">
+                    <div class="flex items-center bg-gray-50 rounded-full border-2 border-gray-200 focus-within:border-orange-500 transition-colors">
+                        <input type="text" data-text="search-placeholder" placeholder="Identification Number / Product Number" class="flex-1 px-6 py-4 bg-transparent text-gray-700 placeholder-gray-500 focus:outline-none rounded-l-full">
+                        <button class="bg-orange-500 hover:bg-orange-600 text-white px-8 py-4 rounded-full font-bold flex items-center space-x-2 transition-all transform hover:scale-105">
+                            <i class="fa-solid fa-search"></i>
+                            <span data-text="offers-count">78,312 offers</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flex items-center space-x-8">
+                <div class="flex items-center space-x-6">
+                    <i class="fa-solid fa-ship text-gray-700 text-xl hover:text-orange-500 transition-colors cursor-pointer"></i>
+                    <i class="fa-solid fa-globe text-gray-700 text-xl hover:text-orange-500 transition-colors cursor-pointer"></i>
+                </div>
+            </div>
+        </div>
+        
+        <nav class="flex items-center justify-center space-x-12 mt-6 pt-4 border-t border-gray-100">
+            <a href="home.html" class="text-gray-700 hover:text-orange-500 font-medium transition-colors cursor-pointer">Home</a>
+            <a href="inventory.html" class="text-gray-700 hover:text-orange-500 font-medium transition-colors cursor-pointer">Inventory</a>
+            <a href="blog.html" class="text-gray-700 hover:text-orange-500 font-medium transition-colors cursor-pointer">Blog</a>
+            <a href="about-us.html" class="text-gray-700 hover:text-orange-500 font-medium transition-colors cursor-pointer">About Us</a>
+            <a href="contact-us.html" class="text-gray-700 hover:text-orange-500 font-medium transition-colors cursor-pointer">Contact Us</a>
+        </nav>
+    </div>
+</header>
+
+<section id="breadcrumbs-section" class="bg-gray-100 py-4">
+    <div class="container mx-auto px-6">
+        <nav class="flex items-center space-x-2 text-sm">
+            <span class="text-orange-500 hover:text-orange-600 cursor-pointer">Home</span>
+            <i class="fa-solid fa-chevron-right text-gray-400 text-xs"></i>
+            <span class="text-orange-500 hover:text-orange-600 cursor-pointer">Inventory</span>
+            <i class="fa-solid fa-chevron-right text-gray-400 text-xs"></i>
+            <span class="text-orange-500 hover:text-orange-600 cursor-pointer">SUVs</span>
+            <i class="fa-solid fa-chevron-right text-gray-400 text-xs"></i>
+            <span class="text-gray-600">2022 Toyota RAV4 Hybrid</span>
+        </nav>
+        <div class="mt-4 flex items-center justify-between">
+            <div>
+                <h1 class="text-3xl lg:text-4xl font-bold text-gray-900">2022 Toyota RAV4 Hybrid XLE Premium</h1>
+                <p class="text-gray-600 mt-2">Stock #: MC2024-RAV4-001 • VIN: 2T3F1RFV8NC123456</p>
+            </div>
+            <div class="hidden md:flex items-center space-x-4">
+                <button class="flex items-center text-gray-600 hover:text-orange-500 transition-colors">
+                    <i class="fa-solid fa-share mr-2"></i>
+                    Share
+                </button>
+                <button class="flex items-center text-gray-600 hover:text-orange-500 transition-colors">
+                    <i class="fa-solid fa-print mr-2"></i>
+                    Print
+                </button>
+                <button class="flex items-center text-gray-600 hover:text-orange-500 transition-colors">
+                    <i class="fa-regular fa-heart mr-2"></i>
+                    Save
+                </button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<main class="container mx-auto px-6 py-8">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        
+        <div id="media-gallery-section" class="lg:col-span-2">
+            <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
+                <div class="relative">
+                    <div id="main-image-container" class="relative h-96 lg:h-[500px] bg-gray-100">
+                        <div id="main-image-wrapper" class="lg:col-span-2">
+    <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
+        <div class="relative bg-black h-[500px] flex items-center justify-center">
+            <img id="main-image" class="w-full h-full object-contain image-transition" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/2edf96fe03-da1218d26654651f1a43.png" alt="a white 2015 Audi A3 sedan, side profile, on a rotating platform in a professional photo studio with a black background, high-resolution, clean aesthetic">
+            <div class="absolute bottom-4 right-4 flex items-center space-x-2">
+                <button class="w-12 h-12 bg-orange-500 hover:bg-orange-600 rounded-full flex items-center justify-center transition-transform transform hover:scale-110 shadow-lg">
+                    <i class="fa-solid fa-play text-white text-lg"></i>
+                </button>
+                <button class="w-12 h-12 bg-gray-800 bg-opacity-70 hover:bg-opacity-90 rounded-full flex items-center justify-center transition-transform transform hover:scale-110 shadow-lg">
+                    <i class="fa-solid fa-download text-white"></i>
+                </button>
+                <button class="w-12 h-12 bg-gray-800 bg-opacity-70 hover:bg-opacity-90 rounded-full flex items-center justify-center transition-transform transform hover:scale-110 shadow-lg">
+                    <i class="fa-solid fa-search-plus text-white"></i>
+                </button>
+            </div>
+        </div>
+        <div id="thumbnail-grid" class="p-4 bg-gray-100">
+            <div class="grid grid-cols-5 gap-3 max-h-[400px] overflow-y-auto pr-2">
+                <div class="relative col-span-2 row-span-2 rounded-lg overflow-hidden cursor-pointer group">
+                    <img class="w-full h-full object-cover transition-transform group-hover:scale-105" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/df240d751c-b92e11f74f02b8113e74.png" alt="a white 2015 Audi A3 sedan, front three-quarter view, in a professional photo studio with a black background">
+                    <div class="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center">
+                        <div class="w-16 h-16 bg-orange-500 bg-opacity-80 rounded-full flex items-center justify-center">
+                            <i class="fa-solid fa-play text-white text-2xl"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="rounded-lg overflow-hidden cursor-pointer group">
+                    <img class="w-full h-full object-cover transition-transform group-hover:scale-105" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/df240d751c-41d4e7762deea82e9252.png" alt="a white 2015 Audi A3 sedan, front view, in a professional photo studio with a black background">
+                </div>
+                <div class="rounded-lg overflow-hidden cursor-pointer group border-2 border-orange-500">
+                    <img class="w-full h-full object-cover transition-transform group-hover:scale-105" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/2edf96fe03-fefd8bbe29e27543f450.png" alt="a white 2015 Audi A3 sedan, side profile, in a professional photo studio with a black background">
+                </div>
+                <div class="rounded-lg overflow-hidden cursor-pointer group">
+                    <img class="w-full h-full object-cover transition-transform group-hover:scale-105" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/c20ebc54fa-55692d5cf1b449ce2765.png" alt="a white 2015 Audi A3 sedan, rear three-quarter view, in a professional photo studio with a black background">
+                </div>
+                <div class="rounded-lg overflow-hidden cursor-pointer group">
+                    <img class="w-full h-full object-cover transition-transform group-hover:scale-105" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/c20ebc54fa-9b24aec64c0b7e689e76.png" alt="a white 2015 Audi A3 sedan, rear view, in a professional photo studio with a black background">
+                </div>
+                <div class="rounded-lg overflow-hidden cursor-pointer group">
+                    <img class="w-full h-full object-cover transition-transform group-hover:scale-105" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/43fa09a352-8ebe7cdebe526eeab931.png" alt="a white 2015 Audi A3 sedan, alternative rear three-quarter view, in a professional photo studio with a black background">
+                </div>
+                <div class="rounded-lg overflow-hidden cursor-pointer group">
+                    <img class="w-full h-full object-cover transition-transform group-hover:scale-105" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/48d4951358-3a2db691fe9219106c4e.png" alt="close-up of the front wheel and alloy rim of a white 2015 Audi A3 sedan, studio lighting">
+                </div>
+                <div class="rounded-lg overflow-hidden cursor-pointer group">
+                    <img class="w-full h-full object-cover transition-transform group-hover:scale-105" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/c5d1d6c539-c36d0085fb3130dd0bdc.png" alt="close-up of the rear wheel and alloy rim of a white 2015 Audi A3 sedan, studio lighting">
+                </div>
+                <div class="rounded-lg overflow-hidden cursor-pointer group">
+                    <img class="w-full h-full object-cover transition-transform group-hover:scale-105" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/6af9e0a9db-fd9ecc634cfdd46196f2.png" alt="interior view of a 2015 Audi A3 sedan, showing the steering wheel and dashboard, clean and modern">
+                </div>
+                <div class="rounded-lg overflow-hidden cursor-pointer group">
+                    <img class="w-full h-full object-cover transition-transform group-hover:scale-105" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/9389ef9a67-f8070fdb737d028265f5.png" alt="close-up of the instrument cluster of a 2015 Audi A3 sedan, illuminated gauges">
+                </div>
+                <div class="rounded-lg overflow-hidden cursor-pointer group">
+                    <img class="w-full h-full object-cover transition-transform group-hover:scale-105" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/50be6d9760-be8c8a3c888c6faa5917.png" alt="close-up of the gear shifter and center console of a 2015 Audi A3 sedan">
+                </div>
+                <div class="rounded-lg overflow-hidden cursor-pointer group">
+                    <img class="w-full h-full object-cover transition-transform group-hover:scale-105" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/682618e818-ba4cdfb5fbe2d99da12c.png" alt="view of the infotainment screen in a 2015 Audi A3 sedan, showing the navigation system">
+                </div>
+                <div class="rounded-lg overflow-hidden cursor-pointer group">
+                    <img class="w-full h-full object-cover transition-transform group-hover:scale-105" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/c7f0d9c830-d861d26a60852d9a7f85.png" alt="view of the front passenger seat area in a 2015 Audi A3 sedan">
+                </div>
+                <div class="rounded-lg overflow-hidden cursor-pointer group">
+                    <img class="w-full h-full object-cover transition-transform group-hover:scale-105" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/846fb57d03-67ebb807cc1d807f0f4b.png" alt="view of the backup camera display on the infotainment screen of a 2015 Audi A3 sedan">
+                </div>
+                <div class="rounded-lg overflow-hidden cursor-pointer group">
+                    <img class="w-full h-full object-cover transition-transform group-hover:scale-105" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/f65d2191ae-101edce1381b9bce858b.png" alt="close-up of the overhead console with sunroof controls in a 2015 Audi A3 sedan">
+                </div>
+                <div class="rounded-lg overflow-hidden cursor-pointer group">
+                    <img class="w-full h-full object-cover transition-transform group-hover:scale-105" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/29ad93eaea-2f73ade364fa674bab2d.png" alt="interior door panel of the driver">
+                </div>
+                <div class="rounded-lg overflow-hidden cursor-pointer group">
+                    <img class="w-full h-full object-cover transition-transform group-hover:scale-105" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/4d3b389833-361551c3aea7e662f764.png" alt="view of the front leather seats in a 2015 Audi A3 sedan">
+                </div>
+                <div class="rounded-lg overflow-hidden cursor-pointer group">
+                    <img class="w-full h-full object-cover transition-transform group-hover:scale-105" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/93364f98bd-076e3a4ab48835df20b3.png" alt="view of the rear passenger seats in a 2015 Audi A3 sedan">
+                </div>
+                <div class="rounded-lg overflow-hidden cursor-pointer group">
+                    <img class="w-full h-full object-cover transition-transform group-hover:scale-105" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/52f8df6fff-c4092b4f5a53c04ec130.png" alt="interior door panel of the rear passenger side in a 2015 Audi A3 sedan">
+                </div>
+                 <div class="rounded-lg overflow-hidden cursor-pointer group">
+                    <img class="w-full h-full object-cover transition-transform group-hover:scale-105" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/11df983e2d-6989d1ba800bbdf3e98a.png" alt="view from the driver">
+                </div>
+                <div class="rounded-lg overflow-hidden cursor-pointer group">
+                    <img class="w-full h-full object-cover transition-transform group-hover:scale-105" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/5859d45637-bb3ee0f7d07fda3acd55.png" alt="view of the open trunk of a 2015 Audi A3 sedan, showing cargo space">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+                        
+                        <div class="absolute top-4 left-4 flex flex-col space-y-2">
+                            <div class="bg-green-500 text-white px-3 py-1 rounded-full text-sm font-semibold">
+                                Certified Pre-Owned
+                            </div>
+                            <div class="bg-blue-500 text-white px-3 py-1 rounded-full text-sm font-semibold">
+                                Low Miles
+                            </div>
+                            <div class="bg-purple-500 text-white px-3 py-1 rounded-full text-sm font-semibold">
+                                One Owner
+                            </div>
+                        </div>
+                        
+                        <div class="absolute top-4 right-4 flex flex-col space-y-2">
+                            <button class="bg-white bg-opacity-90 hover:bg-opacity-100 rounded-full p-3 shadow-lg transition-all">
+                                <i class="fa-solid fa-expand text-gray-700"></i>
+                            </button>
+                            <button id="360-view-btn" class="bg-orange-500 hover:bg-orange-600 text-white rounded-full p-3 shadow-lg transition-all">
+                                <i class="fa-solid fa-rotate text-white"></i>
+                            </button>
+                        </div>
+                        
+                        <div class="absolute bottom-4 right-4 bg-black bg-opacity-75 text-white px-4 py-2 rounded-lg">
+                            <span id="image-counter">1 / 24 Photos</span>
+                        </div>
+                    </div>
+                    
+                    <div id="thumbnail-carousel" class="p-6 bg-gray-50">
+                        <div class="flex space-x-4 overflow-x-auto pb-2">
+                            <img class="w-20 h-20 object-cover rounded-lg cursor-pointer thumbnail-active transition-all" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/f3c42c142c-2f69678e62847ddc3c51.png" alt="Exterior front view" data-index="0">
+                            <img class="w-20 h-20 object-cover rounded-lg cursor-pointer thumbnail-inactive transition-all" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/152dd105a1-82594383c4be302e0102.png" alt="Interior dashboard view" data-index="1">
+                            <img class="w-20 h-20 object-cover rounded-lg cursor-pointer thumbnail-inactive transition-all" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/7b5625eab1-bdc895bb7d58fe35c3e7.png" alt="Rear exterior view" data-index="2">
+                            <img class="w-20 h-20 object-cover rounded-lg cursor-pointer thumbnail-inactive transition-all" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/4da1d2c8d8-34ae24e79c671c59eefe.png" alt="Side profile view" data-index="3">
+                            <img class="w-20 h-20 object-cover rounded-lg cursor-pointer thumbnail-inactive transition-all" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/ec05d243c4-af67204976e67c9d47c7.png" alt="Interior seating view" data-index="4">
+                            <img class="w-20 h-20 object-cover rounded-lg cursor-pointer thumbnail-inactive transition-all" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/d3d158e177-8f211eb0577e789b2c43.png" alt="Engine bay view" data-index="5">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="vehicle-details-tabs-section" class="mt-8">
+                <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
+                    <div class="flex border-b border-gray-200">
+                        <button class="tab-button tab-active px-8 py-4 font-semibold transition-all" data-tab="overview">
+                            Vehicle Info
+                        </button>
+                        <button class="tab-button tab-inactive px-8 py-4 font-semibold transition-all" data-tab="features">
+                            Option Info
+                        </button>
+                        <button class="tab-button tab-inactive px-8 py-4 font-semibold transition-all" data-tab="history">
+                            Insurance History
+                        </button>
+                    </div>
+                    
+                    <div id="overview-tab" class="tab-content p-8">
+    <h2 class="text-3xl font-bold text-gray-800 mb-8">Vehicle Info</h2>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-5 text-base border-b border-gray-200 pb-8">
+        <div class="flex justify-between">
+            <span class="text-gray-500">Year</span>
+            <span class="font-bold text-gray-900">2015</span>
+        </div>
+        <div class="flex justify-between">
+            <span class="text-gray-500">Transmission</span>
+            <span class="font-bold text-gray-900">AUTO</span>
+        </div>
+        <div class="flex justify-between">
+            <span class="text-gray-500">Fuel</span>
+            <span class="font-bold text-gray-900">Diesel</span>
+        </div>
+        <div class="flex justify-between">
+            <span class="text-gray-500">Color</span>
+            <span class="font-bold text-gray-900">WHITE</span>
+        </div>
+        <div class="flex justify-between">
+            <span class="text-gray-500">Displacement</span>
+            <span class="font-bold text-gray-900">1,968cc</span>
+        </div>
+        <div class="flex justify-between">
+            <span class="text-gray-500">Passenger Capacity</span>
+            <span class="font-bold text-gray-900">5</span>
+        </div>
+        <div class="flex justify-between">
+            <span class="text-gray-500">Drive Type</span>
+            <span class="font-bold text-gray-900">2WD</span>
+        </div>
+        <div class="flex justify-between">
+            <span class="text-gray-500">First Registration Date</span>
+            <span class="font-bold text-gray-900">2014.12.19</span>
+        </div>
+        <div class="flex justify-between">
+            <span class="text-gray-500">Mileage</span>
+            <span class="font-bold text-gray-900">91,391KM</span>
+        </div>
+        <div class="flex justify-between">
+            <span class="text-gray-500">Location</span>
+            <span class="font-bold text-gray-900">Korea</span>
+        </div>
+    </div>
+    
+    <div class="mt-8">
+        <h3 class="text-xl font-bold text-gray-800 mb-6 flex items-center">
+            Relevant information
+            <i class="fa-regular fa-circle-question text-gray-400 ml-2 cursor-pointer"></i>
+        </h3>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-5 text-base">
+            <div class="flex justify-between">
+                <span class="text-gray-500">Total Loss Insurance</span>
+                <span class="font-bold text-gray-900">NO</span>
+            </div>
+            <div class="flex justify-between">
+                <span class="text-gray-500">Flood damage insurance</span>
+                <span class="font-bold text-gray-900">NO</span>
+            </div>
+            <div class="flex justify-between">
+                <span class="text-gray-500">Theft insurance</span>
+                <span class="font-bold text-gray-900">NO</span>
+            </div>
+            <div class="flex justify-between">
+                <span class="text-gray-500">Government usage</span>
+                <span class="font-bold text-gray-900">NO</span>
+            </div>
+            <div class="flex justify-between">
+                <span class="text-gray-500">Record of use (general) for commercial purposes</span>
+                <span class="font-bold text-gray-900">NO</span>
+            </div>
+            <div class="flex justify-between">
+                <span class="text-gray-500">Record of use (rent) for commercial purposes</span>
+                <span class="font-bold text-gray-900">NO</span>
+            </div>
+            <div class="flex justify-between">
+                <span class="text-gray-500">Fuel system modification</span>
+                <span class="font-bold text-gray-900">NO</span>
+            </div>
+            <div class="flex justify-between">
+                <span class="text-gray-500">Seat Modification</span>
+                <span class="font-bold text-gray-900">NO</span>
+            </div>
+        </div>
+    </div>
+</div>
+                    
+                    <div id="features-tab" class="tab-content p-8 hidden">
+                        <div class="mb-8">
+                            <h3 class="text-2xl font-bold text-gray-900 mb-6">Option Info</h3>
+                            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 mb-8">
+                                <div class="flex flex-col items-center p-4 bg-gray-50 rounded-lg">
+                                    <i class="fa-solid fa-car-side text-orange-500 text-2xl mb-2"></i>
+                                    <span class="text-sm text-gray-700 text-center">Sunroof</span>
+                                </div>
+                                <div class="flex flex-col items-center p-4 bg-gray-50 rounded-lg">
+                                    <i class="fa-solid fa-mountain text-orange-500 text-2xl mb-2"></i>
+                                    <span class="text-sm text-gray-700 text-center">4WD</span>
+                                </div>
+                                <div class="flex flex-col items-center p-4 bg-gray-50 rounded-lg">
+                                    <i class="fa-solid fa-chair text-orange-500 text-2xl mb-2"></i>
+                                    <span class="text-sm text-gray-700 text-center">Leather Seat</span>
+                                </div>
+                                <div class="flex flex-col items-center p-4 bg-gray-50 rounded-lg">
+                                    <i class="fa-solid fa-fire text-orange-500 text-2xl mb-2"></i>
+                                    <span class="text-sm text-gray-700 text-center">Heated Seat</span>
+                                </div>
+                                <div class="flex flex-col items-center p-4 bg-gray-50 rounded-lg">
+                                    <i class="fa-solid fa-wind text-orange-500 text-2xl mb-2"></i>
+                                    <span class="text-sm text-gray-700 text-center">Ventilated Seat</span>
+                                </div>
+                                <div class="flex flex-col items-center p-4 bg-gray-50 rounded-lg">
+                                    <i class="fa-solid fa-video text-orange-500 text-2xl mb-2"></i>
+                                    <span class="text-sm text-gray-700 text-center">Rear Camera</span>
+                                </div>
+                                <div class="flex flex-col items-center p-4 bg-gray-50 rounded-lg">
+                                    <i class="fa-solid fa-eye text-orange-500 text-2xl mb-2"></i>
+                                    <span class="text-sm text-gray-700 text-center">360° Around View</span>
+                                </div>
+                                <div class="flex flex-col items-center p-4 bg-gray-50 rounded-lg">
+                                    <i class="fa-solid fa-key text-orange-500 text-2xl mb-2"></i>
+                                    <span class="text-sm text-gray-700 text-center">Smart Key</span>
+                                </div>
+                                <div class="flex flex-col items-center p-4 bg-gray-50 rounded-lg">
+                                    <i class="fa-solid fa-map text-orange-500 text-2xl mb-2"></i>
+                                    <span class="text-sm text-gray-700 text-center">Navigation</span>
+                                </div>
+                                <div class="flex flex-col items-center p-4 bg-gray-50 rounded-lg">
+                                    <i class="fa-solid fa-snowflake text-orange-500 text-2xl mb-2"></i>
+                                    <span class="text-sm text-gray-700 text-center">Auto A/C</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                            <div>
+                                <h3 class="text-xl font-bold text-gray-900 mb-4 feature-highlight">Interior/Exterior</h3>
+                                <ul class="space-y-2 text-gray-700">
+                                    <li class="flex items-center"><i class="fa-solid fa-check text-green-500 mr-2"></i>Sunroof</li>
+                                    <li class="flex items-center"><i class="fa-solid fa-check text-green-500 mr-2"></i>Leather Seat</li>
+                                    <li class="flex items-center"><i class="fa-solid fa-check text-green-500 mr-2"></i>Power Seat (Driver's Seat)</li>
+                                    <li class="flex items-center"><i class="fa-solid fa-check text-green-500 mr-2"></i>Roof Rack</li>
+                                    <li class="flex items-center"><i class="fa-solid fa-check text-green-500 mr-2"></i>Heated Seat(Front Seat)</li>
+                                    <li class="flex items-center"><i class="fa-solid fa-check text-green-500 mr-2"></i>Power Steering Wheel</li>
+                                    <li class="flex items-center"><i class="fa-solid fa-check text-green-500 mr-2"></i>Power Door Lock</li>
+                                    <li class="flex items-center"><i class="fa-solid fa-check text-green-500 mr-2"></i>Steering Wheel Remote Control</li>
+                                    <li class="flex items-center"><i class="fa-solid fa-check text-green-500 mr-2"></i>Power Folding Side Mirror</li>
+                                    <li class="flex items-center"><i class="fa-solid fa-check text-green-500 mr-2"></i>Power Windows</li>
+                                    <li class="flex items-center"><i class="fa-solid fa-check text-green-500 mr-2"></i>HID HeadLamp</li>
+                                    <li class="flex items-center"><i class="fa-solid fa-check text-green-500 mr-2"></i>Alloy Wheels</li>
+                                </ul>
+                            </div>
+                            
+                            <div>
+                                <h3 class="text-xl font-bold text-gray-900 mb-4 feature-highlight">Safety</h3>
+                                <ul class="space-y-2 text-gray-700">
+                                    <li class="flex items-center"><i class="fa-solid fa-check text-green-500 mr-2"></i>Parking Sensor(Rear)</li>
+                                    <li class="flex items-center"><i class="fa-solid fa-check text-green-500 mr-2"></i>Airbag(Driver Seat)</li>
+                                    <li class="flex items-center"><i class="fa-solid fa-check text-green-500 mr-2"></i>Airbag(Passenger Seat)</li>
+                                    <li class="flex items-center"><i class="fa-solid fa-check text-green-500 mr-2"></i>Airbag (side)</li>
+                                    <li class="flex items-center"><i class="fa-solid fa-check text-green-500 mr-2"></i>Anti-lock Braking System (ABS)</li>
+                                    <li class="flex items-center"><i class="fa-solid fa-check text-green-500 mr-2"></i>Airbag(Curtain)</li>
+                                </ul>
+                            </div>
+                            
+                            <div>
+                                <h3 class="text-xl font-bold text-gray-900 mb-4 feature-highlight">Convenience/Other</h3>
+                                <ul class="space-y-2 text-gray-700">
+                                    <li class="flex items-center"><i class="fa-solid fa-check text-green-500 mr-2"></i>Cruise Control</li>
+                                    <li class="flex items-center"><i class="fa-solid fa-check text-green-500 mr-2"></i>AUX Port</li>
+                                    <li class="flex items-center"><i class="fa-solid fa-check text-green-500 mr-2"></i>CD Player</li>
+                                    <li class="flex items-center"><i class="fa-solid fa-check text-green-500 mr-2"></i>Automatic Headlights</li>
+                                    <li class="flex items-center"><i class="fa-solid fa-check text-green-500 mr-2"></i>Bluetooth</li>
+                                    <li class="flex items-center"><i class="fa-solid fa-check text-green-500 mr-2"></i>Automatic air conditioner</li>
+                                    <li class="flex items-center"><i class="fa-solid fa-check text-green-500 mr-2"></i>USB Port</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="history-tab" class="tab-content p-8 hidden">
+                        <div class="space-y-8">
+                            <div>
+                                <h3 class="text-2xl font-bold text-gray-900 mb-6">Insurance History</h3>
+                                <div class="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-6">
+                                    <h4 class="font-bold text-blue-800 mb-2">Used Car Accident Summary</h4>
+                                    <p class="text-blue-700 text-sm mb-3">Inquiry Date: 2025.09.03</p>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div>
+                                            <span class="text-blue-700 font-semibold">Manufacturer:</span> Honda
+                                        </div>
+                                        <div>
+                                            <span class="text-blue-700 font-semibold">Record of Change of usage purpose:</span> N
+                                        </div>
+                                        <div>
+                                            <span class="text-blue-700 font-semibold">Car ownership change record:</span> 0 times / 2 times
+                                        </div>
+                                        <div>
+                                            <span class="text-blue-700 font-semibold">Record of specific accidents:</span> Total Loss 0 times / Flood 0 times / Theft 0 times
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <h4 class="text-lg font-bold text-gray-900 mb-4">Details of the general car information</h4>
+                                <div class="bg-gray-50 rounded-lg p-4 mb-6">
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div class="space-y-2">
+                                            <div><span class="font-semibold">Manufacturer:</span> Honda</div>
+                                            <div><span class="font-semibold">Model:</span> CR-V 4WD</div>
+                                            <div><span class="font-semibold">Year:</span> 2008</div>
+                                            <div><span class="font-semibold">Fuel:</span> Gasoline</div>
+                                        </div>
+                                        <div class="space-y-2">
+                                            <div><span class="font-semibold">Displacement:</span> 2,354cc</div>
+                                            <div><span class="font-semibold">Main Options:</span> 오토, ABS, AIR-D, IM</div>
+                                            <div><span class="font-semibold">License Plate:</span> 32도6767</div>
+                                            <div><span class="font-semibold">Insurance Start Date:</span> 2007.11.26</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <h4 class="text-lg font-bold text-gray-900 mb-4">Information on unusual accidents in car insurance record</h4>
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                                    <div class="bg-green-50 border border-green-200 rounded-lg p-4 text-center">
+                                        <h5 class="font-semibold text-green-800">Total Loss Insurance</h5>
+                                        <p class="text-green-700">No records found</p>
+                                    </div>
+                                    <div class="bg-green-50 border border-green-200 rounded-lg p-4 text-center">
+                                        <h5 class="font-semibold text-green-800">Flood damage insurance</h5>
+                                        <p class="text-green-700">No records found</p>
+                                    </div>
+                                    <div class="bg-green-50 border border-green-200 rounded-lg p-4 text-center">
+                                        <h5 class="font-semibold text-green-800">Theft insurance</h5>
+                                        <p class="text-green-700">No records found</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <h4 class="text-lg font-bold text-gray-900 mb-4">Detailed information about insurance accident records</h4>
+                                <div class="space-y-4">
+                                    <div class="bg-white border border-gray-200 rounded-lg p-4">
+                                        <div class="flex justify-between items-start mb-2">
+                                            <span class="font-semibold text-gray-900">2022.05.13</span>
+                                            <span class="bg-orange-100 text-orange-800 px-2 py-1 rounded text-sm">Accident occurred</span>
+                                        </div>
+                                        <p class="text-gray-600 text-sm mb-2">My Car repair through insurance (Processed)</p>
+                                        <div class="bg-gray-50 p-3 rounded">
+                                            <div class="text-sm text-gray-700">
+                                                <div><strong>Repair cost:</strong> ₩ 5,558,500</div>
+                                                <div>Part: ₩ 2,318,000 | Labor: ₩ 752,500 | Painting: ₩ 2,488,000</div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="bg-white border border-gray-200 rounded-lg p-4">
+                                        <div class="flex justify-between items-start mb-2">
+                                            <span class="font-semibold text-gray-900">2015.11.22</span>
+                                            <span class="bg-orange-100 text-orange-800 px-2 py-1 rounded text-sm">Accident occurred</span>
+                                        </div>
+                                        <p class="text-gray-600 text-sm mb-2">My Car repair through insurance (Processed)</p>
+                                        <div class="bg-gray-50 p-3 rounded">
+                                            <div class="text-sm text-gray-700">
+                                                <div><strong>Repair cost:</strong> ₩ 1,519,780</div>
+                                                <div>Part: ₩ 1,040,000 | Labor: ₩ 158,780 | Painting: ₩ 321,000</div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="bg-white border border-gray-200 rounded-lg p-4">
+                                        <div class="flex justify-between items-start mb-2">
+                                            <span class="font-semibold text-gray-900">2013.07.03</span>
+                                            <span class="bg-orange-100 text-orange-800 px-2 py-1 rounded text-sm">Accident occurred</span>
+                                        </div>
+                                        <p class="text-gray-600 text-sm mb-2">My Car repair through insurance (Processed)</p>
+                                        <div class="bg-gray-50 p-3 rounded">
+                                            <div class="text-sm text-gray-700">
+                                                <div><strong>Repair cost:</strong> ₩ 500,000</div>
+                                                <div>Painting: ₩ 500,000</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="vehicle-info-actions-section" class="lg:col-span-1">
+            <div class="sticky-column bg-white rounded-2xl shadow-lg p-6 border border-gray-200">
+                <h2 class="text-2xl lg:text-3xl font-bold text-gray-900">2015 New A3 35 TDI Dynamic</h2>
+                <p class="text-gray-600 mt-1 mb-6">91,391 km | Diesel | 1,968cc | AUTO</p>
+
+                <div class="text-right mb-6">
+                    <div class="text-4xl lg:text-5xl font-bold text-gray-900">$ 7,500</div>
+                    <div class="text-gray-500 mt-1">Location: <span class="text-lg">🇰🇷</span> Korea</div>
+                </div>
+
+                <div class="mb-6">
+                    <select class="w-full p-3 border border-gray-300 rounded-lg bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-orange-500">
+                        <option>Select Country</option>
+                        <option>United States</option>
+                        <option>Canada</option>
+                        <option>United Kingdom</option>
+                        <option>Australia</option>
+                    </select>
+                </div>
+
+                <div id="price-breakdown-section" class="mb-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">Expected Purchase Price</h3>
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-center text-gray-700">
+                            <span>Vehicle Price</span>
+                            <span class="font-medium">$ 8,100</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-700">Discount</span>
+                            <span class="font-medium text-red-500">- $ 600</span>
+                        </div>
+                        <div class="flex justify-between items-center text-gray-700">
+                            <span>Shipping Fee</span>
+                            <span class="font-medium text-gray-900">Please contact us</span>
+                        </div>
+                    </div>
+                    <hr class="my-4 border-gray-200">
+                    <div class="flex justify-between items-center">
+                        <span class="text-lg font-bold text-gray-900">Total Price</span>
+                        <span class="text-3xl font-bold text-orange-500">$7,500</span>
+                    </div>
+                </div>
+
+                <div class="bg-gray-100 p-4 rounded-lg mb-6 text-xs text-gray-600 space-y-2">
+                    <p>* Shipping costs can be checked through inquiry and will be finalized after the issuance of the invoice.</p>
+                    <p>* Sales are processed in the order of applications.</p>
+                </div>
+
+                <div id="primary-cta-section" class="grid grid-cols-2 gap-4">
+                    <button class="w-full bg-green-500 hover:bg-green-600 text-white py-4 px-2 rounded-lg font-bold text-lg cta-button">
+                        Inquiry
+                    </button>
+                    <button class="w-full bg-orange-500 hover:bg-orange-600 text-white py-4 px-2 rounded-lg font-bold text-lg cta-button">
+                        Buy Now
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <section id="related-vehicles-section" class="mt-16 relative">
+    <h2 class="text-3xl lg:text-4xl font-bold text-gray-900 mb-8">Mango's Pick!</h2>
+    
+    <div class="absolute inset-y-0 left-0 flex items-center -ml-6 z-10">
+        <button class="bg-white/80 hover:bg-white rounded-full w-12 h-12 flex items-center justify-center shadow-lg transition-all">
+            <i class="fa-solid fa-chevron-left text-gray-600"></i>
+        </button>
+    </div>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        
+        <!-- Card 1 -->
+        <div class="bg-white rounded-xl shadow-lg overflow-hidden vehicle-card-hover transition-all duration-300">
+            <div class="relative">
+                <img class="w-full h-56 object-cover" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/aa02677008-5f35c3c7cbdd0a42a0b3.png" alt="A white 2012 Audi Q3 SUV in a professional studio setting, front three-quarter view, clean and modern aesthetic.">
+                <button class="absolute top-3 right-3 bg-black/30 hover:bg-black/50 w-8 h-8 rounded-full flex items-center justify-center transition-all">
+                    <i class="fa-regular fa-heart text-white"></i>
+                </button>
+            </div>
+            <div class="p-5">
+                <p class="text-sm text-gray-500">2012 Audi</p>
+                <h3 class="font-bold text-lg text-gray-900 mt-1 mb-3">Q3 2.0 TDI Quattro</h3>
+                <div class="grid grid-cols-3 gap-y-2 text-sm text-gray-600 mb-4">
+                    <div class="flex items-center"><i class="fa-solid fa-gauge-high mr-1.5 text-gray-400"></i>152,558...</div>
+                    <div class="flex items-center"><i class="fa-solid fa-gas-pump mr-1.5 text-gray-400"></i>DIESEL</div>
+                    <div class="flex items-center"><i class="fa-solid fa-cogs mr-1.5 text-gray-400"></i>1,968cc</div>
+                    <div class="flex items-center"><i class="fa-solid fa-gears mr-1.5 text-gray-400"></i>AUTO</div>
+                    <div class="flex items-center col-span-2"><i class="fa-solid fa-location-dot mr-1.5 text-gray-400"></i>Korea</div>
+                </div>
+                <div class="flex items-center space-x-2 mb-4">
+                    <button class="px-3 py-1 text-xs font-semibold text-gray-700 border border-gray-300 rounded-full hover:bg-gray-100 transition-colors">Insurance History</button>
+                    <button class="px-3 py-1 text-xs font-semibold text-gray-700 border border-gray-300 rounded-full hover:bg-gray-100 transition-colors">Recommend</button>
+                </div>
+                <div class="text-right">
+                    <span class="text-gray-400 line-through mr-2">$ 8,050</span>
+                    <span class="text-2xl font-bold text-orange-500">$ 8,000</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="bg-white rounded-xl shadow-lg overflow-hidden vehicle-card-hover transition-all duration-300">
+            <div class="relative">
+                <img class="w-full h-56 object-cover" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/57439fa10d-5f0eded59ae5d43758c0.png" alt="A white 2014 Peugeot 3008 crossover in a professional studio setting, front three-quarter view, clean and modern aesthetic.">
+                <button class="absolute top-3 right-3 bg-black/30 hover:bg-black/50 w-8 h-8 rounded-full flex items-center justify-center transition-all">
+                    <i class="fa-regular fa-heart text-white"></i>
+                </button>
+            </div>
+            <div class="p-5">
+                <p class="text-sm text-gray-500">2014 Peugeot</p>
+                <h3 class="font-bold text-lg text-gray-900 mt-1 mb-3">3008</h3>
+                <div class="grid grid-cols-3 gap-y-2 text-sm text-gray-600 mb-4">
+                    <div class="flex items-center"><i class="fa-solid fa-gauge-high mr-1.5 text-gray-400"></i>250,996...</div>
+                    <div class="flex items-center"><i class="fa-solid fa-gas-pump mr-1.5 text-gray-400"></i>DIESEL</div>
+                    <div class="flex items-center"><i class="fa-solid fa-cogs mr-1.5 text-gray-400"></i>1,560cc</div>
+                    <div class="flex items-center"><i class="fa-solid fa-gears mr-1.5 text-gray-400"></i>AUTO</div>
+                    <div class="flex items-center col-span-2"><i class="fa-solid fa-location-dot mr-1.5 text-gray-400"></i>Korea</div>
+                </div>
+                <div class="flex items-center space-x-2 mb-4">
+                    <button class="px-3 py-1 text-xs font-semibold text-gray-700 border border-gray-300 rounded-full hover:bg-gray-100 transition-colors">Insurance History</button>
+                    <button class="px-3 py-1 text-xs font-semibold text-gray-700 border border-gray-300 rounded-full hover:bg-gray-100 transition-colors">Recommend</button>
+                </div>
+                <div class="text-right">
+                    <span class="text-gray-400 line-through mr-2">$ 2,900</span>
+                    <span class="text-2xl font-bold text-orange-500">$ 2,500</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="bg-white rounded-xl shadow-lg overflow-hidden vehicle-card-hover transition-all duration-300">
+            <div class="relative">
+                <img class="w-full h-56 object-cover" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/d46319e0b4-9174a31826bbb8db8b0f.png" alt="A white 2015 Audi A3 sedan in a professional studio setting, front three-quarter view, clean and modern aesthetic.">
+                <button class="absolute top-3 right-3 bg-black/30 hover:bg-black/50 w-8 h-8 rounded-full flex items-center justify-center transition-all">
+                    <i class="fa-regular fa-heart text-white"></i>
+                </button>
+            </div>
+            <div class="p-5">
+                <p class="text-sm text-gray-500">2015 Audi</p>
+                <h3 class="font-bold text-lg text-gray-900 mt-1 mb-3">New A3 35 TDI Dynamic</h3>
+                <div class="grid grid-cols-3 gap-y-2 text-sm text-gray-600 mb-4">
+                    <div class="flex items-center"><i class="fa-solid fa-gauge-high mr-1.5 text-gray-400"></i>91,391KM</div>
+                    <div class="flex items-center"><i class="fa-solid fa-gas-pump mr-1.5 text-gray-400"></i>DIESEL</div>
+                    <div class="flex items-center"><i class="fa-solid fa-cogs mr-1.5 text-gray-400"></i>1,968cc</div>
+                    <div class="flex items-center"><i class="fa-solid fa-gears mr-1.5 text-gray-400"></i>AUTO</div>
+                    <div class="flex items-center col-span-2"><i class="fa-solid fa-location-dot mr-1.5 text-gray-400"></i>Korea</div>
+                </div>
+                <div class="flex items-center space-x-2 mb-4">
+                    <button class="px-3 py-1 text-xs font-semibold text-gray-700 border border-gray-300 rounded-full hover:bg-gray-100 transition-colors">Insurance History</button>
+                    <button class="px-3 py-1 text-xs font-semibold text-gray-700 border border-gray-300 rounded-full hover:bg-gray-100 transition-colors">Recommend</button>
+                </div>
+                <div class="text-right">
+                    <span class="text-gray-400 line-through mr-2">$ 8,100</span>
+                    <span class="text-2xl font-bold text-orange-500">$ 7,500</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 4 -->
+        <div class="bg-white rounded-xl shadow-lg overflow-hidden vehicle-card-hover transition-all duration-300">
+            <div class="relative">
+                <img class="w-full h-56 object-cover" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/1157be9cc7-8fb974d528fa08d22f43.png" alt="A black 2019 Volvo XC90 SUV in a professional studio setting, front three-quarter view, clean and modern aesthetic.">
+                <button class="absolute top-3 right-3 bg-black/30 hover:bg-black/50 w-8 h-8 rounded-full flex items-center justify-center transition-all">
+                    <i class="fa-regular fa-heart text-white"></i>
+                </button>
+                <div class="absolute bottom-3 left-3 bg-gray-900/80 text-white text-xs font-semibold px-3 py-1.5 rounded-full flex items-center">
+                    <i class="fa-solid fa-fire text-orange-400 mr-1.5"></i>
+                    1 person interested
+                </div>
+            </div>
+            <div class="p-5">
+                <p class="text-sm text-gray-500">2019 Volvo</p>
+                <h3 class="font-bold text-lg text-gray-900 mt-1 mb-3">XC90 2ND Gen 2.0 D5 AWD</h3>
+                <div class="grid grid-cols-3 gap-y-2 text-sm text-gray-600 mb-4">
+                    <div class="flex items-center"><i class="fa-solid fa-gauge-high mr-1.5 text-gray-400"></i>198,471...</div>
+                    <div class="flex items-center"><i class="fa-solid fa-gas-pump mr-1.5 text-gray-400"></i>DIESEL</div>
+                    <div class="flex items-center"><i class="fa-solid fa-cogs mr-1.5 text-gray-400"></i>1,969cc</div>
+                    <div class="flex items-center"><i class="fa-solid fa-gears mr-1.5 text-gray-400"></i>AUTO</div>
+                    <div class="flex items-center col-span-2"><i class="fa-solid fa-location-dot mr-1.5 text-gray-400"></i>Korea</div>
+                </div>
+                <div class="flex items-center space-x-2 mb-4">
+                    <button class="px-3 py-1 text-xs font-semibold text-gray-700 border border-gray-300 rounded-full hover:bg-gray-100 transition-colors">Insurance History</button>
+                    <button class="px-3 py-1 text-xs font-semibold text-gray-700 border border-gray-300 rounded-full hover:bg-gray-100 transition-colors">Recommend</button>
+                </div>
+                <div class="text-right">
+                    <span class="text-gray-400 line-through mr-2">$ 22,700</span>
+                    <span class="text-2xl font-bold text-orange-500">$ 22,000</span>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+    
+    <div class="absolute inset-y-0 right-0 flex items-center -mr-6 z-10">
+        <button class="bg-white/80 hover:bg-white rounded-full w-12 h-12 flex items-center justify-center shadow-lg transition-all">
+            <i class="fa-solid fa-chevron-right text-gray-600"></i>
+        </button>
+    </div>
+</section>
+    
+    <section id="customer-reviews-section" class="mt-16">
+    <div class="flex justify-between items-center mb-6">
+        <h2 class="text-3xl lg:text-4xl font-bold text-gray-900">
+            Mangocar <span class="text-orange-500">Best Reviews</span>
+        </h2>
+        <span class="text-gray-700 hover:text-orange-500 font-semibold flex items-center transition-colors cursor-pointer">
+            view more
+            <i class="fa-solid fa-arrow-right ml-2"></i>
+        </span>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <!-- Review Card 1 -->
+        <div id="review-card-1">
+            <div class="overflow-hidden rounded-lg shadow-lg transition-transform duration-300 hover:transform hover:-translate-y-2 hover:shadow-2xl">
+                <img class="w-full h-64 object-cover" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/d399022fe4-7e5086fe051fa956406c.png" alt="a white Porsche 911 sports car being carefully loaded onto a cargo ship, showcasing international shipping, professional photography style">
+            </div>
+            <div class="pt-4">
+                <h3 class="text-xl font-bold text-gray-900 mb-2">Best quality just as expected!</h3>
+                <p class="text-gray-600 mb-3 text-base">My Porsche 911 arrived in Kuwait from South Korea, safe, perfect, and exactly as promised. I...</p>
+                <div class="flex items-center text-sm text-gray-700">
+                    <img class="w-5 h-4 mr-2 object-cover" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/40d9f24548-e91d635594884512ef31.png" alt="Flag of Kuwait, simple icon style">
+                    <span>Kuwait</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Review Card 2 -->
+        <div id="review-card-2">
+            <div class="overflow-hidden rounded-lg shadow-lg transition-transform duration-300 hover:transform hover:-translate-y-2 hover:shadow-2xl">
+                <img class="w-full h-64 object-cover" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/c8c2eb975c-281c82dd90633e3d2138.png" alt="three men outdoors, one signing a contract on the hood of a silver car, showing a successful vehicle sale, candid documentary style">
+            </div>
+            <div class="pt-4">
+                <h3 class="text-xl font-bold text-gray-900 mb-2">Reasonable price!</h3>
+                <p class="text-gray-600 mb-3 text-base">I signed the contract on this car on March 20, 2024 and received it on April 25, 2024. The car'...</p>
+                <div class="flex items-center text-sm text-gray-700">
+                    <img class="w-5 h-4 mr-2 object-cover" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/7c868db9d6-e786f07b6aa8e55928a6.png" alt="Flag of Egypt, simple icon style">
+                    <span>Egypt</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Review Card 3 -->
+        <div id="review-card-3">
+            <div class="overflow-hidden rounded-lg shadow-lg transition-transform duration-300 hover:transform hover:-translate-y-2 hover:shadow-2xl">
+                <img class="w-full h-64 object-cover" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/da6f9a6be5-6b73c956aebba7f0b008.png" alt="three smiling men in an office setting, shaking hands and holding up a signed document, conveying a trustful business deal, professional portrait style">
+            </div>
+            <div class="pt-4">
+                <h3 class="text-xl font-bold text-gray-900 mb-2">Trustful MangoCar!</h3>
+                <p class="text-gray-600 mb-3 text-base">I was honored to deal with MangoCar; they were with me every step of the way. The car...</p>
+                <div class="flex items-center text-sm text-gray-700">
+                    <img class="w-5 h-4 mr-2 object-cover" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/7c868db9d6-e786f07b6aa8e55928a6.png" alt="Flag of Egypt, simple icon style">
+                    <span>Egypt</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+    
+    <section id="financing-calculator-section" class="mt-8 bg-white rounded-2xl shadow-lg p-6">
+    <h3 class="text-2xl font-bold text-gray-900 mb-6">Seller Information</h3>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="flex items-start space-x-4">
+            <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg" alt="Michael Thompson - Sales Manager" class="w-16 h-16 rounded-full object-cover">
+            <div>
+                <h4 class="font-bold text-gray-900 text-lg">Michael Thompson</h4>
+                <p class="text-orange-500 font-semibold">Senior Sales Manager</p>
+                <div class="flex items-center mt-2">
+                    <div class="flex text-yellow-400 text-sm mr-2">
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                    </div>
+                    <span class="text-sm text-gray-600">(4.9/5 rating)</span>
+                </div>
+                <p class="text-gray-600 text-sm mt-2">8 years experience • 500+ vehicles sold</p>
+            </div>
+        </div>
+        
+        <div class="space-y-4">
+            <div class="flex items-center">
+                <i class="fa-solid fa-phone text-orange-500 mr-3"></i>
+                <div>
+                    <span class="font-semibold text-gray-900">(555) 123-4567</span>
+                    <p class="text-sm text-gray-600">Direct line</p>
+                </div>
+            </div>
+            
+            <div class="flex items-center">
+                <i class="fa-solid fa-envelope text-orange-500 mr-3"></i>
+                <div>
+                    <span class="text-gray-900">m.thompson@mangocar.com</span>
+                    <p class="text-sm text-gray-600">Email response within 2 hours</p>
+                </div>
+            </div>
+            
+            <div class="flex items-center">
+                <i class="fa-solid fa-clock text-orange-500 mr-3"></i>
+                <div>
+                    <span class="text-gray-900">Available Today</span>
+                    <p class="text-sm text-gray-600">9:00 AM - 7:00 PM</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="mt-6 bg-gray-50 rounded-lg p-4">
+        <h5 class="font-semibold text-gray-900 mb-2">Recent Customer Feedback</h5>
+        <p class="text-gray-700 text-sm italic">"Michael was incredibly helpful and patient throughout the entire process. He made sure I understood all the features and financing options. Highly recommend!"</p>
+        <p class="text-gray-500 text-xs mt-1">- Sarah K., verified buyer</p>
+    </div>
+</section>
+</main>
+
+<footer id="footer" class="bg-gray-900 text-white py-16 mt-16">
+    <div class="container mx-auto px-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 mb-12">
+            <div class="lg:col-span-2">
+                <div class="flex items-center mb-6">
+                    <div class="w-12 h-12 bg-gradient-to-br from-orange-400 to-orange-600 rounded-xl flex items-center justify-center">
+                        <i class="fa-solid fa-car text-white text-xl"></i>
+                    </div>
+                    <span class="ml-3 text-2xl font-bold">MangoCar</span>
+                </div>
+                <p class="text-gray-300 mb-6 max-w-md">
+                    Your trusted partner in finding the perfect pre-owned vehicle. Quality, transparency, and exceptional service are our commitments to you.
+                </p>
+                <div class="flex items-center space-x-4">
+                    <i class="fa-solid fa-phone text-orange-500"></i>
+                    <span class="font-semibold">(555) 123-CARS</span>
+                </div>
+                <div class="flex items-center space-x-4 mt-2">
+                    <i class="fa-solid fa-envelope text-orange-500"></i>
+                    <span>info@mangocar.com</span>
+                </div>
+                <div class="flex items-center space-x-4 mt-2">
+                    <i class="fa-solid fa-location-dot text-orange-500"></i>
+                    <span>123 Auto Plaza, Car City, CC 12345</span>
+                </div>
+            </div>
+            
+            <div>
+                <h3 class="text-lg font-bold mb-4">Inventory</h3>
+                <ul class="space-y-2 text-gray-300">
+                    <li><span class="hover:text-orange-500 transition-colors cursor-pointer">All Vehicles</span></li>
+                    <li><span class="hover:text-orange-500 transition-colors cursor-pointer">SUVs</span></li>
+                    <li><span class="hover:text-orange-500 transition-colors cursor-pointer">Sedans</span></li>
+                    <li><span class="hover:text-orange-500 transition-colors cursor-pointer">Trucks</span></li>
+                    <li><span class="hover:text-orange-500 transition-colors cursor-pointer">Luxury Cars</span></li>
+                    <li><span class="hover:text-orange-500 transition-colors cursor-pointer">Under $15K</span></li>
+                </ul>
+            </div>
+            
+            <div>
+                <h3 class="text-lg font-bold mb-4">Services</h3>
+                <ul class="space-y-2 text-gray-300">
+                    <li><span class="hover:text-orange-500 transition-colors cursor-pointer">Financing</span></li>
+                    <li><span class="hover:text-orange-500 transition-colors cursor-pointer">Trade-In</span></li>
+                    <li><span class="hover:text-orange-500 transition-colors cursor-pointer">Extended Warranty</span></li>
+                    <li><span class="hover:text-orange-500 transition-colors cursor-pointer">Vehicle History</span></li>
+                    <li><span class="hover:text-orange-500 transition-colors cursor-pointer">Inspection</span></li>
+                    <li><span class="hover:text-orange-500 transition-colors cursor-pointer">Delivery</span></li>
+                </ul>
+            </div>
+            
+            <div>
+                <h3 class="text-lg font-bold mb-4">Company</h3>
+                <ul class="space-y-2 text-gray-300">
+                    <li><span class="hover:text-orange-500 transition-colors cursor-pointer">About Us</span></li>
+                    <li><span class="hover:text-orange-500 transition-colors cursor-pointer">Our Team</span></li>
+                    <li><span class="hover:text-orange-500 transition-colors cursor-pointer">Careers</span></li>
+                    <li><span class="hover:text-orange-500 transition-colors cursor-pointer">Reviews</span></li>
+                    <li><span class="hover:text-orange-500 transition-colors cursor-pointer">Contact</span></li>
+                    <li><span class="hover:text-orange-500 transition-colors cursor-pointer">Blog</span></li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="border-t border-gray-800 pt-8">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="text-gray-400 mb-4 md:mb-0">
+                    © 2024 MangoCar. All rights reserved.
+                </div>
+                <div class="flex items-center space-x-6">
+                    <span class="text-gray-400 hover:text-orange-500 transition-colors cursor-pointer">Privacy Policy</span>
+                    <span class="text-gray-400 hover:text-orange-500 transition-colors cursor-pointer">Terms of Service</span>
+                    <div class="flex items-center space-x-4 ml-8">
+                        <span class="text-gray-400 hover:text-orange-500 transition-colors cursor-pointer">
+                            <i class="fa-brands fa-facebook text-xl"></i>
+                        </span>
+                        <span class="text-gray-400 hover:text-orange-500 transition-colors cursor-pointer">
+                            <i class="fa-brands fa-twitter text-xl"></i>
+                        </span>
+                        <span class="text-gray-400 hover:text-orange-500 transition-colors cursor-pointer">
+                            <i class="fa-brands fa-instagram text-xl"></i>
+                        </span>
+                        <span class="text-gray-400 hover:text-orange-500 transition-colors cursor-pointer">
+                            <i class="fa-brands fa-youtube text-xl"></i>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script>
+    const thumbnails = document.querySelectorAll('#thumbnail-carousel img');
+    const mainImage = document.getElementById('main-image');
+    const imageCounter = document.getElementById('image-counter');
+    
+    const images = [
+        { src:'https://storage.googleapis.com/uxpilot-auth.appspot.com/f3c42c142c-2f69678e62847ddc3c51.png', alt:'Exterior front view'},
+        { src:'https://storage.googleapis.com/uxpilot-auth.appspot.com/152dd105a1-82594383c4be302e0102.png', alt:'Interior dashboard view'},
+        { src:'https://storage.googleapis.com/uxpilot-auth.appspot.com/7b5625eab1-bdc895bb7d58fe35c3e7.png', alt:'Rear exterior view'},
+        { src:'https://storage.googleapis.com/uxpilot-auth.appspot.com/4da1d2c8d8-34ae24e79c671c59eefe.png', alt:'Side profile view'},
+        { src:'https://storage.googleapis.com/uxpilot-auth.appspot.com/ec05d243c4-af67204976e67c9d47c7.png', alt:'Interior seating view'},
+        { src:'https://storage.googleapis.com/uxpilot-auth.appspot.com/d3d158e177-8f211eb0577e789b2c43.png', alt:'Engine bay view'}
+    ];
+    
+    // Initialize image counter with total photos
+    if (imageCounter) {
+        imageCounter.textContent = '1 / ' + images.length + ' Photos';
+    }
+    
+    thumbnails.forEach((thumbnail, index) => {
+        thumbnail.addEventListener('click', () => {
+            thumbnails.forEach(t => {
+                t.classList.remove('thumbnail-active');
+                t.classList.add('thumbnail-inactive');
+            });
+            
+            thumbnail.classList.remove('thumbnail-inactive');
+            thumbnail.classList.add('thumbnail-active');
+            
+            mainImage.style.opacity ='0';
+            setTimeout(() => {
+                mainImage.src = images[index].src;
+                mainImage.alt = images[index].alt;
+                imageCounter.textContent = (index + 1) + ' / ' + images.length + ' Photos';
+                mainImage.style.opacity ='1';
+            }, 150);
+        });
+    });
+    
+    const tabButtons = document.querySelectorAll('.tab-button');
+    const tabContents = document.querySelectorAll('.tab-content');
+    
+    tabButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const targetTab = button.getAttribute('data-tab');
+            
+            tabButtons.forEach(btn => {
+                btn.classList.remove('tab-active');
+                btn.classList.add('tab-inactive');
+            });
+            
+            button.classList.remove('tab-inactive');
+            button.classList.add('tab-active');
+            
+            tabContents.forEach(content => {
+                content.classList.add('hidden');
+            });
+            
+            const targetContent = document.getElementById(targetTab + '-tab');
+            if (targetContent) {
+                targetContent.classList.remove('hidden');
+            }
+        });
+    });
+    
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin:'0px 0px -50px 0px'};
+    
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('fade-in-up');
+            }
+        });
+    }, observerOptions);
+    
+    document.querySelectorAll('.fade-in-up').forEach(el => {
+        observer.observe(el);
+    });
+    
+    window.addEventListener('scroll', () => {
+        const header = document.getElementById('header');
+        if (window.scrollY > 10) {
+            header.classList.add('shadow-xl');
+        } else {
+            header.classList.remove('shadow-xl');
+        }
+    });
+</script>
+
+</body></html>

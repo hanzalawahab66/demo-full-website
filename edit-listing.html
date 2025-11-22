@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sell My Car - NSM Autos</title>
+  <!-- Page Protection: redirect non-sellers to signin -->
+  <script>
+    (function () {
+      try {
+        var role = localStorage.getItem('userRole') || localStorage.getItem('role');
+        if (role !== 'seller') {
+          window.location.href = 'signin.html';
+        }
+      } catch (e) {
+        window.location.href = 'signin.html';
+      }
+    })();
+  </script>
+  <!-- Tailwind CSS static build (fallback, no Play CDN) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>window.FontAwesomeConfig = {autoReplaceSvg: 'nest'};</script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <!-- Removed external Google Fonts to avoid net::ERR_ABORTED in preview env -->
+  <style>
+    ::-webkit-scrollbar { display: none; }
+    * { font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji", sans-serif; }
+
+    /* Admin form styles copied to keep form identical */
+    :root{--bg:#f6f7fb;--text:#0f172a;--muted:#64748b;--card:#fff;--border:#e5e7eb;--primary:#2563eb}
+    .muted{color:var(--muted);font-size:13px}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px;margin-top:16px}
+    .card h2{margin:0 0 8px 0;font-size:18px}
+    .grid{display:grid;gap:10px}
+    .grid-2{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .grid-3{grid-template-columns:repeat(3,minmax(0,1fr))}
+    .field label{font-size:12px;color:var(--muted);display:block;margin-bottom:6px}
+    .input,.select,.date,.number{width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:10px;background:#fff}
+    .checklist{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+    .check{display:flex;align-items:center;gap:8px;font-size:13px}
+    .tags{display:flex;gap:8px;align-items:center;margin-top:8px}
+    .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+    .chip{display:inline-flex;align-items:center;gap:6px;font-size:12px;padding:4px 8px;border-radius:999px;border:1px solid var(--border);background:#f9fafb}
+    .chip button{border:none;background:transparent;cursor:pointer;color:#64748b}
+    .btn{padding:10px 12px;border-radius:8px;border:1px solid var(--border);background:#fff;font-weight:600;cursor:pointer}
+    .btn-primary{background:var(--primary);border-color:var(--primary);color:#fff}
+    .table{width:100%;border-collapse:collapse}
+    .table th,.table td{border:1px solid var(--border);padding:8px;font-size:12px;text-align:left}
+    .actions{display:flex;gap:8px;margin-top:16px}
+
+    /* Utility fix for arbitrary Tailwind class used in header */
+    .min-w-\[140px\]{min-width:140px}
+  </style>
+</head>
+<body class="bg-gray-50">
+
+
+  <!-- Header (from my-listings) -->
+  <header class="bg-white shadow">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
+      <a href="home.html" class="flex items-center space-x-2">
+        <span class="text-2xl font-extrabold text-black tracking-wide">NSM</span>
+        <span class="text-2xl font-extrabold" style="color:#FF8C42">Autos</span>
+      </a>
+      <nav class="flex items-center space-x-6">
+        <a href="home.html" class="text-sm font-medium text-gray-700 hover:text-black">Home</a>
+        <a href="inventory.html" class="text-sm font-medium text-gray-700 hover:text-black">Buy My Car</a>
+        <a href="about-us.html" class="text-sm font-medium text-gray-700 hover:text-black">About Us</a>
+        <a href="contact-us.html" class="text-sm font-medium text-gray-700 hover:text-black">Contact Us</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Page Content: Edit Listing form -->
+  <main class="container mx-auto px-6 py-8">
+    <h1 class="text-2xl font-bold text-gray-900">Edit Listing</h1>
+    <p class="muted">Update your vehicle listing with categorization, specs, features, and insurance history.</p>
+
+    <!-- Listing Basics: Title, Price & PIN -->
+    <section class="card">
+      <h2>Listing Basics</h2>
+      <div class="grid grid-2">
+        <div class="field">
+          <label>Listing Title</label>
+          <input id="listing-title" class="input" placeholder="e.g. 2018 Toyota Corolla SE" required>
+        </div>
+        <div class="field">
+          <label>Price</label>
+          <input id="listing-price" type="number" step="0.01" class="number" placeholder="e.g. 15999" required>
+        </div>
+      </div>
+      <div class="grid grid-2" style="margin-top:12px">
+        <div class="field">
+          <label>Product Identification Number (PIN)</label>
+          <input id="product-id-number" class="input" placeholder="e.g. PIN-12345" required>
+        </div>
+      </div>
+    </section>
+
+    <!-- 1) Categorization -->
+    <section class="card">
+      <h2>1) Categorization</h2>
+      <div class="grid grid-2">
+        <div class="field">
+          <label>Category</label>
+          <select id="category-id" class="select"><option value="">— Loading categories —</option></select>
+        </div>
+        <div class="field">
+          <label>Tags</label>
+          <div id="tag-list" class="checklist"></div>
+          <span class="muted">Select applicable tags for this listing.</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2) Vehicle Info -->
+    <section class="card">
+      <h2>2) Vehicle Info</h2>
+      <div class="grid grid-3">
+        <div class="field"><label>Year</label><input type="number" min="1950" max="2100" class="number" id="v-year"></div>
+        <div class="field"><label>Transmission</label><select class="select" id="v-trans"><option>Automatic</option><option>Manual</option><option>CVT</option></select></div>
+        <div class="field"><label>Fuel</label><select class="select" id="v-fuel"><option>Gasoline</option><option>Diesel</option><option>Hybrid</option><option>Electric</option></select></div>
+        <div class="field"><label>Color</label><input class="input" id="v-color" placeholder="e.g. White"></div>
+        <div class="field"><label>Displacement (L)</label><input type="number" step="0.1" class="number" id="v-displ"></div>
+        <div class="field"><label>Passenger Capacity</label><input type="number" min="1" class="number" id="v-pass"></div>
+        <div class="field"><label>Drive Type</label><select class="select" id="v-drive"><option>FWD</option><option>RWD</option><option>AWD</option><option>4WD</option></select></div>
+        <div class="field"><label>First Reg. Date</label><input type="date" class="date" id="v-reg"></div>
+        <div class="field"><label>Mileage (km)</label><input type="number" class="number" id="v-mile"></div>
+        <div class="field"><label>Location</label><input class="input" id="v-loc" placeholder="City, Country"></div>
+      </div>
+    </section>
+
+    <!-- 3) Relevant Information -->
+    <section class="card">
+      <h2>3) Relevant Information</h2>
+      <div id="relevant-list" class="checklist"></div>
+    </section>
+
+    <!-- 4) Option Info -->
+    <section class="card">
+      <h2>4) Option Info</h2>
+      <div id="options-list" class="checklist"></div>
+    </section>
+
+    <!-- 5) Interior/Exterior -->
+    <section class="card">
+      <h2>5) Interior/Exterior</h2>
+      <div id="interior-list" class="checklist"></div>
+    </section>
+
+    <!-- 6) Safety -->
+    <section class="card">
+      <h2>6) Safety</h2>
+      <div id="safety-list" class="checklist"></div>
+    </section>
+
+    <!-- 7) Convenience / Other -->
+    <section class="card">
+      <h2>7) Convenience / Other</h2>
+      <div id="conv-list" class="checklist"></div>
+    </section>
+
+    <!-- 8) Insurance History -->
+    <section class="card">
+      <h2>8) Insurance History</h2>
+      <div class="grid grid-3">
+        <div class="field"><label>Manufacturer</label><input class="input" id="ih-mfr"></div>
+        <div class="field"><label>Model</label><input class="input" id="ih-model"></div>
+        <div class="field"><label>Year</label><input type="number" class="number" id="ih-year"></div>
+        <div class="field"><label>Fuel</label><input class="input" id="ih-fuel"></div>
+        <div class="field"><label>License Plate</label><input class="input" id="ih-plate"></div>
+      </div>
+      <div style="margin-top:10px">
+        <strong>Accident Records</strong>
+        <table class="table">
+          <thead><tr><th>Repair Cost</th><th>Part</th><th>Labor</th><th>Painting</th><th>Action</th></tr></thead>
+          <tbody id="accident-body"></tbody>
+        </table>
+        <div class="actions"><button id="add-accident" class="btn">Add Record</button></div>
+      </div>
+    </section>
+
+    <!-- 9) Upload Photos -->
+    <section class="card">
+      <h2>9) Upload Photos</h2>
+      <div class="grid grid-2">
+        <div class="field">
+          <label>Photos</label>
+          <input id="photo-upload" type="file" class="input" accept="image/*" multiple>
+          <div class="muted">You can upload up to 20 photos. Supported: JPG, PNG.</div>
+        </div>
+        <div class="field">
+          <label>Uploaded</label>
+          <div id="photo-chips" class="chips"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Final Action -->
+    <section class="card">
+      <div class="actions">
+        <button id="submit-approval" class="btn btn-primary">Save Changes</button>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer (copied from homepage) -->
+  <footer id="footer" class="bg-gray-900 text-white py-16">
+    <div class="container mx-auto px-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 mb-12">
+        <div class="lg:col-span-2">
+          <div class="flex items-center mb-6">
+            <div class="w-12 h-12 bg-gradient-to-br from-orange-400 to-orange-600 rounded-xl flex items-center justify-center">
+              <i class="fa-solid fa-car text-white text-xl"></i>
+            </div>
+            <span class="ml-3 text-2xl font-bold">MangoCar</span>
+          </div>
+          <p class="text-gray-300 mb-6 max-w-md">
+            Your trusted partner in finding the perfect pre-owned vehicle. Quality, transparency, and exceptional service are our commitments to you.
+          </p>
+          <div class="flex items-center space-x-4">
+            <i class="fa-solid fa-phone text-orange-500"></i>
+            <span class="font-semibold">(555) 123-CARS</span>
+          </div>
+          <div class="flex items-center space-x-4 mt-2">
+            <i class="fa-solid fa-envelope text-orange-500"></i>
+            <span>info@mangocar.com</span>
+          </div>
+          <div class="flex items-center space-x-4 mt-2">
+            <i class="fa-solid fa-location-dot text-orange-500"></i>
+            <span>123 Auto Plaza, Car City, CC 12345</span>
+          </div>
+        </div>
+
+        <div>
+          <h3 class="text-lg font-bold mb-4">Inventory</h3>
+          <ul class="space-y-2 text-gray-300">
+            <li><span class="hover:text-orange-500 transition-colors cursor-pointer">All Vehicles</span></li>
+            <li><span class="hover:text-orange-500 transition-colors cursor-pointer">SUVs</span></li>
+            <li><span class="hover:text-orange-500 transition-colors cursor-pointer">Sedans</span></li>
+            <li><span class="hover:text-orange-500 transition-colors cursor-pointer">Trucks</span></li>
+            <li><span class="hover:text-orange-500 transition-colors cursor-pointer">Luxury Cars</span></li>
+            <li><span class="hover:text-orange-500 transition-colors cursor-pointer">Under $15K</span></li>
+          </ul>
+        </div>
+
+        <div>
+          <h3 class="text-lg font-bold mb-4">Services</h3>
+          <ul class="space-y-2 text-gray-300">
+            <li><span class="hover:text-orange-500 transition-colors cursor-pointer">Financing</span></li>
+            <li><span class="hover:text-orange-500 transition-colors cursor-pointer">Trade-In</span></li>
+            <li><span class="hover:text-orange-500 transition-colors cursor-pointer">Extended Warranty</span></li>
+            <li><span class="hover:text-orange-500 transition-colors cursor-pointer">Vehicle History</span></li>
+            <li><span class="hover:text-orange-500 transition-colors cursor-pointer">Inspection</span></li>
+            <li><span class="hover:text-orange-500 transition-colors cursor-pointer">Delivery</span></li>
+          </ul>
+        </div>
+
+        <div>
+          <h3 class="text-lg font-bold mb-4">Company</h3>
+          <ul class="space-y-2 text-gray-300">
+            <li><span class="hover:text-orange-500 transition-colors cursor-pointer">About Us</span></li>
+            <li><span class="hover:text-orange-500 transition-colors cursor-pointer">Our Team</span></li>
+            <li><span class="hover:text-orange-500 transition-colors cursor-pointer">Careers</span></li>
+            <li><span class="hover:text-orange-500 transition-colors cursor-pointer">Reviews</span></li>
+            <li><span class="hover:text-orange-500 transition-colors cursor-pointer">Contact</span></li>
+            <li><span class="hover:text-orange-500 transition-colors cursor-pointer">Blog</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Form behaviors copied from admin form, plus load + PUT update for edit -->
+  <script>
+    (function(){
+      // Category dropdown: fetch from /admin/categories, fallback to /backend/categories.json
+      const categorySelect = document.getElementById('category-id');
+      let pendingCategorySelection = null;
+      async function fetchCategoriesSource() {
+        const API_BASE = 'http://localhost:3001';
+        const token = localStorage.getItem('token');
+        try {
+          const headers = { 'Accept': 'application/json' };
+          if (token) headers['Authorization'] = `Bearer ${token}`;
+          const r = await fetch(`${API_BASE}/admin/categories`, { headers });
+          if (!r.ok) throw new Error('admin endpoint unavailable');
+          const data = await r.json();
+          return data;
+        } catch (e) {
+          const r2 = await fetch('/backend/categories.json', { headers: { 'Accept': 'application/json' } });
+          if (!r2.ok) throw new Error('Failed to load categories.');
+          return await r2.json();
+        }
+      }
+
+      function parseCategoriesData(raw) {
+        // Accept either { tree: [...] } shape or flat array
+        if (raw && Array.isArray(raw.tree)) return raw.tree;
+        const items = Array.isArray(raw) ? raw : [];
+        const byId = new Map();
+        items.forEach(c => byId.set(c.id, { id: c.id, name: c.name, parent_id: c.parent_id || null, children: [] }));
+        const roots = [];
+        byId.forEach(node => {
+          if (node.parent_id && byId.has(node.parent_id)) {
+            byId.get(node.parent_id).children.push(node);
+          } else {
+            roots.push(node);
+          }
+        });
+        return roots;
+      }
+
+      function flattenTree(nodes, depth = 0, out = []) {
+        nodes.forEach(n => {
+          out.push({ id: n.id, label: `${'  '.repeat(depth)}${depth ? '↳ ' : ''}${n.name}` });
+          if (Array.isArray(n.children) && n.children.length) flattenTree(n.children, depth + 1, out);
+        });
+        return out;
+      }
+
+      async function loadCategoriesIntoSelect() {
+        if (!categorySelect) return;
+        categorySelect.innerHTML = '<option value="">— Loading categories —</option>';
+        try {
+          const raw = await fetchCategoriesSource();
+          const tree = parseCategoriesData(raw);
+          const flat = flattenTree(tree);
+          categorySelect.innerHTML = '<option value="">Select a category...</option>';
+          flat.forEach(item => {
+            const opt = document.createElement('option');
+            opt.value = String(item.id);
+            opt.textContent = item.label;
+            categorySelect.appendChild(opt);
+          });
+          if (pendingCategorySelection) {
+            categorySelect.value = String(pendingCategorySelection);
+            pendingCategorySelection = null;
+          }
+        } catch (err) {
+          categorySelect.innerHTML = '<option value="">Failed to load categories</option>';
+          console.error('Category load error:', err);
+        }
+      }
+      loadCategoriesIntoSelect();
+
+      const items={
+        relevant:['Total Loss','Flood Damage','Theft','Government usage'],
+        options:['Sunroof','4WD','Leather Seat','Heated Seat','Ventilated Seat','Rear Camera','360° View','Smart Key','Navigation','Auto A/C'],
+        interior:['Power Seat','Roof Rack','Heated Seat','Power Steering Wheel','Power Door Lock'],
+        safety:['Parking Sensor','All Airbags','ABS'],
+        conv:['Cruise Control','AUX','CD Player','Bluetooth','USB']
+      };
+      function renderChecks(id,arr){
+        const el=document.getElementById(id);
+        el.innerHTML='';
+        arr.forEach(name=>{
+          const lab=document.createElement('label');
+          lab.className='check';
+          const cb=document.createElement('input');
+          cb.type='checkbox';
+          cb.value=name;
+          cb.name=id+'[]';
+          lab.appendChild(cb);
+          lab.appendChild(document.createTextNode(' '+name));
+          el.appendChild(lab);
+        });
+      }
+      renderChecks('relevant-list',items.relevant);
+      renderChecks('options-list',items.options);
+      renderChecks('interior-list',items.interior);
+      renderChecks('safety-list',items.safety);
+      renderChecks('conv-list',items.conv);
+
+      // Strict tags: fetch from backend and render as checkboxes
+      (function(){
+        const container=document.getElementById('tag-list');
+        if(!container) return;
+        fetch('http://localhost:3001/public/tags', { headers: { 'Accept':'application/json' } })
+          .then(r=> r.ok ? r.json() : Promise.reject(new Error('Failed to load tags')))
+          .then(data => {
+            const tags = Array.isArray(data?.tags) ? data.tags : Array.isArray(data) ? data : [];
+            container.innerHTML='';
+            tags.forEach(tag => {
+              const lab=document.createElement('label'); lab.className='check';
+              const cb=document.createElement('input'); cb.type='checkbox'; cb.value=String(tag.id); cb.name='tag-list[]';
+              lab.appendChild(cb); lab.appendChild(document.createTextNode(' '+(tag.name || tag.slug || ('Tag '+tag.id))));
+              container.appendChild(lab);
+            });
+            // Apply pending tag selection if available
+            const pending = (window.__pendingTagIds || []).map(String);
+            if (pending.length) {
+              container.querySelectorAll('input[type=checkbox]').forEach(cb => { if (pending.includes(cb.value)) cb.checked = true; });
+            }
+          })
+          .catch(err => {
+            container.innerHTML = '<span class="muted">Failed to load tags.</span>';
+            console.warn('Tags load error:', err);
+          });
+      })();
+
+      const tbody=document.getElementById('accident-body');
+      document.getElementById('add-accident').onclick=()=>{
+        const tr=document.createElement('tr');
+        tr.innerHTML=`<td><input type=\"number\" class=\"number\" placeholder=\"Repair\"></td><td><input type=\"number\" class=\"number\" placeholder=\"Part\"></td><td><input type=\"number\" class=\"number\" placeholder=\"Labor\"></td><td><input type=\"number\" class=\"number\" placeholder=\"Painting\"></td><td><button class=\"btn\">Remove</button></td>`;
+        tr.querySelector('button').onclick=()=>tr.remove();
+        tbody.appendChild(tr);
+      };
+
+      // Upload photo chips
+      const photoInput = document.getElementById('photo-upload');
+      const photoChips = document.getElementById('photo-chips');
+      let photos = [];
+      photoInput.addEventListener('change', function(){
+        const files = Array.from(photoInput.files || []);
+        const MAX = 20;
+        if (photos.length >= MAX) {
+          alert('You can upload up to 20 photos.');
+          return;
+        }
+        const remaining = MAX - photos.length;
+        const toAdd = files.slice(0, remaining);
+        const allowed = ['image/jpeg','image/jpg','image/png'];
+        toAdd.forEach(f => {
+          if (!allowed.includes(f.type)) {
+            alert('Unsupported file: ' + f.name + '. Only JPG/PNG allowed.');
+            return;
+          }
+          const name = f.name;
+          if (photos.some(p => p.name === name)) return; // avoid duplicates by name
+          const chip = document.createElement('span');
+          chip.className = 'chip';
+          chip.innerHTML = `${name} <button title="Remove">×</button>`;
+          chip.querySelector('button').onclick = () => {
+            photos = photos.filter(p => p.name !== name);
+            chip.remove();
+          };
+          photoChips.appendChild(chip);
+          photos.push({name});
+        });
+      });
+
+      // Prefill from existing listing (supports both flat and nested data shapes)
+      (function prefill(){
+        try {
+          const params = new URLSearchParams(window.location.search);
+          const listingId = params.get('id');
+          const token = localStorage.getItem('token');
+          if (!listingId) return;
+          if (!token) { alert('Please sign in as a seller.'); window.location.href = 'signin.html'; return; }
+          const API_BASE = 'http://localhost:3000';
+          fetch(`${API_BASE}/my-listings/${listingId}`, { headers: { 'Accept': 'application/json', 'Authorization': `Bearer ${token}` } })
+            .then(r => r.ok ? r.json() : r.text().then(t => { throw new Error(t || 'Failed to load listing'); }))
+            .then((payload) => {
+              try {
+                const data = payload?.data ?? payload ?? {};
+                
+                // Listing Basics: Title, Price, PIN
+                const setVal = (id, val) => { const el = document.getElementById(id); if (el) el.value = (val ?? '').toString(); };
+                setVal('listing-title', data.title || data.listingTitle);
+                setVal('listing-price', data.price || data.listingPrice);
+                setVal('product-id-number', data.pin || data.productIdNumber || data.product_id_number);
+                
+                // Category
+                const catSel = document.getElementById('category-id');
+                const cid = data.category_id || data.categoryId;
+                if (cid != null) {
+                  pendingCategorySelection = cid;
+                  if (Array.from(catSel.options).some(o => Number(o.value) === Number(cid))) {
+                    catSel.value = String(cid);
+                    pendingCategorySelection = null;
+                  }
+                }
+                // Tags: store pending tag IDs for checkbox selection
+                window.__pendingTagIds = Array.isArray(data.tagIds) ? data.tagIds : Array.isArray(data.tag_ids) ? data.tag_ids : [];
+
+                // Vehicle
+                const v = data.vehicle || {};
+                setVal('v-year', v.year ?? data.year);
+                setVal('v-trans', v.transmission ?? data.transmission);
+                setVal('v-fuel', v.fuel ?? data.fuel);
+                setVal('v-color', v.color ?? data.color);
+                setVal('v-displ', v.displacementL ?? data.displacementL);
+                setVal('v-pass', v.passengerCapacity ?? data.passengerCapacity);
+                setVal('v-drive', v.driveType ?? data.driveType);
+                setVal('v-reg', v.firstRegDate ?? data.firstRegDate);
+                setVal('v-mile', v.mileageKm ?? data.mileage ?? data.mileageKm);
+                setVal('v-loc', v.location ?? [data.city, data.state, data.country].filter(Boolean).join(', '));
+
+                // Checklists
+                const checkList = (id, values) => {
+                  const set = new Set(values || []);
+                  document.querySelectorAll(`#${id} input[type=checkbox]`).forEach(cb => { if (set.has(cb.value)) cb.checked = true; });
+                };
+                checkList('relevant-list', data.relevant ?? data.relevantInformation);
+                checkList('options-list', data.options ?? data.optionInformation);
+                checkList('interior-list', data.interior ?? data.interiorExteriorInformation);
+                checkList('safety-list', data.safety ?? data.safetyInformation);
+                checkList('conv-list', data.convenience ?? data.conv ?? data.convenienceOtherInformation);
+
+                // Insurance
+                const ins = data.insuranceHistory || {};
+                setVal('ih-mfr', ins.manufacturer ?? data.manufacturer ?? data.make);
+                setVal('ih-model', ins.model ?? data.model);
+                setVal('ih-year', ins.year ?? data.year);
+                setVal('ih-fuel', ins.fuel ?? data.fuel);
+                setVal('ih-plate', ins.licensePlate ?? data.licensePlate);
+
+                // Accidents rows
+                (ins.accidents || data.accidents || []).forEach(rec => {
+                  const tr = document.createElement('tr');
+                  tr.innerHTML = `<td><input type=\"number\" class=\"number\" placeholder=\"Repair\" value=\"${rec.repair || 0}\"></td><td><input type=\"number\" class=\"number\" placeholder=\"Part\" value=\"${rec.part || 0}\"></td><td><input type=\"number\" class=\"number\" placeholder=\"Labor\" value=\"${rec.labor || 0}\"></td><td><input type=\"number\" class=\"number\" placeholder=\"Painting\" value=\"${rec.painting || 0}\"></td><td><button class=\"btn\">Remove</button></td>`;
+                  tr.querySelector('button').onclick = () => tr.remove();
+                  tbody.appendChild(tr);
+                });
+
+                // Existing photo chips
+                photos = (data.photos || []).map(p => (typeof p === 'string' ? { name: p } : p));
+                const namesSet = new Set();
+                photos.forEach(p => {
+                  const name = p?.name;
+                  if (!name || namesSet.has(name)) return;
+                  namesSet.add(name);
+                  const chip = document.createElement('span');
+                  chip.className = 'chip';
+                  chip.innerHTML = `${name} <button title="Remove">×</button>`;
+                  chip.querySelector('button').onclick = () => {
+                    photos = photos.filter(x => x.name !== name);
+                    chip.remove();
+                  };
+                  photoChips.appendChild(chip);
+                });
+              } catch (fillErr) {
+                console.error('Prefill error:', fillErr);
+              }
+            })
+            .catch(err => { console.error(err); alert('Error loading listing: ' + err.message); });
+        } catch (e) { console.error(e); }
+      })();
+
+      // Submit handler: PUT update with existing structure
+      document.getElementById('submit-approval').onclick=e=>{
+        e.preventDefault();
+        const params = new URLSearchParams(window.location.search);
+        const listingId = params.get('id');
+        const getVal = id => (document.getElementById(id)?.value || '').trim();
+        const getChecked = id => Array.from(document.querySelectorAll(`#${id} input[type=checkbox]:checked`)).map(x=>x.value);
+        const getAccidents = () => Array.from(document.querySelectorAll('#accident-body tr')).map(tr=>{
+          const inputs = tr.querySelectorAll('input');
+          return {
+            repair: Number(inputs[0]?.value || 0),
+            part: Number(inputs[1]?.value || 0),
+            labor: Number(inputs[2]?.value || 0),
+            painting: Number(inputs[3]?.value || 0)
+          };
+        });
+
+        const payload = {
+          title: getVal('listing-title'),
+          price: Number(getVal('listing-price') || 0),
+          pin: getVal('product-id-number'),
+          categoryId: (function(){ const v=document.getElementById('category-id')?.value || ''; return v? Number(v) : null; })(),
+          tagIds: getChecked('tag-list').map(Number).filter(x=>Number.isFinite(x)),
+          vehicle: {
+            year: Number(getVal('v-year') || 0),
+            transmission: getVal('v-trans'),
+            fuel: getVal('v-fuel'),
+            color: getVal('v-color'),
+            displacementL: Number(getVal('v-displ') || 0),
+            passengerCapacity: Number(getVal('v-pass') || 0),
+            driveType: getVal('v-drive'),
+            firstRegDate: getVal('v-reg'),
+            mileageKm: Number(getVal('v-mile') || 0),
+            location: getVal('v-loc')
+          },
+          relevant: getChecked('relevant-list'),
+          options: getChecked('options-list'),
+          interior: getChecked('interior-list'),
+          safety: getChecked('safety-list'),
+          convenience: getChecked('conv-list'),
+          insuranceHistory: {
+            manufacturer: getVal('ih-mfr'),
+            model: getVal('ih-model'),
+            year: Number(getVal('ih-year') || 0),
+            fuel: getVal('ih-fuel'),
+            licensePlate: getVal('ih-plate'),
+            accidents: getAccidents()
+          },
+          photos,
+          photoCount: photos.length,
+          language: localStorage.getItem('language') || 'en',
+          role: localStorage.getItem('userRole') || localStorage.getItem('role') || 'seller',
+          status: 'pending_approval'
+        };
+
+        const token = localStorage.getItem('token');
+        if (!token) {
+          alert('Please sign in as a seller to save changes.');
+          window.location.href = 'signin.html';
+          return;
+        }
+        if (!listingId) {
+          alert('Missing listing id');
+          return;
+        }
+        const API_BASE = 'http://localhost:3001';
+        fetch(`${API_BASE}/admin/update-listing/${listingId}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify(payload)
+        }).then(async (r)=>{
+          if (!r.ok) {
+            const err = await r.json().catch(()=>({}));
+            throw new Error(err.error || `Update failed: ${r.status}`);
+          }
+          return r.json();
+        }).then((out)=>{
+          alert('Listing updated successfully! ID: ' + (out.id || 'unknown'));
+          window.location.href = 'seller-dashboard.html';
+        }).catch((err)=>{
+          alert('Update error: ' + err.message);
+        });
+      };
+    })();
+  </script>
+
+
+  <!-- Footer (exactly matching my-listings) -->
+  <footer class="bg-white border-t">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 text-sm text-gray-600 flex items-center justify-between">
+      <span>© 2025 NSM Autos</span>
+      <div class="space-x-4">
+        <a href="about-us.html" class="hover:text-black">About</a>
+        <a href="contact-us.html" class="hover:text-black">Contact</a>
+      </div>
+    </div>
+  </footer>
+  <script>
+  // Language dropdown toggle & persistence
+  const langToggle = document.getElementById('languageToggle');
+  const langDropdown = document.getElementById('languageDropdown');
+  (function initLang(){
+    if (!langToggle || !langDropdown) return;
+
+    const labels = { en:'English', es:'Español', fr:'Français', de:'Deutsch', zh:'中文' };
+    const saved = localStorage.getItem('language');
+    if (saved && labels[saved] && langToggle.querySelector('span')) {
+      langToggle.querySelector('span').textContent = labels[saved];
+    }
+
+    langToggle.addEventListener('click', function(e){
+      e.stopPropagation();
+      const hidden = langDropdown.classList.toggle('hidden');
+      langToggle.setAttribute('aria-expanded', hidden ? 'false' : 'true');
+    });
+
+    langDropdown.querySelectorAll('button[data-lang]').forEach(btn=>{
+      btn.addEventListener('click', function(e){
+        e.stopPropagation();
+        const code = btn.getAttribute('data-lang');
+        const label = labels[code] || code;
+        const textEl = langToggle.querySelector('span');
+        if (textEl) textEl.textContent = label;
+        localStorage.setItem('language', code);
+        langDropdown.classList.add('hidden');
+        langToggle.setAttribute('aria-expanded', 'false');
+      });
+    });
+
+    document.addEventListener('click', function(){
+      if (!langDropdown.classList.contains('hidden')) {
+        langDropdown.classList.add('hidden');
+        langToggle.setAttribute('aria-expanded', 'false');
+      }
+    });
+
+    document.addEventListener('keydown', function(e){
+      if (e.key === 'Escape') {
+        langDropdown.classList.add('hidden');
+        langToggle.setAttribute('aria-expanded', 'false');
+      }
+    });
+  })();
+  </script>
+  <script>
+    // Sign out handler for header button
+    (function(){
+      var btn = document.getElementById('signout');
+      if (btn) {
+        btn.addEventListener('click', function(){
+          try {
+            localStorage.removeItem('token');
+            localStorage.removeItem('role');
+            localStorage.removeItem('user');
+          } catch(_){}
+          window.location.href = 'signin.html';
+        });
+      }
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Super Admin Panel — Review Management</title>
+  <style>
+    :root {
+      --bg: #f6f7fb; --text: #0f172a; --muted: #64748b; --primary: #2563eb; --primary-hover: #1d4ed8;
+      --topbar-bg: #ffffff; --topbar-border: #e5e7eb; --sidebar-bg: #0b1220; --sidebar-border: #1f2937;
+      --sidebar-text: #cbd5e1; --sidebar-hover-bg: #111827; --sidebar-active-bg: #1f2937;
+      --card-bg: #ffffff; --card-border: #e5e7eb; --success: #16a34a; --danger: #dc2626; --warning: #f59e0b;
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body { margin: 0; background: var(--bg); color: var(--text); font-family: Inter, Segoe UI, Roboto, Helvetica, Arial, system-ui, -apple-system, sans-serif; }
+    .admin-layout { display: grid; grid-template-columns: 260px 1fr; grid-template-rows: 64px auto; grid-template-areas: "topbar topbar" "sidebar content"; height: 100vh; width: 100%; }
+    .topbar { grid-area: topbar; display: flex; align-items: center; justify-content: space-between; padding: 0 16px; background: var(--topbar-bg); border-bottom: 1px solid var(--topbar-border); position: sticky; top: 0; z-index: 10; }
+    .brand { display: flex; align-items: center; gap: 12px; font-weight: 600; }
+    .brand-logo { width: 28px; height: 28px; border-radius: 8px; background: linear-gradient(135deg, var(--primary), #9333ea); }
+    .top-actions { display: flex; align-items: center; gap: 8px; }
+    .btn { border: 1px solid var(--card-border); background: #fff; color: var(--text); padding: 8px 12px; border-radius: 8px; cursor: pointer; font-weight: 600; }
+    .btn:hover { background: #f9fafb; }
+    .btn-primary { background: var(--primary); color: #fff; border: 1px solid var(--primary); padding: 8px 12px; border-radius: 8px; cursor: pointer; font-weight: 600; }
+    .btn-primary:hover { background: var(--primary-hover); }
+
+    .sidebar { grid-area: sidebar; background: var(--sidebar-bg); border-right: 1px solid var(--sidebar-border); color: #fff; padding: 16px 12px; overflow-y: auto; }
+    .sidebar-header { font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--sidebar-text); margin-bottom: 12px; opacity: 0.9; }
+    .menu { display: flex; flex-direction: column; gap: 6px; }
+    .menu a { display: flex; align-items: center; gap: 10px; color: var(--sidebar-text); text-decoration: none; padding: 10px 12px; border-radius: 8px; }
+    .menu a:hover { background: var(--sidebar-hover-bg); }
+    .menu a.active { background: var(--sidebar-active-bg); color: #fff; }
+    .icon { width: 18px; height: 18px; border-radius: 4px; background: #334155; }
+
+    .content { grid-area: content; padding: 16px; overflow-y: auto; }
+    .card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 16px; }
+    .card h2 { margin: 0 0 8px; }
+    .muted { color: var(--muted); font-size: 12px; }
+    .toolbar { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 8px; }
+    .filter { display:flex; gap:8px; align-items:center; }
+    .table-wrap { margin-top: 12px; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { border-bottom: 1px solid var(--card-border); padding: 10px 8px; text-align: left; font-size: 14px; }
+    thead th { font-size: 12px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted); }
+    .status { display:inline-flex; align-items:center; padding:2px 8px; border-radius: 999px; font-size: 12px; font-weight: 700; }
+    .status.pending { background:#fef3c7; color:#b45309; }
+    .status.approved { background:#dcfce7; color:#166534; }
+    .status.rejected { background:#fee2e2; color:#991b1b; }
+    .actions { display:flex; gap:8px; }
+    .thumb { width: 56px; height: 56px; object-fit: cover; border-radius: 8px; border: 1px solid var(--card-border); }
+  </style>
+</head>
+<body>
+  <div class="admin-layout">
+    <header class="topbar" role="banner">
+      <div class="brand" aria-label="Admin brand">
+        <div class="brand-logo" aria-hidden="true"></div>
+        <span>Super Admin Panel</span>
+      </div>
+      <div class="top-actions">
+        <button class="btn" onclick="location.href='home.html'">Back to Site</button>
+        <span class="admin-name">Signed in as <strong>Super Admin</strong></span>
+        <button class="btn" onclick="location.href='signin.html'">Logout</button>
+      </div>
+    </header>
+
+    <aside class="sidebar" role="navigation" aria-label="Admin sidebar">
+      <div class="sidebar-header">Main Menu</div>
+      <nav class="menu">
+        <a href="admin.html"><span class="icon"></span> Dashboard</a>
+        <a href="user-management.html"><span class="icon"></span> User Management</a>
+        <a href="listing-approval.html"><span class="icon"></span> Listing Approvals</a>
+        <a href="create-listing.html"><span class="icon"></span> Create New Listing</a>
+        <a href="manage-all-listings.html"><span class="icon"></span> Manage All Listings</a>
+        <a href="category-management.html"><span class="icon"></span> Category Management</a>
+        <a href="tag-management.html"><span class="icon"></span> Tag Management</a>
+        <a href="model-management.html"><span class="icon"></span> Model Management</a>
+        <a href="slider-management.html"><span class="icon"></span> Slider Management</a>
+        <a href="blog-management.html"><span class="icon"></span> Blog Management</a>
+        <a href="admin-messages.html"><span class="icon"></span> Buyer Messages</a>
+        <a href="invoice-intake.html"><span class="icon"></span> Invoice Intake</a>
+        <a href="review-management.html" class="active"><span class="icon"></span> Review Management</a>
+      </nav>
+    </aside>
+
+    <main class="content" role="main">
+      <h1>Review Management</h1>
+      <p class="muted">Approve or reject buyer-submitted reviews before they go live.</p>
+
+      <section class="card">
+        <div class="filter">
+          <label for="status">Status</label>
+          <select id="status" class="btn" style="min-width:160px">
+            <option value="pending">Pending</option>
+            <option value="approved">Approved</option>
+            <option value="rejected">Rejected</option>
+          </select>
+          <button id="refresh" class="btn">Refresh</button>
+        </div>
+
+        <div class="table-wrap">
+          <table aria-label="Reviews">
+            <thead>
+              <tr>
+                <th style="width:8%">ID</th>
+                <th style="width:12%">Listing</th>
+                <th style="width:10%">Rating</th>
+                <th style="width:20%">Title</th>
+                <th style="width:24%">Description</th>
+                <th style="width:12%">Country</th>
+                <th style="width:10%">Buyer</th>
+                <th style="width:8%">Image</th>
+                <th style="width:12%">Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="reviews-tbody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <script>
+        (function(){
+          async function fetchReviews(){
+            var token = localStorage.getItem('token'); if(!token){ alert('Please sign in to manage reviews.'); window.location.href='signin.html'; return []; }
+            var status = document.getElementById('status').value || 'pending';
+            try {
+              var res = await fetch('http://localhost:3000/admin/reviews?status=' + encodeURIComponent(status), { headers: { 'Accept': 'application/json', 'Authorization': 'Bearer ' + token } });
+              if(!res.ok) return [];
+              return await res.json();
+            } catch(_) { return []; }
+          }
+
+          function render(rows){
+            var tbody = document.getElementById('reviews-tbody');
+            if(!Array.isArray(rows) || rows.length === 0){ tbody.innerHTML = '<tr><td colspan="11" class="muted">No reviews.</td></tr>'; return; }
+            tbody.innerHTML = rows.map(function(r){
+              var stars = '★'.repeat(Number(r.rating||0)) + '☆'.repeat(5 - Number(r.rating||0));
+              var statusCls = 'status ' + String(r.status||'').toLowerCase();
+              var listingLink = r.listingId != null ? ('<a href="product-detail.html?id=' + encodeURIComponent(r.listingId) + '" target="_blank">#' + r.listingId + '</a>') : '—';
+              var imgCell = r.image_url ? ('<img class="thumb" src="' + r.image_url + '" alt="review image" />') : '';
+              return (
+                '<tr>'+
+                  '<td>'+ (r.id || '') +'</td>'+
+                  '<td>'+ listingLink +'</td>'+
+                  '<td style="font-family:monospace">'+ stars +'</td>'+
+                  '<td>'+ (r.title || '') +'</td>'+
+                  '<td>'+ (r.description || '') +'</td>'+
+                  '<td>'+ (r.country || '') +'</td>'+
+                  '<td>'+ (r.buyer_email || '') +'</td>'+
+                  '<td>'+ imgCell +'</td>'+
+                  '<td><span class="'+ statusCls +'">'+ (r.status || '') +'</span></td>'+
+                  '<td class="actions">'+
+                    '<button class="btn-primary" data-action="approve" data-id="'+ (r.id || '') +'">Approve</button>'+
+                    '<button class="btn" data-action="reject" data-id="'+ (r.id || '') +'" style="border-color:#dc2626;color:#dc2626">Reject</button>'+
+                  '</td>'+
+                '</tr>'
+              );
+            }).join('');
+          }
+
+          async function refresh(){
+            var rows = await fetchReviews();
+            render(rows);
+          }
+
+          document.getElementById('refresh').addEventListener('click', refresh);
+          document.getElementById('status').addEventListener('change', refresh);
+          document.getElementById('reviews-tbody').addEventListener('click', async function(e){
+            var btn = e.target.closest('button'); if(!btn) return;
+            var id = btn.getAttribute('data-id'); var action = btn.getAttribute('data-action');
+            var token = localStorage.getItem('token'); if(!token){ alert('Sign in required'); return; }
+            try {
+              var res = await fetch('http://localhost:3000/admin/reviews/' + encodeURIComponent(id) + '/status', {
+                method: 'PATCH', headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'Authorization': 'Bearer ' + token },
+                body: JSON.stringify({ status: action === 'approve' ? 'approved' : 'rejected' })
+              });
+              if(!res.ok){ var err = await res.json().catch(function(){ return {}; }); throw new Error(err.error || ('HTTP '+res.status)); }
+              await res.json();
+              refresh();
+            } catch(err) { alert('Action failed: ' + (err && err.message ? err.message : 'unknown')); }
+          });
+
+          refresh();
+        })();
+      </script>
+    </main>
+  </div>
+</body>
+</html>

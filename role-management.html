@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Super Admin Panel — Role Management</title>
+  <!-- Page Protection: only superadmin can access -->
+  <script>
+    (function(){
+      try {
+        var role = localStorage.getItem('userRole') || localStorage.getItem('role');
+        var token = localStorage.getItem('token');
+        if (role !== 'superadmin' || !token) {
+          window.location.href = 'signin.html';
+        }
+      } catch (e) {
+        window.location.href = 'signin.html';
+      }
+    })();
+  </script>
+  <style>
+    :root { --bg:#f6f7fb; --text:#0f172a; --muted:#64748b; --primary:#2563eb; --primary-hover:#1d4ed8; --topbar-bg:#ffffff; --topbar-border:#e5e7eb; --sidebar-bg:#0b1220; --sidebar-border:#1f2937; --sidebar-text:#cbd5e1; --sidebar-hover-bg:#111827; --sidebar-active-bg:#1f2937; --card-bg:#ffffff; --card-border:#e5e7eb; }
+    *{box-sizing:border-box} html,body{height:100%} body{margin:0;background:var(--bg);color:var(--text);font-family:Inter, Segoe UI, Roboto, Helvetica, Arial, system-ui, -apple-system, sans-serif}
+    .admin-layout{display:grid;grid-template-columns:260px 1fr;grid-template-rows:64px auto;grid-template-areas:"topbar topbar" "sidebar content";height:100vh;width:100%}
+    .topbar{grid-area:topbar;display:flex;align-items:center;justify-content:space-between;padding:0 16px;background:var(--topbar-bg);border-bottom:1px solid var(--topbar-border);position:sticky;top:0;z-index:10}
+    .brand{display:flex;align-items:center;gap:12px;font-weight:600} .brand-logo{width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg, var(--primary), #9333ea)} .top-actions{display:flex;align-items:center;gap:12px}
+    .admin-name{color:var(--muted);font-weight:500} .btn-logout{border:none;background:var(--primary);color:#fff;padding:8px 12px;border-radius:8px;cursor:pointer;font-weight:600} .btn-logout:hover{background:var(--primary-hover)}
+    .sidebar{grid-area:sidebar;background:var(--sidebar-bg);border-right:1px solid var(--sidebar-border);color:#fff;padding:16px 12px;overflow-y:auto}
+    .sidebar-header{font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--sidebar-text);margin-bottom:12px;opacity:.9}
+    .menu{display:flex;flex-direction:column;gap:6px} .menu a{display:flex;align-items:center;gap:10px;padding:10px 12px;text-decoration:none;color:var(--sidebar-text);border-radius:10px;transition:background 160ms ease,color 160ms ease;font-weight:500}
+    .menu a:hover{background:var(--sidebar-hover-bg);color:#fff} .menu a.active{background:var(--sidebar-active-bg);color:#fff} .menu .icon{width:18px;height:18px;border-radius:4px;background:#334155;flex-shrink:0}
+    .content{grid-area:content;padding:20px;overflow-y:auto} .content h1{margin:0 0 12px;font-size:24px} .content .muted{color:var(--muted)}
+    .section{margin-top:24px} .table-responsive{overflow-x:auto} .table{width:100%;border-collapse:collapse;background:var(--card-bg);border:1px solid var(--card-border);border-radius:12px;overflow:hidden}
+    .table thead th{text-align:left;padding:12px 14px;font-size:12px;color:var(--muted);background:#f9fafb;border-bottom:1px solid var(--card-border)} .table tbody td{padding:12px 14px;border-bottom:1px solid var(--card-border)} .table tbody tr:last-child td{border-bottom:none}
+    .actions{display:flex;gap:8px}
+    .input,.select{padding:8px 10px;border:1px solid var(--card-border);border-radius:8px;font-size:14px} .input{width:240px}
+    .btn{display:inline-flex;align-items:center;gap:6px;padding:8px 10px;font-size:12px;font-weight:600;border-radius:8px;border:1px solid var(--card-border);background:#fff;color:var(--text);cursor:pointer} .btn:hover{background:#f9fafb}
+  </style>
+</head>
+<body>
+  <div class="admin-layout">
+    <header class="topbar" role="banner">
+      <div class="brand" aria-label="Admin brand"><div class="brand-logo" aria-hidden="true"></div><span>Super Admin Panel</span></div>
+      <div class="top-actions"><span class="admin-name">Signed in as <strong>Super Admin</strong></span><button class="btn-logout" onclick="location.href='signin.html'">Logout</button></div>
+    </header>
+    <aside class="sidebar" role="navigation" aria-label="Admin sidebar">
+      <div class="sidebar-header">Main Menu</div>
+      <nav class="menu">
+        <a href="admin.html" title="Dashboard"><span class="icon"></span> Dashboard</a>
+        <a href="user-management.html" title="User Management"><span class="icon"></span> User Management</a>
+        <a href="listing-approval.html" title="Listing Approvals"><span class="icon"></span> Listing Approvals</a>
+        <a href="create-listing.html" title="Create New Listing"><span class="icon"></span> Create New Listing</a>
+        <a href="category-management.html" title="Category Management"><span class="icon"></span> Category Management</a>
+        <a href="tag-management.html" title="Tag Management"><span class="icon"></span> Tag Management</a>
+        <a href="role-management.html" title="Role Management"><span class="icon"></span> Role Management</a>
+        <a href="blog-management.html" title="Blog Management"><span class="icon"></span> Blog Management</a>
+        <a href="setting.html" title="Setting"><span class="icon"></span> Setting</a>
+      </nav>
+    </aside>
+    <main class="content" role="main">
+      <h1>Role Management</h1>
+      <p class="muted">Only Super Admin can add staff and change roles.</p>
+
+      <!-- Add New Staff -->
+      <section class="section" aria-labelledby="add-staff-title">
+        <h3 id="add-staff-title">Add New Staff</h3>
+        <div class="actions" style="margin-top:8px; gap:12px; flex-wrap:wrap">
+          <input id="staff-name" class="input" type="text" placeholder="Full name" aria-label="Full name" />
+          <input id="staff-email" class="input" type="email" placeholder="Email" aria-label="Email" />
+          <input id="staff-password" class="input" type="password" placeholder="Temporary password" aria-label="Password" />
+          <select id="staff-role" class="select" aria-label="Role">
+            <option value="superadmin">Super Admin</option>
+            <option value="user_manager">User Manager</option>
+            <option value="listing_editor">Listing Editor</option>
+          </select>
+          <button id="btn-add-staff" class="btn">Add Staff</button>
+        </div>
+        <p class="muted">New staff are created with status "approved" and can sign in immediately.</p>
+      </section>
+
+      <!-- Current Staff Table -->
+      <section class="section" aria-labelledby="staff-title">
+        <div class="table-title">
+          <h3 id="staff-title">Current Staff</h3>
+          <div class="toolbar">
+            <input id="staff-search" class="input" type="search" placeholder="Search by name or email" />
+            <button id="reload-staff" class="btn">Reload</button>
+          </div>
+        </div>
+        <div class="table-responsive">
+          <table class="table" aria-label="Staff list">
+            <thead>
+              <tr>
+                <th style="width:10%">ID</th>
+                <th style="width:22%">Name</th>
+                <th style="width:30%">Email</th>
+                <th style="width:18%">Role</th>
+                <th>Change Role</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="staff-tbody"></tbody>
+          </table>
+        </div>
+      </section>
+      <footer class="footer">© 2024 NSM Autos Admin</footer>
+    </main>
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        var links = document.querySelectorAll('.sidebar .menu a');
+        var current = location.pathname.split('/').pop().toLowerCase();
+        links.forEach(function (link) { var href = (link.getAttribute('href') || '').split('/').pop().toLowerCase(); if (href === current) link.classList.add('active'); else link.classList.remove('active'); });
+      });
+      (function () {
+        var token = localStorage.getItem('token');
+        var rolesAssignable = ['superadmin','user_manager','listing_editor'];
+        var staff = [];
+
+        function normalize(u, idx){
+          return {
+            id: Number(u.id != null ? u.id : idx + 1),
+            name: u.name || 'Unknown',
+            email: u.email || 'no-email@example.com',
+            role: String(u.role || '').toLowerCase(),
+            status: (u.status || 'approved')
+          };
+        }
+
+        async function loadStaff(){
+          var tbody = document.getElementById('staff-tbody');
+          tbody.innerHTML = '<tr><td colspan="5">Loading…</td></tr>';
+          try{
+            var res = await fetch('http://localhost:3000/admin/get-staff',{
+              method:'GET', headers: { 'Accept':'application/json', 'Authorization': 'Bearer ' + token }, cache:'no-store'
+            });
+            var data = await res.json();
+            if(!res.ok){ throw new Error(data && data.error ? data.error : ('HTTP ' + res.status)); }
+            // Support both top-level array responses and object-wrapped arrays
+            var arr = Array.isArray(data)
+              ? data
+              : (Array.isArray(data.staff)
+                ? data.staff
+                : (Array.isArray(data.users)
+                  ? data.users
+                  : []));
+            staff = arr.map(normalize);
+          }catch(err){
+            alert('Failed to load staff: ' + err.message);
+            staff = [];
+          }
+          renderStaff();
+        }
+
+        function renderStaff(){
+          var q = (document.getElementById('staff-search').value || '').toLowerCase();
+          var rows = staff.filter(function (u) { return !q || (u.name && u.name.toLowerCase().includes(q)) || (u.email && u.email.toLowerCase().includes(q)); });
+          var tbody = document.getElementById('staff-tbody');
+          tbody.innerHTML = '';
+          if(rows.length === 0){ tbody.innerHTML = '<tr><td colspan="5">No staff found</td></tr>'; return; }
+          rows.forEach(function(u){
+            var tr = document.createElement('tr');
+            function td(text){ var d = document.createElement('td'); d.textContent = text; return d; }
+            tr.appendChild(td(u.id)); tr.appendChild(td(u.name)); tr.appendChild(td(u.email)); tr.appendChild(td(u.role));
+            var tdEdit = document.createElement('td');
+            var wrap = document.createElement('div'); wrap.className = 'actions';
+            var sel = document.createElement('select'); sel.className = 'select';
+            rolesAssignable.forEach(function(r){ var opt = document.createElement('option'); opt.value = r; opt.textContent = r; if (r === u.role) opt.selected = true; sel.appendChild(opt); });
+            var btn = document.createElement('button'); btn.className = 'btn'; btn.textContent = 'Apply';
+            btn.addEventListener('click', function(){ updateRole(u.id, sel.value); });
+            wrap.appendChild(sel); wrap.appendChild(btn); tdEdit.appendChild(wrap); tr.appendChild(tdEdit);
+
+            // Actions (Remove)
+            var tdActions = document.createElement('td');
+            var actWrap = document.createElement('div'); actWrap.className = 'actions';
+            var btnRemove = document.createElement('button'); btnRemove.className = 'btn'; btnRemove.textContent = 'Remove';
+            btnRemove.addEventListener('click', function(){ removeStaff(u.id, tr); });
+            actWrap.appendChild(btnRemove);
+            tdActions.appendChild(actWrap);
+            tr.appendChild(tdActions);
+            tbody.appendChild(tr);
+          });
+        }
+
+        async function updateRole(id, role){
+          try{
+            var res = await fetch('http://localhost:3000/admin/update-role/' + encodeURIComponent(id),{
+              method:'PUT', headers: { 'Content-Type':'application/json','Accept':'application/json','Authorization':'Bearer ' + token },
+              body: JSON.stringify({ role: role })
+            });
+            var data = await res.json().catch(function(){ return {}; });
+            if(!res.ok){ throw new Error(data && data.error ? data.error : ('HTTP ' + res.status)); }
+            alert('Role updated');
+            await loadStaff();
+          }catch(err){ alert('Failed to update role: ' + err.message); }
+        }
+
+        async function addStaff(){
+          var name = (document.getElementById('staff-name').value || '').trim();
+          var email = (document.getElementById('staff-email').value || '').trim();
+          var password = document.getElementById('staff-password').value || '';
+          var role = document.getElementById('staff-role').value || 'listing_editor';
+          if (!name || !email || !password){ alert('Please fill name, email and password.'); return; }
+          try{
+            var res = await fetch('http://localhost:3000/admin/add-staff',{
+              method:'POST', headers: { 'Content-Type':'application/json','Accept':'application/json','Authorization':'Bearer ' + token },
+              body: JSON.stringify({ name, email, password, role })
+            });
+            var data = await res.json();
+            if(!res.ok){ throw new Error(data && data.error ? data.error : ('HTTP ' + res.status)); }
+            alert('Staff created: ' + (data.email || email));
+            document.getElementById('staff-name').value='';
+            document.getElementById('staff-email').value='';
+            document.getElementById('staff-password').value='';
+            document.getElementById('staff-role').value='listing_editor';
+            await loadStaff();
+          }catch(err){ alert('Failed to add staff: ' + err.message); }
+        }
+
+        document.getElementById('staff-search').addEventListener('input', renderStaff);
+        document.getElementById('reload-staff').addEventListener('click', loadStaff);
+        document.getElementById('btn-add-staff').addEventListener('click', addStaff);
+
+        async function removeStaff(id, rowEl){
+          try{
+            var proceed = confirm('Are you sure?');
+            if(!proceed) return;
+            var res = await fetch('http://localhost:3000/admin/remove-staff/' + encodeURIComponent(id),{
+              method:'DELETE', headers: { 'Accept':'application/json', 'Authorization':'Bearer ' + token }
+            });
+            var data = await res.json().catch(function(){ return {}; });
+            if(!res.ok){ throw new Error(data && data.error ? data.error : ('HTTP ' + res.status)); }
+            // Remove row from DOM and state
+            if (rowEl && rowEl.parentNode) { rowEl.parentNode.removeChild(rowEl); }
+            staff = staff.filter(function(s){ return Number(s.id) !== Number(id); });
+            alert('Staff removed');
+          }catch(err){ alert('Failed to remove staff: ' + err.message); }
+        }
+
+        loadStaff();
+      })();
+    </script>
+  </div>
+</body>
+</html>
